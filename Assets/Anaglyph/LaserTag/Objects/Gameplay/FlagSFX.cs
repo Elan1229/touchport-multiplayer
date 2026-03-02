@@ -1,0 +1,47 @@
+using System;
+using Anaglyph.Lasertag.Networking;
+using UnityEngine;
+
+namespace Anaglyph.Lasertag
+{
+	public class FlagSFX : MonoBehaviour
+	{
+		[SerializeField] private Flag flag;
+
+		[SerializeField] private AudioClip scored;
+		[SerializeField] private AudioClip enemyCapturedFlag;
+		[SerializeField] private AudioClip enemyStoleFlag;
+
+		private void OnEnable()
+		{
+			flag.Taken += OnTaken;
+			flag.Captured += OnCaptured;
+		}
+
+		private void OnDisable()
+		{
+			flag.Taken -= OnTaken;
+			flag.Captured -= OnCaptured;
+		}
+
+		private void OnTaken(PlayerAvatar holder)
+		{
+			if (PlayerAvatar.Local?.Team != holder.Team)
+			{
+				var pos = holder.HeadTransform.position;
+				AudioPool.Play(enemyStoleFlag, pos);
+			}
+		}
+
+		private void OnCaptured(PlayerAvatar holder)
+		{
+			var pos = holder.HeadTransform.position;
+			var sfx = scored;
+
+			if (PlayerAvatar.Local && PlayerAvatar.Local?.Team != holder.Team)
+				sfx = enemyCapturedFlag;
+
+			AudioPool.Play(sfx, pos);
+		}
+	}
+}
