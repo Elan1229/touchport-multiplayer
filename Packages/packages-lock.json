@@ -26,7 +26,7 @@
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "11f09e231a903f2be3b429f2eaa4ffc575fa6810"
+      "hash": "86633ff2996c98b366395e705d089bfda60ee1a8"
     },
     "com.meta.xr.sdk.core": {
       "version": "83.0.1",
