@@ -6,7 +6,7 @@ namespace Anaglyph.Demo
 {
     [RequireComponent(typeof(NetworkObject))]
     [RequireComponent(typeof(NetworkTransform))]
-    public class NetworkedCube : NetworkBehaviour
+    public class NetworkGrab : NetworkBehaviour
     {
         private Transform heldBy;
         private bool isLocallyGrabbed;

@@ -14,7 +14,7 @@ namespace Anaglyph.Demo
         [SerializeField] private Transform rightHandTracker;
         [SerializeField] private float grabRadius = 0.15f;
 
-        private NetworkedCube grabbedCube;
+        private NetworkGrab grabbedCube;
         private Transform grabbingHand;
 
         private InputDevice leftDevice;
@@ -106,9 +106,9 @@ namespace Anaglyph.Demo
         // Use transform-based distance check instead of Physics.OverlapSphere.
         // NetworkTransform updates transform.position directly; the physics collider
         // only catches up at the next FixedUpdate, so physics queries can miss the cube.
-        private NetworkedCube FindNearestCubeInRange(Vector3 handPos)
+        private NetworkGrab FindNearestCubeInRange(Vector3 handPos)
         {
-            foreach (var cube in FindObjectsByType<NetworkedCube>(FindObjectsSortMode.None))
+            foreach (var cube in FindObjectsByType<NetworkGrab>(FindObjectsSortMode.None))
             {
                 var c = cube.transform.position;
                 var h = cube.transform.localScale * 0.5f; // half-extents

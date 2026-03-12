@@ -110,7 +110,7 @@ namespace Anaglyph.Demo.Editor
             // Netcode components
             cube.AddComponent<NetworkObject>();
             cube.AddComponent<NetworkTransform>();
-            cube.AddComponent<NetworkedCube>();
+            cube.AddComponent<NetworkGrab>();
 
             // Save as prefab asset and keep the scene instance linked to it
             PrefabUtility.SaveAsPrefabAssetAndConnect(
