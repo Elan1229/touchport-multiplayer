@@ -10,45 +10,33 @@ namespace Anaglyph.Demo
 {
     public class AutoConnect : MonoBehaviour
     {
+#if UNITY_EDITOR
+        private bool _isHost;
+        private bool _isClient;
+#endif
+
         private void Awake()
         {
 #if UNITY_EDITOR
-            bool isClient = false;
-
-            // ParrelSync: clone editor = client
-#if PARREL_SYNC
-            if (ParrelSync.ClonesManager.IsClone())
-                isClient = true;
-#endif
-
-            // MPPM tags fallback
             var tags = CurrentPlayer.ReadOnlyTags();
-            if (tags.Contains("Client")) isClient = true;
-            if (tags.Contains("Host"))   isClient = false;
-
-            Debug.Log($"[AutoConnect] isClient={isClient}");
-
-            if (isClient)
-                DemoNetworkUI.SuppressAutoHost = true;
+            _isHost   = tags.Contains("Host");
+            _isClient = tags.Contains("Client");
+            Debug.Log($"[AutoConnect] Awake — isHost={_isHost} isClient={_isClient}");
 #endif
         }
 
         private void Start()
         {
 #if UNITY_EDITOR
-            var tags = CurrentPlayer.ReadOnlyTags();
-            bool isClient = DemoNetworkUI.SuppressAutoHost;
-
-            if (isClient)
-            {
-                // Host 需要几秒启动，等久一点再连
-                Invoke(nameof(ConnectAsClient), 6f);
-                Debug.Log("[AutoConnect] Client — connecting in 6s");
-            }
-            else if (tags.Contains("Host"))
+            if (_isHost)
             {
                 NetcodeManagement.Host(NetcodeManagement.Protocol.LAN);
                 Debug.Log("[AutoConnect] Host started");
+            }
+            else if (_isClient)
+            {
+                Invoke(nameof(ConnectAsClient), 6f);
+                Debug.Log("[AutoConnect] Client — connecting in 6s");
             }
 #endif
         }

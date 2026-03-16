@@ -31,14 +31,23 @@ namespace Anaglyph.Demo
             NetworkVariableWritePermission.Server);
 
         [SerializeField] private float proximityThreshold = 0.10f;
+        private bool _wasClose = false; // 上一帧是否靠近，用于检测上升沿
+        private float _toggleCooldown = 0f;
+        private const float ToggleCooldownDuration = 1.5f;
+        private float _debugLogTimer = 0f;
+
+#if UNITY_EDITOR
+        private bool _debugForceClose = false;
 
         [ContextMenu("Toggle HandsAreClose")]
         private void ToggleHandsAreClose()
         {
             if (!IsServer) { Debug.LogWarning("Only works on server"); return; }
-            HandsAreClose.Value = !HandsAreClose.Value;
-            Debug.Log($"[HandsManager] HandsAreClose = {HandsAreClose.Value}");
+            _debugForceClose = !_debugForceClose;
+            HandsAreClose.Value = _debugForceClose;
+            Debug.Log($"[HandsManager] HandsAreClose forced = {_debugForceClose}");
         }
+#endif
 
         public override void OnNetworkSpawn()
         {
@@ -48,6 +57,9 @@ namespace Anaglyph.Demo
                 return;
             }
             Instance = this;
+            Debug.Log($"[HandsManager] OnNetworkSpawn IsServer={IsServer} IsClient={IsClient} clientId={NetworkManager.LocalClientId}");
+            HandsAreClose.OnValueChanged += (oldVal, newVal) =>
+                Debug.Log($"[HandsManager] HandsAreClose changed {oldVal}→{newVal} on clientId={NetworkManager.LocalClientId}");
         }
 
         public override void OnNetworkDespawn()
@@ -78,22 +90,54 @@ namespace Anaglyph.Demo
             if (!IsSpawned || !IsServer) return;
 
 #if UNITY_EDITOR
-            // 键盘模拟：按 J 切换 HandsAreClose（simulator 测试用）
+            if (_debugForceClose) return; // 保持手动设置的值，跳过自动检测
             if (UnityEngine.InputSystem.Keyboard.current != null &&
                 UnityEngine.InputSystem.Keyboard.current[UnityEngine.InputSystem.Key.J].wasPressedThisFrame)
             {
-                HandsAreClose.Value = !HandsAreClose.Value;
-                Debug.Log($"[HandsManager] (Editor) HandsAreClose forced = {HandsAreClose.Value}");
+                _debugForceClose = !_debugForceClose;
+                HandsAreClose.Value = _debugForceClose;
+                Debug.Log($"[HandsManager] HandsAreClose forced = {_debugForceClose}");
                 return;
             }
 #endif
 
-            bool close = CheckProximity();
-            if (HandsAreClose.Value != close)
+            if (_toggleCooldown > 0f) _toggleCooldown -= Time.deltaTime;
+
+            _debugLogTimer -= Time.deltaTime;
+            if (_debugLogTimer <= 0f)
             {
-                HandsAreClose.Value = close;
-                Debug.Log($"[HandsManager] HandsAreClose = {close}");
+                _debugLogTimer = 2f;
+                string keys = string.Join(",", _hands.Keys);
+                Debug.Log($"[HandsManager] _hands keys=[{keys}] HandsAreClose={HandsAreClose.Value}");
+                if (_hands.TryGetValue(0, out var h0) && _hands.TryGetValue(1, out var h1))
+                {
+                    float d = Mathf.Min(
+                        Vector3.Distance(h0.LeftPos,  h1.LeftPos),
+                        Vector3.Distance(h0.LeftPos,  h1.RightPos),
+                        Vector3.Distance(h0.RightPos, h1.LeftPos),
+                        Vector3.Distance(h0.RightPos, h1.RightPos));
+                    Debug.Log($"[HandsManager] minDist={d:F3}m threshold={proximityThreshold}m");
+                }
+                else
+                {
+                    Debug.Log($"[HandsManager] missing hands — h0={_hands.ContainsKey(0)} h1={_hands.ContainsKey(1)}");
+                }
             }
+
+            // 上升沿触发：从"分开"变"靠近"的瞬间 toggle（冷却期内忽略抖动）
+            bool nowClose = CheckProximity();
+            if (nowClose && !_wasClose)
+            {
+                Debug.Log($"[HandsManager] CLOSE detected!");
+                NotifyCloseClientRpc();
+                if (_toggleCooldown <= 0f)
+                {
+                    HandsAreClose.Value = !HandsAreClose.Value;
+                    _toggleCooldown = ToggleCooldownDuration;
+                    Debug.Log($"[HandsManager] HandsAreClose toggled → {HandsAreClose.Value}");
+                }
+            }
+            _wasClose = nowClose;
         }
 
         // 检查 clientId 0（host）和 clientId 1（guest）各自的手柄是否有任意一对 < threshold
@@ -108,9 +152,27 @@ namespace Anaglyph.Demo
             foreach (var h in hostHands)
                 foreach (var g in guestHands)
                     if (Vector3.Distance(h, g) < proximityThreshold)
+                    {
+                        Debug.Log($"[CheckProximity] CLOSE! dist={Vector3.Distance(h, g):F3}m");
                         return true;
+                    }
 
             return false;
+        }
+
+        // A 键触发：任意客户端按下 → server toggle
+        [ServerRpc(RequireOwnership = false)]
+        public void RequestToggleServerRpc()
+        {
+            HandsAreClose.Value = !HandsAreClose.Value;
+            _toggleCooldown = ToggleCooldownDuration;
+            Debug.Log($"[HandsManager] A键触发 → HandsAreClose = {HandsAreClose.Value}");
+        }
+
+        [ClientRpc]
+        private void NotifyCloseClientRpc()
+        {
+            Debug.Log($"[HandsManager] CLOSE detected! (received on clientId={NetworkManager.LocalClientId})");
         }
 
         // GrabbableObject 用

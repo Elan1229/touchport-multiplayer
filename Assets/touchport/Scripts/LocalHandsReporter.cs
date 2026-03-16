@@ -20,6 +20,8 @@ namespace Anaglyph.Demo
         private InputDevice rightDevice;
         private XROrigin xrOrigin;
         private float _timer;
+        private bool _prevAButton = false;
+        private float _debugTimer = 0f;
 
         private void Start()
         {
@@ -34,7 +36,11 @@ namespace Anaglyph.Demo
             var netManager = NetworkManager.Singleton;
             if (netManager == null || !netManager.IsConnectedClient) return;
 
-            if (HandsManager.Instance == null) return;
+            if (HandsManager.Instance == null)
+            {
+                Debug.LogWarning("[LocalHandsReporter] HandsManager.Instance is null, skipping");
+                return;
+            }
 
             // 重新获取设备（控制器关闭再开时会失效）
             if (!leftDevice.isValid)
@@ -44,6 +50,13 @@ namespace Anaglyph.Demo
 
             UpdateHandTracker(leftDevice,  leftHandTracker);
             UpdateHandTracker(rightDevice, rightHandTracker);
+
+            // A 键上升沿 → 请求 server toggle（任意一方按都行）
+            bool aButton = rightDevice.isValid &&
+                           rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
+            if (aButton && !_prevAButton)
+                HandsManager.Instance.RequestToggleServerRpc();
+            _prevAButton = aButton;
 
             // 两个设备都无效时不上报，避免 (0,0,0) 触发假阳性
             if (!leftDevice.isValid && !rightDevice.isValid) return;
@@ -56,6 +69,15 @@ namespace Anaglyph.Demo
                 rightHandTracker.position,
                 leftGrip,
                 rightGrip);
+
+            _debugTimer -= Time.deltaTime;
+            if (_debugTimer <= 0f)
+            {
+                _debugTimer = 2f;
+                Debug.Log($"[LocalHandsReporter] clientId={NetworkManager.Singleton.LocalClientId} " +
+                          $"L={leftHandTracker.position:F2} R={rightHandTracker.position:F2} " +
+                          $"leftGrip={leftGrip} rightGrip={rightGrip}");
+            }
         }
 
         private void UpdateHandTracker(InputDevice device, Transform tracker)

@@ -3309,7 +3309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameOwnerId: 0
-  alwaysVisible: 0
+  alwaysVisible: 1
   grabRadius: 0.1
 --- !u!1 &1330144345
 GameObject:
@@ -3575,7 +3575,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameOwnerId: 0
-  alwaysVisible: 0
+  alwaysVisible: 1
   grabRadius: 0.1
 --- !u!1 &1639018927
 GameObject:
@@ -3935,7 +3935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameOwnerId: 0
-  alwaysVisible: 0
+  alwaysVisible: 1
   grabRadius: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

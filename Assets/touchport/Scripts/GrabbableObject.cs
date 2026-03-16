@@ -32,12 +32,36 @@ namespace Anaglyph.Demo
         private bool  _grabbingLeft;
         private Vector3 _grabOffset;
 
+        // 缓存碰撞体（可能有多个），spawn 后取一次
+        private Collider[] _colliders;
+
+        public override void OnNetworkSpawn()
+        {
+            _colliders = GetComponentsInChildren<Collider>();
+        }
+
+        // 返回手柄到物体表面（或中心）的最近距离
+        private float DistanceToObject(Vector3 handPos)
+        {
+            if (_colliders != null && _colliders.Length > 0)
+            {
+                float minDist = float.MaxValue;
+                foreach (var col in _colliders)
+                {
+                    Vector3 closest = col.ClosestPoint(handPos);
+                    float d = Vector3.Distance(handPos, closest);
+                    if (d < minDist) minDist = d;
+                }
+                return minDist;
+            }
+            return Vector3.Distance(handPos, transform.position);
+        }
+
         private void Update()
         {
+            ApplyVisibility(); // 不依赖网络权限，客机也需要跑
+
             if (!IsSpawned) return;
-
-            ApplyVisibility();
-
             if (!IsServer) return;
 
             var manager = HandsManager.Instance;
@@ -91,7 +115,7 @@ namespace Anaglyph.Demo
 
                 if (!canGrab) continue;
 
-                if (hands.LeftGrip && Vector3.Distance(hands.LeftPos, transform.position) < grabRadius)
+                if (hands.LeftGrip && DistanceToObject(hands.LeftPos) < grabRadius)
                 {
                     _grabbingClientId = clientId;
                     _grabbingLeft     = true;
@@ -99,7 +123,7 @@ namespace Anaglyph.Demo
                     return;
                 }
 
-                if (hands.RightGrip && Vector3.Distance(hands.RightPos, transform.position) < grabRadius)
+                if (hands.RightGrip && DistanceToObject(hands.RightPos) < grabRadius)
                 {
                     _grabbingClientId = clientId;
                     _grabbingLeft     = false;
@@ -109,11 +133,22 @@ namespace Anaglyph.Demo
             }
         }
 
+        private bool _lastVisible = true; // 用于只在变化时 log
+
         private void ApplyVisibility()
         {
-            bool visible = alwaysVisible
-                || NetworkManager.LocalClientId == gameOwnerId
-                || (HandsManager.Instance != null && HandsManager.Instance.HandsAreClose.Value);
+            var hm = HandsManager.Instance;
+            bool handsClose = hm != null && hm.HandsAreClose.Value;
+            bool isOwner    = NetworkManager.LocalClientId == gameOwnerId;
+            bool visible    = alwaysVisible || isOwner || handsClose;
+
+            if (visible != _lastVisible)
+            {
+                Debug.Log($"[GrabbableObject] {gameObject.name} visible={visible} " +
+                          $"localClientId={NetworkManager.LocalClientId} gameOwnerId={gameOwnerId} " +
+                          $"alwaysVisible={alwaysVisible} handsClose={handsClose} hmNull={hm == null}");
+                _lastVisible = visible;
+            }
 
             foreach (var r in GetComponentsInChildren<Renderer>())
                 r.enabled = visible;
