@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/touchport/Demo.unity
     guid: 541351e5de6213b438360e514e7f455d
+  - enabled: 0
+    path: Assets/touchport/SceneArchive/Demo 1.unity
+    guid: edd3a39347e8c2345931adc19a40d52a
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4c41dd6ad791e2a4b8898d0ea8b277ec, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 98f64f4b2a2851449894736b3332276f, type: 2}

@@ -5,22 +5,10 @@ using UnityEngine.UI;
 
 namespace Anaglyph.Demo
 {
-    /// <summary>
-    /// Fully automatic host/guest assignment:
-    ///
-    ///   1. App opens → MetaSessionDiscovery starts scanning for a nearby host
-    ///   2a. Host found within timeout → auto-connect as guest (MetaSessionDiscovery handles this)
-    ///   2b. No host found after timeout → automatically StartHost (become the host)
-    ///
-    /// "Whoever opens the app first becomes the host; everyone else auto-joins."
-    /// A random jitter (4–7 s) prevents two devices timing out simultaneously.
-    /// </summary>
     public class DemoNetworkUI : MonoBehaviour
     {
         [SerializeField] private Text statusText;
 
-        // How long to wait for a host before self-hosting.
-        // Random jitter reduces the chance of two devices timing out at the same moment.
         private const float MinWaitSeconds = 4f;
         private const float MaxWaitSeconds = 7f;
 
@@ -50,17 +38,15 @@ namespace Anaglyph.Demo
             }
             catch (System.OperationCanceledException)
             {
-                return; // state changed (connected/connecting) before timeout — do nothing
+                return;
             }
 
-            // Still disconnected after waiting → no host nearby → become the host
             if (NetcodeManagement.State == NetcodeState.Disconnected)
                 NetcodeManagement.Host(NetcodeManagement.Protocol.LAN);
         }
 
         private void OnStateChanged(NetcodeState state)
         {
-            // Cancel the auto-host timer the moment we start connecting
             if (state != NetcodeState.Disconnected)
                 cts?.Cancel();
 
@@ -74,7 +60,7 @@ namespace Anaglyph.Demo
                     statusText.text = "Connecting...";
                     break;
                 case NetcodeState.Connected:
-                    gameObject.SetActive(false); // hide UI entirely once in session
+                    gameObject.SetActive(false);
                     break;
             }
         }
