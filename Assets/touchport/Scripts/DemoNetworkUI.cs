@@ -1,13 +1,13 @@
 using Anaglyph.Netcode;
 using System.Threading;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 
 namespace Anaglyph.Demo
 {
     public class DemoNetworkUI : MonoBehaviour
     {
-        [SerializeField] private Text statusText;
+        [SerializeField] private TextMeshProUGUI statusText;
 
         private const float MinWaitSeconds = 4f;
         private const float MaxWaitSeconds = 7f;
@@ -53,11 +53,11 @@ namespace Anaglyph.Demo
             switch (state)
             {
                 case NetcodeState.Disconnected:
-                    statusText.text = "Looking for host...";
+                    if (statusText != null) statusText.text = "Looking for host...";
                     gameObject.SetActive(true);
                     break;
                 case NetcodeState.Connecting:
-                    statusText.text = "Connecting...";
+                    if (statusText != null) statusText.text = "Connecting...";
                     break;
                 case NetcodeState.Connected:
                     gameObject.SetActive(false);
