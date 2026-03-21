@@ -16,6 +16,7 @@ namespace Anaglyph.Demo
         [SerializeField] private TextMeshProUGUI debugText;
         [SerializeField] private Transform localLeftHand;
         [SerializeField] private Transform localRightHand;
+        [SerializeField] private LocalHandsReporter localReporter;
 
         [Header("Camera Follow")]
         [SerializeField] private Transform followCamera;
@@ -70,8 +71,10 @@ namespace Anaglyph.Demo
             // 本地手部（直接读 tracker transform）
             Vector3 localL = localLeftHand  != null ? localLeftHand.position  : Vector3.zero;
             Vector3 localR = localRightHand != null ? localRightHand.position : Vector3.zero;
-            _sb.AppendLine($"LocalL : {Fmt(localL)}");
-            _sb.AppendLine($"LocalR : {Fmt(localR)}");
+            string modeL = localReporter != null ? FmtMode(localReporter.LeftMode)  : "";
+            string modeR = localReporter != null ? FmtMode(localReporter.RightMode) : "";
+            _sb.AppendLine($"LocalL : {Fmt(localL)} {modeL}");
+            _sb.AppendLine($"LocalR : {Fmt(localR)} {modeR}");
 
             if (hm == null)
             {
@@ -80,21 +83,22 @@ namespace Anaglyph.Demo
                 return;
             }
 
-            // 远端手部（NetworkVariable，server 在 ReportHandsServerRpc 里写入）
+            // 远端手部（NetworkVariable，server 在 ReportHandServerRpc 里写入）
             Vector3 remoteL, remoteR;
+            InputMode remoteLMode, remoteRMode;
             if (localId == 0)
             {
-                remoteL = hm.Debug1Left.Value;
-                remoteR = hm.Debug1Right.Value;
-                _sb.AppendLine($"RemoteL[1]: {Fmt(remoteL)}");
-                _sb.AppendLine($"RemoteR[1]: {Fmt(remoteR)}");
+                remoteL = hm.Debug1Left.Value;  remoteLMode = (InputMode)hm.Debug1LeftMode.Value;
+                remoteR = hm.Debug1Right.Value; remoteRMode = (InputMode)hm.Debug1RightMode.Value;
+                _sb.AppendLine($"RemoteL[1]: {Fmt(remoteL)} {FmtMode(remoteLMode)}");
+                _sb.AppendLine($"RemoteR[1]: {Fmt(remoteR)} {FmtMode(remoteRMode)}");
             }
             else
             {
-                remoteL = hm.Debug0Left.Value;
-                remoteR = hm.Debug0Right.Value;
-                _sb.AppendLine($"RemoteL[0]: {Fmt(remoteL)}");
-                _sb.AppendLine($"RemoteR[0]: {Fmt(remoteR)}");
+                remoteL = hm.Debug0Left.Value;  remoteLMode = (InputMode)hm.Debug0LeftMode.Value;
+                remoteR = hm.Debug0Right.Value; remoteRMode = (InputMode)hm.Debug0RightMode.Value;
+                _sb.AppendLine($"RemoteL[0]: {Fmt(remoteL)} {FmtMode(remoteLMode)}");
+                _sb.AppendLine($"RemoteR[0]: {Fmt(remoteR)} {FmtMode(remoteRMode)}");
             }
 
             // 4 对组合中的最短距离
@@ -107,7 +111,7 @@ namespace Anaglyph.Demo
             bool remoteHasData = remoteL != Vector3.zero || remoteR != Vector3.zero;
             _sb.AppendLine("---");
             _sb.AppendLine(remoteHasData ? $"MinDist  : {minDist:F3} m" : "MinDist  : no remote data");
-            _sb.AppendLine($"Threshold: {hm.ProximityThreshold:F2} m");
+            _sb.AppendLine($"Threshold: {hm.ProximityMinThreshold:F2} ~ {hm.ProximityThreshold:F2} m");
             _sb.AppendLine($"AreClose : {hm.HandsAreClose.Value}");
             _sb.AppendLine("---");
             _sb.AppendLine($"MergeEvt : {_mergeLog}");
@@ -128,5 +132,12 @@ namespace Anaglyph.Demo
         }
 
         private static string Fmt(Vector3 v) => $"({v.x:F2},{v.y:F2},{v.z:F2})";
+
+        private static string FmtMode(InputMode m) => m switch
+        {
+            InputMode.Hand       => "[hand]",
+            InputMode.Controller => "[ctrl]",
+            _                    => "[off]"
+        };
     }
 }

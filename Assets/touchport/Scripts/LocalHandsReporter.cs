@@ -5,16 +5,16 @@ using UnityEngine.XR;
 
 namespace Anaglyph.Demo
 {
-    /// <summary>
-    /// MonoBehaviour，挂在本地玩家的 Rig/CubeGrabber GO 上。
-    /// 每帧读取本地 XR 手柄位置和握持状态，通过 ServerRpc 上报给 HandsManager。
-    /// 替换原来的 CubeGrabber（抓取判断逻辑已移到 GrabbableObject 的 server 端）。
-    /// </summary>
+    public enum InputMode { Off = -1, Controller = 0, Hand = 1 }
+
     public class LocalHandsReporter : MonoBehaviour
     {
         [SerializeField] private Transform leftHandTracker;
         [SerializeField] private Transform rightHandTracker;
-        [SerializeField] private float reportInterval = 0.033f; // ~30次/秒，够用且不会撑爆队列
+        [SerializeField] private float reportInterval = 0.033f;
+
+        public InputMode LeftMode  { get; private set; } = InputMode.Off;
+        public InputMode RightMode { get; private set; } = InputMode.Off;
 
         private InputDevice leftDevice;
         private InputDevice rightDevice;
@@ -33,6 +33,7 @@ namespace Anaglyph.Demo
             _timer -= Time.deltaTime;
             if (_timer > 0f) return;
             _timer = reportInterval;
+
             var netManager = NetworkManager.Singleton;
             if (netManager == null || !netManager.IsConnectedClient) return;
 
@@ -42,45 +43,83 @@ namespace Anaglyph.Demo
                 return;
             }
 
-            // 重新获取设备（控制器关闭再开时会失效）
-            if (!leftDevice.isValid)
-                leftDevice  = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
-            if (!rightDevice.isValid)
-                rightDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+            // 手势优先：直接走 OVRPlugin，不依赖 OVRHand GO 或其层级
+            bool leftHandTracked  = TryGetOVRHandPos(OVRPlugin.Hand.HandLeft,  out Vector3 leftHandPos);
+            bool rightHandTracked = TryGetOVRHandPos(OVRPlugin.Hand.HandRight, out Vector3 rightHandPos);
 
-            UpdateHandTracker(leftDevice,  leftHandTracker);
-            UpdateHandTracker(rightDevice, rightHandTracker);
+            // 手势活跃时清掉旧设备引用，确保切回控制器时重新获取
+            if (leftHandTracked)
+            {
+                leftHandTracker.position = leftHandPos;
+                leftDevice = default;
+            }
+            else
+            {
+                if (!leftDevice.isValid)
+                    leftDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+                UpdateTrackerFromDevice(leftDevice, leftHandTracker);
+            }
 
-            // A 键上升沿 → 请求 server toggle（任意一方按都行）
+            if (rightHandTracked)
+            {
+                rightHandTracker.position = rightHandPos;
+                rightDevice = default;
+            }
+            else
+            {
+                if (!rightDevice.isValid)
+                    rightDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+                UpdateTrackerFromDevice(rightDevice, rightHandTracker);
+            }
+
+            LeftMode  = leftHandTracked  ? InputMode.Hand : (leftDevice.isValid  ? InputMode.Controller : InputMode.Off);
+            RightMode = rightHandTracked ? InputMode.Hand : (rightDevice.isValid ? InputMode.Controller : InputMode.Off);
+
+            // A 键上升沿 → 请求 server toggle
             bool aButton = rightDevice.isValid &&
                            rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
             if (aButton && !_prevAButton)
                 HandsManager.Instance.RequestToggleServerRpc();
             _prevAButton = aButton;
 
-            // 两个设备都无效时不上报，避免 (0,0,0) 触发假阳性
-            if (!leftDevice.isValid && !rightDevice.isValid) return;
-
             bool leftGrip  = GetGrip(leftDevice);
             bool rightGrip = GetGrip(rightDevice);
 
-            HandsManager.Instance.ReportHandsServerRpc(
-                leftHandTracker.position,
-                rightHandTracker.position,
-                leftGrip,
-                rightGrip);
+            // 每只手单独上报（isTracked=false 时服务器仍收到，用于清除旧数据）
+            HandsManager.Instance.ReportHandServerRpc(
+                true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip);
+            HandsManager.Instance.ReportHandServerRpc(
+                false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip);
 
             _debugTimer -= Time.deltaTime;
             if (_debugTimer <= 0f)
             {
                 _debugTimer = 2f;
                 Debug.Log($"[LocalHandsReporter] clientId={NetworkManager.Singleton.LocalClientId} " +
-                          $"L={leftHandTracker.position:F2} R={rightHandTracker.position:F2} " +
-                          $"leftGrip={leftGrip} rightGrip={rightGrip}");
+                          $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
             }
         }
 
-        private void UpdateHandTracker(InputDevice device, Transform tracker)
+        // 直接从 OVRPlugin 读手部 wrist 世界坐标，不依赖场景 GO 层级
+        private bool TryGetOVRHandPos(OVRPlugin.Hand hand, out Vector3 worldPos)
+        {
+            worldPos = Vector3.zero;
+            var state = new OVRPlugin.HandState();
+            if (!OVRPlugin.GetHandState(OVRPlugin.Step.Render, hand, ref state))
+                return false;
+            if ((state.Status & OVRPlugin.HandStatus.HandTracked) == 0)
+                return false;
+
+            // OVRPlugin 坐标系 Z 与 Unity 相反，flip Z 转换
+            var p = state.RootPose.Position;
+            Vector3 trackingPos = new Vector3(p.x, p.y, -p.z);
+            worldPos = xrOrigin != null
+                ? xrOrigin.transform.TransformPoint(trackingPos)
+                : trackingPos;
+            return true;
+        }
+
+        private void UpdateTrackerFromDevice(InputDevice device, Transform tracker)
         {
             if (!device.isValid) return;
             if (!device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 localPos)) return;

@@ -72,7 +72,6 @@ namespace Anaglyph.Demo
             // 如果当前有人抓着
             if (_grabbingClientId != ulong.MaxValue)
             {
-                // 手分开后失去跨世界操作权，强制释放（否则 host 抢不回自己的方块）
                 bool stillAuthorized = alwaysVisible
                     || _grabbingClientId == gameOwnerId
                     || handsAreClose;
@@ -81,55 +80,42 @@ namespace Anaglyph.Demo
                 {
                     _grabbingClientId = ulong.MaxValue;
                 }
-                else if (manager.TryGetHands(_grabbingClientId, out var held))
+                else if (manager.TryGetHand(_grabbingClientId, _grabbingLeft, out var held))
                 {
-                    bool stillGripping = _grabbingLeft ? held.LeftGrip : held.RightGrip;
-                    if (stillGripping)
+                    if (held.isGripping)
                     {
-                        // 跟随手柄（保持抓取时的偏移）
-                        Vector3 handPos = _grabbingLeft ? held.LeftPos : held.RightPos;
-                        transform.position = handPos + _grabOffset;
+                        transform.position = held.position + _grabOffset;
                         return;
                     }
                     else
                     {
-                        _grabbingClientId = ulong.MaxValue; // 松手
+                        _grabbingClientId = ulong.MaxValue;
                     }
                 }
                 else
                 {
-                    _grabbingClientId = ulong.MaxValue; // 客户端断开
+                    _grabbingClientId = ulong.MaxValue;
                 }
             }
 
             // 没人抓着，检查是否有人要抓
             foreach (var kvp in manager.AllHands())
             {
-                ulong clientId = kvp.Key;
-                var hands = kvp.Value;
+                ulong clientId = kvp.Key.Item1;
+                var hand = kvp.Value;
 
-                // 只有主人可以抓，或者 alwaysVisible，或者双方手柄已靠近
                 bool canGrab = alwaysVisible
                     || clientId == gameOwnerId
                     || handsAreClose;
 
                 if (!canGrab) continue;
+                if (!hand.isTracked || !hand.isGripping) continue;
+                if (DistanceToObject(hand.position) >= grabRadius) continue;
 
-                if (hands.LeftGrip && DistanceToObject(hands.LeftPos) < grabRadius)
-                {
-                    _grabbingClientId = clientId;
-                    _grabbingLeft     = true;
-                    _grabOffset       = transform.position - hands.LeftPos;
-                    return;
-                }
-
-                if (hands.RightGrip && DistanceToObject(hands.RightPos) < grabRadius)
-                {
-                    _grabbingClientId = clientId;
-                    _grabbingLeft     = false;
-                    _grabOffset       = transform.position - hands.RightPos;
-                    return;
-                }
+                _grabbingClientId = clientId;
+                _grabbingLeft     = kvp.Key.Item2;
+                _grabOffset       = transform.position - hand.position;
+                return;
             }
         }
 
