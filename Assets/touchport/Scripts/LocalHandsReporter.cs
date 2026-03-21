@@ -11,6 +11,13 @@ namespace Anaglyph.Demo
     {
         [SerializeField] private Transform leftHandTracker;
         [SerializeField] private Transform rightHandTracker;
+
+        [Header("Hand Tracking (OVRSkeleton)")]
+        [SerializeField] private OVRHand leftOVRHand;
+        [SerializeField] private OVRHand rightOVRHand;
+        [SerializeField] private OVRSkeleton leftOVRSkeleton;
+        [SerializeField] private OVRSkeleton rightOVRSkeleton;
+
         [SerializeField] private float reportInterval = 0.033f;
 
         public InputMode LeftMode  { get; private set; } = InputMode.Off;
@@ -43,14 +50,17 @@ namespace Anaglyph.Demo
                 return;
             }
 
-            // 手势优先：直接走 OVRPlugin，不依赖 OVRHand GO 或其层级
-            bool leftHandTracked  = TryGetOVRHandPos(OVRPlugin.Hand.HandLeft,  out Vector3 leftHandPos);
-            bool rightHandTracked = TryGetOVRHandPos(OVRPlugin.Hand.HandRight, out Vector3 rightHandPos);
+            bool leftHandTracked  = TryGetOVRHandPos(OVRPlugin.Hand.HandLeft,  out Vector3 leftHandPos,  out Quaternion leftHandRot);
+            bool rightHandTracked = TryGetOVRHandPos(OVRPlugin.Hand.HandRight, out Vector3 rightHandPos, out Quaternion rightHandRot);
 
-            // 手势活跃时清掉旧设备引用，确保切回控制器时重新获取
             if (leftHandTracked)
             {
                 leftHandTracker.position = leftHandPos;
+                if (leftOVRHand != null)
+                {
+                    leftOVRHand.transform.position = leftHandPos;
+                    leftOVRHand.transform.rotation = leftHandRot;
+                }
                 leftDevice = default;
             }
             else
@@ -63,6 +73,11 @@ namespace Anaglyph.Demo
             if (rightHandTracked)
             {
                 rightHandTracker.position = rightHandPos;
+                if (rightOVRHand != null)
+                {
+                    rightOVRHand.transform.position = rightHandPos;
+                    rightOVRHand.transform.rotation = rightHandRot;
+                }
                 rightDevice = default;
             }
             else
@@ -75,7 +90,6 @@ namespace Anaglyph.Demo
             LeftMode  = leftHandTracked  ? InputMode.Hand : (leftDevice.isValid  ? InputMode.Controller : InputMode.Off);
             RightMode = rightHandTracked ? InputMode.Hand : (rightDevice.isValid ? InputMode.Controller : InputMode.Off);
 
-            // A 键上升沿 → 请求 server toggle
             bool aButton = rightDevice.isValid &&
                            rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
             if (aButton && !_prevAButton)
@@ -85,11 +99,13 @@ namespace Anaglyph.Demo
             bool leftGrip  = GetGrip(leftDevice);
             bool rightGrip = GetGrip(rightDevice);
 
-            // 每只手单独上报（isTracked=false 时服务器仍收到，用于清除旧数据）
+            var leftKP  = leftHandTracked  && leftOVRSkeleton  != null ? ReadKeyPoints(leftOVRSkeleton)  : default;
+            var rightKP = rightHandTracked && rightOVRSkeleton != null ? ReadKeyPoints(rightOVRSkeleton) : default;
+
             HandsManager.Instance.ReportHandServerRpc(
-                true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip);
+                true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP);
             HandsManager.Instance.ReportHandServerRpc(
-                false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip);
+                false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip, rightKP);
 
             _debugTimer -= Time.deltaTime;
             if (_debugTimer <= 0f)
@@ -100,23 +116,57 @@ namespace Anaglyph.Demo
             }
         }
 
-        // 直接从 OVRPlugin 读手部 wrist 世界坐标，不依赖场景 GO 层级
-        private bool TryGetOVRHandPos(OVRPlugin.Hand hand, out Vector3 worldPos)
+        private bool TryGetOVRHandPos(OVRPlugin.Hand hand, out Vector3 worldPos, out Quaternion worldRot)
         {
             worldPos = Vector3.zero;
+            worldRot = Quaternion.identity;
             var state = new OVRPlugin.HandState();
             if (!OVRPlugin.GetHandState(OVRPlugin.Step.Render, hand, ref state))
                 return false;
             if ((state.Status & OVRPlugin.HandStatus.HandTracked) == 0)
                 return false;
 
-            // OVRPlugin 坐标系 Z 与 Unity 相反，flip Z 转换
             var p = state.RootPose.Position;
             Vector3 trackingPos = new Vector3(p.x, p.y, -p.z);
-            worldPos = xrOrigin != null
-                ? xrOrigin.transform.TransformPoint(trackingPos)
-                : trackingPos;
+
+            var q = state.RootPose.Orientation;
+            Quaternion trackingRot = new Quaternion(-q.x, -q.y, q.z, q.w);
+
+            if (xrOrigin != null)
+            {
+                worldPos = xrOrigin.transform.TransformPoint(trackingPos);
+                worldRot = xrOrigin.transform.rotation * trackingRot;
+            }
+            else
+            {
+                worldPos = trackingPos;
+                worldRot = trackingRot;
+            }
             return true;
+        }
+
+        private static HandsManager.HandKeyPoints ReadKeyPoints(OVRSkeleton sk)
+        {
+            if (!sk.IsDataValid || sk.Bones == null || sk.Bones.Count < 23)
+                return default;
+
+            Vector3 B(OVRSkeleton.BoneId id) => sk.Bones[(int)id].Transform.position;
+
+            var palm = (B(OVRSkeleton.BoneId.Hand_Index1)  +
+                        B(OVRSkeleton.BoneId.Hand_Middle1) +
+                        B(OVRSkeleton.BoneId.Hand_Ring1)   +
+                        B(OVRSkeleton.BoneId.Hand_Pinky0)) * 0.25f;
+
+            return new HandsManager.HandKeyPoints
+            {
+                wrist     = B(OVRSkeleton.BoneId.Hand_WristRoot),
+                palm      = palm,
+                thumbTip  = B(OVRSkeleton.BoneId.Hand_ThumbTip),
+                indexTip  = B(OVRSkeleton.BoneId.Hand_IndexTip),
+                middleTip = B(OVRSkeleton.BoneId.Hand_MiddleTip),
+                ringTip   = B(OVRSkeleton.BoneId.Hand_RingTip),
+                pinkyTip  = B(OVRSkeleton.BoneId.Hand_PinkyTip)
+            };
         }
 
         private void UpdateTrackerFromDevice(InputDevice device, Transform tracker)

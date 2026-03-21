@@ -17,6 +17,21 @@ namespace Anaglyph.Demo
             public bool      isGripping;
         }
 
+        // 远端手部 7 个关键点，通过 NetworkVariable 同步
+        public struct HandKeyPoints : INetworkSerializable
+        {
+            public Vector3 wrist, palm;
+            public Vector3 thumbTip, indexTip, middleTip, ringTip, pinkyTip;
+
+            public void NetworkSerialize<T>(BufferSerializer<T> s) where T : IReaderWriter
+            {
+                s.SerializeValue(ref wrist);     s.SerializeValue(ref palm);
+                s.SerializeValue(ref thumbTip);  s.SerializeValue(ref indexTip);
+                s.SerializeValue(ref middleTip); s.SerializeValue(ref ringTip);
+                s.SerializeValue(ref pinkyTip);
+            }
+        }
+
         private readonly Dictionary<(ulong, bool), HandData> _hands = new();
 
         public NetworkVariable<bool> HandsAreClose = new(
@@ -33,6 +48,12 @@ namespace Anaglyph.Demo
         public NetworkVariable<int> Debug0RightMode = new((int)InputMode.Off, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<int> Debug1LeftMode  = new((int)InputMode.Off, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         public NetworkVariable<int> Debug1RightMode = new((int)InputMode.Off, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+
+        // 关键点 NetworkVariables（HandJointVisualizer 用）
+        public NetworkVariable<HandKeyPoints> KP0L = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<HandKeyPoints> KP0R = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<HandKeyPoints> KP1L = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<HandKeyPoints> KP1R = new(default, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         [SerializeField] private float proximityThreshold    = 0.13f;
         [SerializeField] private float proximityMinThreshold = 0.03f;
@@ -71,10 +92,11 @@ namespace Anaglyph.Demo
             _hands.Clear();
         }
 
-        // 每只手单独上报，含 mode 信息
+        // 每只手单独上报，含 mode 和关键点
         [ServerRpc(RequireOwnership = false)]
         public void ReportHandServerRpc(
             bool isLeft, Vector3 position, bool isTracked, InputMode mode, bool isGripping,
+            HandKeyPoints keyPoints,
             ServerRpcParams rpcParams = default)
         {
             ulong clientId = rpcParams.Receive.SenderClientId;
@@ -92,11 +114,11 @@ namespace Anaglyph.Demo
             if (firstReport)
                 Debug.Log($"[touchport] First hand report clientId={clientId} isLeft={isLeft} mode={mode}");
 
-            // 更新 debug NetworkVariables（ProximityDebugUI 读取）
-            if      (clientId == 0 &&  isLeft) { Debug0Left.Value  = position; Debug0LeftMode.Value  = (int)mode; }
-            else if (clientId == 0 && !isLeft) { Debug0Right.Value = position; Debug0RightMode.Value = (int)mode; }
-            else if (clientId == 1 &&  isLeft) { Debug1Left.Value  = position; Debug1LeftMode.Value  = (int)mode; }
-            else if (clientId == 1 && !isLeft) { Debug1Right.Value = position; Debug1RightMode.Value = (int)mode; }
+            // 更新 debug NetworkVariables
+            if      (clientId == 0 &&  isLeft) { Debug0Left.Value  = position; Debug0LeftMode.Value  = (int)mode; KP0L.Value = keyPoints; }
+            else if (clientId == 0 && !isLeft) { Debug0Right.Value = position; Debug0RightMode.Value = (int)mode; KP0R.Value = keyPoints; }
+            else if (clientId == 1 &&  isLeft) { Debug1Left.Value  = position; Debug1LeftMode.Value  = (int)mode; KP1L.Value = keyPoints; }
+            else if (clientId == 1 && !isLeft) { Debug1Right.Value = position; Debug1RightMode.Value = (int)mode; KP1R.Value = keyPoints; }
         }
 
         private void Update()
