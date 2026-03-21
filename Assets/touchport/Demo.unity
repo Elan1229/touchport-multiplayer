@@ -377,6 +377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 207396096}
   - component: {fileID: 207396097}
+  - component: {fileID: 207396098}
   m_Layer: 0
   m_Name: LocalHandsReporter
   m_TagString: Untagged
@@ -415,7 +416,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHandTracker: {fileID: 1330144346}
   rightHandTracker: {fileID: 162694915}
+  leftOVRHand: {fileID: 127448416}
+  rightOVRHand: {fileID: 1457555546}
+  leftOVRSkeleton: {fileID: 127448415}
+  rightOVRSkeleton: {fileID: 1457555545}
   reportInterval: 0.033
+--- !u!114 &207396098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 207396094}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf9a5bab4569b74dac0899aa97eb7dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftSkeleton: {fileID: 127448415}
+  rightSkeleton: {fileID: 1457555545}
+  reporter: {fileID: 207396097}
+  jointSize: 0.006
 --- !u!1 &351038296
 GameObject:
   m_ObjectHideFlags: 0
@@ -2092,8 +2113,8 @@ MonoBehaviour:
     m_InternalValue: -1
   Debug1RightMode:
     m_InternalValue: -1
-  proximityThreshold: 0.13
-  proximityMinThreshold: 0.03
+  proximityThreshold: 0.2
+  proximityMinThreshold: 0.1
 --- !u!4 &1700821185 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2212678023889467362, guid: 723856ab907d86d4189a7c1754f6e5e7, type: 3}
@@ -2700,7 +2721,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8455863467713278966}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7afe265a0a5a7dc46bd253a40d148180, type: 3}
   m_Name: 
@@ -4081,7 +4102,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1968356710277604071
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4248,7 +4269,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2583505912574167033
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4653,7 +4674,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8455863467713278966}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6353a9704e72734d84a8d1927043467, type: 3}
   m_Name: 
@@ -7133,7 +7154,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6524835048529547425
 Transform:
   m_ObjectHideFlags: 0
@@ -7452,7 +7473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!212 &8523554155967398174
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7728,10 +7749,10 @@ SceneRoots:
   - {fileID: 3935273917456988590}
   - {fileID: 1358249021}
   - {fileID: 128270131}
-  - {fileID: 207396096}
   - {fileID: 1029619564}
   - {fileID: 1878295152}
   - {fileID: 351038297}
-  - {fileID: 1639018929}
   - {fileID: 1124276435}
   - {fileID: 1745303384}
+  - {fileID: 207396096}
+  - {fileID: 1639018929}
