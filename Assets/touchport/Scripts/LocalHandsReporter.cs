@@ -23,6 +23,9 @@ namespace Anaglyph.Demo
         public InputMode LeftMode  { get; private set; } = InputMode.Off;
         public InputMode RightMode { get; private set; } = InputMode.Off;
 
+        public Vector3 LeftHandPosition  => leftHandTracker  != null ? leftHandTracker.position  : Vector3.zero;
+        public Vector3 RightHandPosition => rightHandTracker != null ? rightHandTracker.position : Vector3.zero;
+
         private InputDevice leftDevice;
         private InputDevice rightDevice;
         private XROrigin xrOrigin;
@@ -96,8 +99,8 @@ namespace Anaglyph.Demo
                 HandsManager.Instance.RequestToggleServerRpc();
             _prevAButton = aButton;
 
-            bool leftGrip  = GetGrip(leftDevice);
-            bool rightGrip = GetGrip(rightDevice);
+            bool leftGrip  = leftHandTracked  ? GetPinch(OVRPlugin.Hand.HandLeft)  : GetGrip(leftDevice);
+            bool rightGrip = rightHandTracked ? GetPinch(OVRPlugin.Hand.HandRight) : GetGrip(rightDevice);
 
             var leftKP  = leftHandTracked  && leftOVRSkeleton  != null ? ReadKeyPoints(leftOVRSkeleton)  : default;
             var rightKP = rightHandTracked && rightOVRSkeleton != null ? ReadKeyPoints(rightOVRSkeleton) : default;
@@ -192,6 +195,14 @@ namespace Anaglyph.Demo
             if (device.isValid && device.TryGetFeatureValue(CommonUsages.gripButton, out bool gripping))
                 return gripping;
             return false;
+        }
+
+        private static bool GetPinch(OVRPlugin.Hand hand)
+        {
+            var state = new OVRPlugin.HandState();
+            if (!OVRPlugin.GetHandState(OVRPlugin.Step.Render, hand, ref state)) return false;
+            if ((state.Status & OVRPlugin.HandStatus.HandTracked) == 0) return false;
+            return (state.Pinches & OVRPlugin.HandFingerPinch.Index) != 0;
         }
     }
 }

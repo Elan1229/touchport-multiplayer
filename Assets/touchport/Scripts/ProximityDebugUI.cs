@@ -17,6 +17,8 @@ namespace Anaglyph.Demo
         [SerializeField] private Transform localLeftHand;
         [SerializeField] private Transform localRightHand;
         [SerializeField] private LocalHandsReporter localReporter;
+        [SerializeField] private OVRSkeleton leftSkeleton;
+        [SerializeField] private OVRSkeleton rightSkeleton;
 
         [Header("Camera Follow")]
         [SerializeField] private Transform followCamera;
@@ -120,7 +122,10 @@ namespace Anaglyph.Demo
             var sR = new OVRPlugin.HandState();
             bool ovrL = OVRPlugin.GetHandState(OVRPlugin.Step.Render, OVRPlugin.Hand.HandLeft,  ref sL) && (sL.Status & OVRPlugin.HandStatus.HandTracked) != 0;
             bool ovrR = OVRPlugin.GetHandState(OVRPlugin.Step.Render, OVRPlugin.Hand.HandRight, ref sR) && (sR.Status & OVRPlugin.HandStatus.HandTracked) != 0;
+            bool validL = leftSkeleton  != null && leftSkeleton.IsDataValid;
+            bool validR = rightSkeleton != null && rightSkeleton.IsDataValid;
             _sb.AppendLine($"OVR L={ovrL} R={ovrR}");
+            _sb.AppendLine($"Skel L=valid:{validL} R=valid:{validR}");
 
             debugText.text = _sb.ToString();
         }

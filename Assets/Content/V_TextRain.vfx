@@ -35,7 +35,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7d4c867f6b72b714dbb5fd1780afe208, type: 3}
-  m_Name: Text Rain
+  m_Name: V_TextRain
   m_EditorClassIdentifier: 
   m_UIIgnoredErrors: []
   m_Parent: {fileID: 0}
@@ -295,7 +295,7 @@ VisualEffectResource:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Text Rain
+  m_Name: V_TextRain
   m_Graph: {fileID: 114350483966674976}
   m_Infos:
     m_RendererSettings:
@@ -1014,7 +1014,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Texture2D, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"69541951eeaea4dd28a0cb2fd915e1e6","type":3}}'
+      m_SerializableObject: '{"obj":{"fileID":2800000,"guid":"80b5030a632724d6587a338645bfe6e6","type":3}}'
     m_Space: -1
   m_Property:
     name: mainTexture
@@ -2462,7 +2462,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614676}
   m_ExposedName: Head Position
   m_Exposed: 1
-  m_Order: 2
+  m_Order: 3
   m_Category: Interactions
   m_Min:
     m_Type:
@@ -2679,7 +2679,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614751}
   m_ExposedName: Plane Position
   m_Exposed: 1
-  m_Order: 4
+  m_Order: 6
   m_Category: Interactions
   m_Min:
     m_Type:
@@ -2962,7 +2962,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614883}
   m_ExposedName: Chest Position
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 4
   m_Category: Interactions
   m_Min:
     m_Type:
@@ -4605,7 +4605,7 @@ MonoBehaviour:
   - {fileID: 8926484042661614972}
   m_ExposedName: Size
   m_Exposed: 1
-  m_Order: 3
+  m_Order: 5
   m_Category: Base
   m_Min:
     m_Type:
@@ -4844,7 +4844,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615132}
   m_ExposedName: Life Time
   m_Exposed: 1
-  m_Order: 5
+  m_Order: 7
   m_Category: Base
   m_Min:
     m_Type:
@@ -4997,7 +4997,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615163}
   m_ExposedName: Gravity
   m_Exposed: 1
-  m_Order: 6
+  m_Order: 8
   m_Category: Base
   m_Min:
     m_Type:
@@ -5180,7 +5180,7 @@ MonoBehaviour:
   - {fileID: 8926484042661615168}
   m_ExposedName: HeadRadius
   m_Exposed: 1
-  m_Order: 1
+  m_Order: 2
   m_Category: Interactions
   m_Min:
     m_Type:
