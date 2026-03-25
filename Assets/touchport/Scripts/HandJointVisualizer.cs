@@ -5,6 +5,7 @@ namespace Anaglyph.Demo
 {
     /// <summary>
     /// 本地手部：从 OVRSkeleton 读取所有骨骼，显示蓝色小方块（24个/手）
+    /// OVRSkeleton 无效时：显示青色大点（从 reporter.LeftHandPosition/RightHandPosition 读位置）
     /// 远端手部：从 HandsManager NetworkVariable 读取 7 个关键点，显示红色小方块 + 灰色连线
     /// </summary>
     public class HandJointVisualizer : MonoBehaviour
@@ -18,6 +19,9 @@ namespace Anaglyph.Demo
         private GameObject[] _localR;
         private GameObject[] _remoteL;
         private GameObject[] _remoteR;
+
+        private GameObject _fallbackL;
+        private GameObject _fallbackR;
 
         // 每只远端手 6 根线：wrist-palm, palm-thumb, palm-index, palm-middle, palm-ring, palm-pinky
         private LineRenderer[] _linesL;
@@ -37,19 +41,26 @@ namespace Anaglyph.Demo
             (1, 6), // palm → pinkyTip
         };
 
+        private float _dbgTimer;
+
         private void Awake()
         {
             _blueMat = new Material(Shader.Find("Unlit/Color")) { color = new Color(0.2f, 0.5f, 1f) };
             _redMat  = new Material(Shader.Find("Unlit/Color")) { color = new Color(1f, 0.3f, 0.3f) };
             _lineMat = new Material(Shader.Find("Unlit/Color")) { color = new Color(0.6f, 0.6f, 0.6f) };
+            var cyanMat = new Material(Shader.Find("Unlit/Color")) { color = new Color(0f, 1f, 1f) };
 
             _localL  = MakeCubes(24, _blueMat);
             _localR  = MakeCubes(24, _blueMat);
             _remoteL = MakeCubes(7, _redMat);
             _remoteR = MakeCubes(7, _redMat);
+            _fallbackL = MakeCube(cyanMat, jointSize * 3f);
+            _fallbackR = MakeCube(cyanMat, jointSize * 3f);
 
             _linesL = MakeLines(LineConnections.Length);
             _linesR = MakeLines(LineConnections.Length);
+
+            Debug.Log($"[touchport] VIZ Awake: leftSkel={leftSkeleton != null} rightSkel={rightSkeleton != null} reporter={reporter != null}");
         }
 
         private void LateUpdate()
@@ -63,8 +74,19 @@ namespace Anaglyph.Demo
 
             bool leftIsHand  = reporter != null && reporter.LeftMode  == InputMode.Hand;
             bool rightIsHand = reporter != null && reporter.RightMode == InputMode.Hand;
-            UpdateSkeletonCubes(leftSkeleton,  _localL, leftIsHand);
-            UpdateSkeletonCubes(rightSkeleton, _localR, rightIsHand);
+
+            _dbgTimer -= Time.deltaTime;
+            if (_dbgTimer <= 0f)
+            {
+                _dbgTimer = 3f;
+                string lb = leftSkeleton?.Bones?.Count  > 0 ? leftSkeleton.Bones[0].Transform.position.ToString("F2")  : "NO";
+                string rb = rightSkeleton?.Bones?.Count > 0 ? rightSkeleton.Bones[0].Transform.position.ToString("F2") : "NO";
+                Debug.Log($"[touchport] VIZ L: modeHand={leftIsHand} valid={leftSkeleton?.IsDataValid} bones={leftSkeleton?.Bones?.Count} b0={lb}");
+                Debug.Log($"[touchport] VIZ R: modeHand={rightIsHand} valid={rightSkeleton?.IsDataValid} bones={rightSkeleton?.Bones?.Count} b0={rb}");
+            }
+
+            UpdateLocalHand(leftSkeleton,  _localL, _fallbackL, leftIsHand,  reporter?.LeftHandPosition  ?? Vector3.zero);
+            UpdateLocalHand(rightSkeleton, _localR, _fallbackR, rightIsHand, reporter?.RightHandPosition ?? Vector3.zero);
 
             var hm = HandsManager.Instance;
             if (hm == null)
@@ -83,22 +105,26 @@ namespace Anaglyph.Demo
             UpdateKeyPointCubes(_remoteR, _linesR, kpR);
         }
 
-        private void UpdateSkeletonCubes(OVRSkeleton sk, GameObject[] cubes, bool modeIsHand)
+        private void UpdateLocalHand(OVRSkeleton sk, GameObject[] cubes, GameObject fallback, bool modeIsHand, Vector3 handPos)
         {
-            bool valid = modeIsHand && sk != null && sk.IsDataValid && sk.Bones != null && sk.Bones.Count > 0;
-            int count = valid ? Mathf.Min(sk.Bones.Count, cubes.Length) : 0;
+            bool skelValid = modeIsHand && sk != null && sk.IsDataValid && sk.Bones != null && sk.Bones.Count > 0;
 
-            for (int i = 0; i < cubes.Length; i++)
+            if (skelValid)
             {
-                if (i < count)
+                fallback.SetActive(false);
+                int count = Mathf.Min(sk.Bones.Count, cubes.Length);
+                for (int i = 0; i < cubes.Length; i++)
                 {
-                    cubes[i].SetActive(true);
-                    cubes[i].transform.position = sk.Bones[i].Transform.position;
+                    if (i < count) { cubes[i].SetActive(true); cubes[i].transform.position = sk.Bones[i].Transform.position; }
+                    else           { cubes[i].SetActive(false); }
                 }
-                else
-                {
-                    cubes[i].SetActive(false);
-                }
+            }
+            else
+            {
+                SetActive(cubes, false);
+                bool showFallback = modeIsHand && handPos != Vector3.zero;
+                fallback.SetActive(showFallback);
+                if (showFallback) fallback.transform.position = handPos;
             }
         }
 
@@ -126,6 +152,17 @@ namespace Anaglyph.Demo
                 lines[i].SetPosition(0, pts[LineConnections[i].Item1]);
                 lines[i].SetPosition(1, pts[LineConnections[i].Item2]);
             }
+        }
+
+        private GameObject MakeCube(Material mat, float size)
+        {
+            var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.transform.SetParent(transform);
+            go.transform.localScale = Vector3.one * size;
+            go.GetComponent<Renderer>().sharedMaterial = mat;
+            Destroy(go.GetComponent<Collider>());
+            go.SetActive(false);
+            return go;
         }
 
         private GameObject[] MakeCubes(int count, Material mat)
@@ -182,6 +219,8 @@ namespace Anaglyph.Demo
             SetActive(_remoteR, active);
             SetLinesActive(_linesL, active);
             SetLinesActive(_linesR, active);
+            if (_fallbackL != null) _fallbackL.SetActive(active);
+            if (_fallbackR != null) _fallbackR.SetActive(active);
         }
     }
 }

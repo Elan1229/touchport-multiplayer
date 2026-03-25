@@ -116,6 +116,12 @@ namespace Anaglyph.Demo
             _sb.AppendLine("---");
             _sb.AppendLine($"MergeEvt : {_mergeLog}");
 
+            var sL = new OVRPlugin.HandState();
+            var sR = new OVRPlugin.HandState();
+            bool ovrL = OVRPlugin.GetHandState(OVRPlugin.Step.Render, OVRPlugin.Hand.HandLeft,  ref sL) && (sL.Status & OVRPlugin.HandStatus.HandTracked) != 0;
+            bool ovrR = OVRPlugin.GetHandState(OVRPlugin.Step.Render, OVRPlugin.Hand.HandRight, ref sR) && (sR.Status & OVRPlugin.HandStatus.HandTracked) != 0;
+            _sb.AppendLine($"OVR L={ovrL} R={ovrR}");
+
             debugText.text = _sb.ToString();
         }
 
