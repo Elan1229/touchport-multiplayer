@@ -12,6 +12,7 @@ namespace Anaglyph.Demo
         public struct HandData
         {
             public Vector3   position;
+            public Vector3   grabPosition; // controller: 同 position；手追踪: index fingertip
             public bool      isTracked;
             public InputMode mode;
             public bool      isGripping;
@@ -34,7 +35,7 @@ namespace Anaglyph.Demo
 
         private readonly Dictionary<(ulong, bool), HandData> _hands = new();
 
-        public NetworkVariable<bool> HandsAreClose = new(
+        public NetworkVariable<bool> HandsShaked = new(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server);
@@ -67,13 +68,13 @@ namespace Anaglyph.Demo
 #if UNITY_EDITOR
         private bool _debugForceClose = false;
 
-        [ContextMenu("Toggle HandsAreClose")]
-        private void ToggleHandsAreClose()
+        [ContextMenu("Toggle HandsShaked")]
+        private void ToggleHandsShaked()
         {
             if (!IsServer) { Debug.LogWarning("Only works on server"); return; }
             _debugForceClose = !_debugForceClose;
-            HandsAreClose.Value = _debugForceClose;
-            Debug.Log($"[touchport] ContextMenu toggle HandsAreClose={_debugForceClose}");
+            HandsShaked.Value = _debugForceClose;
+            Debug.Log($"[touchport] ContextMenu toggle HandsShaked={_debugForceClose}");
         }
 #endif
 
@@ -82,8 +83,8 @@ namespace Anaglyph.Demo
             if (Instance != null && Instance != this) { Destroy(gameObject); return; }
             Instance = this;
             Debug.Log($"[touchport] HandsManager spawned IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
-            HandsAreClose.OnValueChanged += (oldVal, newVal) =>
-                Debug.Log($"[touchport] HandsAreClose {oldVal}->{newVal} clientId={NetworkManager.LocalClientId}");
+            HandsShaked.OnValueChanged += (oldVal, newVal) =>
+                Debug.Log($"[touchport] HandsShaked {oldVal}->{newVal} clientId={NetworkManager.LocalClientId}");
         }
 
         public override void OnNetworkDespawn()
@@ -95,7 +96,7 @@ namespace Anaglyph.Demo
         // 每只手单独上报，含 mode 和关键点
         [ServerRpc(RequireOwnership = false)]
         public void ReportHandServerRpc(
-            bool isLeft, Vector3 position, bool isTracked, InputMode mode, bool isGripping,
+            bool isLeft, Vector3 position, Vector3 grabPosition, bool isTracked, InputMode mode, bool isGripping,
             HandKeyPoints keyPoints,
             ServerRpcParams rpcParams = default)
         {
@@ -105,10 +106,11 @@ namespace Anaglyph.Demo
 
             _hands[key] = new HandData
             {
-                position   = position,
-                isTracked  = isTracked,
-                mode       = mode,
-                isGripping = isGripping
+                position     = position,
+                grabPosition = grabPosition,
+                isTracked    = isTracked,
+                mode         = mode,
+                isGripping   = isGripping
             };
 
             if (firstReport)
@@ -131,8 +133,8 @@ namespace Anaglyph.Demo
                 UnityEngine.InputSystem.Keyboard.current[UnityEngine.InputSystem.Key.J].wasPressedThisFrame)
             {
                 _debugForceClose = !_debugForceClose;
-                HandsAreClose.Value = _debugForceClose;
-                Debug.Log($"[touchport] J key toggle HandsAreClose={_debugForceClose}");
+                HandsShaked.Value = _debugForceClose;
+                Debug.Log($"[touchport] J key toggle HandsShaked={_debugForceClose}");
                 return;
             }
 #endif
@@ -145,9 +147,9 @@ namespace Anaglyph.Demo
                 NotifyCloseClientRpc();
                 if (_toggleCooldown <= 0f)
                 {
-                    HandsAreClose.Value = !HandsAreClose.Value;
+                    HandsShaked.Value = !HandsShaked.Value;
                     _toggleCooldown = ToggleCooldownDuration;
-                    Debug.Log($"[touchport] Proximity triggered HandsAreClose={HandsAreClose.Value}");
+                    Debug.Log($"[touchport] Proximity triggered HandsShaked={HandsShaked.Value}");
                 }
                 else
                 {
@@ -187,9 +189,9 @@ namespace Anaglyph.Demo
         [ServerRpc(RequireOwnership = false)]
         public void RequestToggleServerRpc()
         {
-            HandsAreClose.Value = !HandsAreClose.Value;
+            HandsShaked.Value = !HandsShaked.Value;
             _toggleCooldown = ToggleCooldownDuration;
-            Debug.Log($"[touchport] A button toggle HandsAreClose={HandsAreClose.Value}");
+            Debug.Log($"[touchport] A button toggle HandsShaked={HandsShaked.Value}");
         }
 
         [ClientRpc]

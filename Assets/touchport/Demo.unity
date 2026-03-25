@@ -485,37 +485,6 @@ RectTransform:
   m_AnchoredPosition: {x: -0.4, y: 1.3}
   m_SizeDelta: {x: 500, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &162694914
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 162694915}
-  m_Layer: 0
-  m_Name: RightHandTracker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &162694915
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 162694914}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 207396096}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &183297623 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4699897024627280792, guid: 404f5609e45b76d45a72737ed6a4bdde, type: 3}
@@ -551,9 +520,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1330144346}
-  - {fileID: 162694915}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &207396097
@@ -568,12 +535,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19c0baa5ef4f46a40bcc15d9c0581142, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftHandTracker: {fileID: 1330144346}
-  rightHandTracker: {fileID: 162694915}
-  leftOVRHand: {fileID: 127448416}
-  rightOVRHand: {fileID: 1457555546}
-  leftOVRSkeleton: {fileID: 127448415}
-  rightOVRSkeleton: {fileID: 1457555545}
+  leftOVRHand: {fileID: 963492214}
+  rightOVRHand: {fileID: 723154666}
+  leftOVRSkeleton: {fileID: 963492213}
+  rightOVRSkeleton: {fileID: 723154665}
   reportInterval: 0.033
 --- !u!114 &207396098
 MonoBehaviour:
@@ -587,8 +552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf9a5bab4569b74dac0899aa97eb7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftSkeleton: {fileID: 127448415}
-  rightSkeleton: {fileID: 1457555545}
+  leftSkeleton: {fileID: 963492213}
+  rightSkeleton: {fileID: 723154665}
   reporter: {fileID: 207396097}
   jointSize: 0.006
 --- !u!1001 &262881575
@@ -3807,37 +3772,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1327945046}
   m_CullTransparentMesh: 1
---- !u!1 &1330144345
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1330144346}
-  m_Layer: 0
-  m_Name: LeftHandTracker
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1330144346
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1330144345}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 207396096}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1358249019
 GameObject:
   m_ObjectHideFlags: 0
@@ -4513,7 +4447,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  HandsAreClose:
+  HandsShaked:
     m_InternalValue: 0
   Debug0Left:
     m_InternalValue: {x: 0, y: 0, z: 0}
@@ -4750,8 +4684,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugText: {fileID: 969758562}
-  localLeftHand: {fileID: 1330144346}
-  localRightHand: {fileID: 162694915}
   localReporter: {fileID: 207396097}
   followCamera: {fileID: 1309511878672514273}
   followOffset: {x: 0.5, y: -0.1, z: 1}

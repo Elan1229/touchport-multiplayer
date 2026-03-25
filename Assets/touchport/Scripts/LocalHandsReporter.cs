@@ -9,10 +9,7 @@ namespace Anaglyph.Demo
 
     public class LocalHandsReporter : MonoBehaviour
     {
-        [SerializeField] private Transform leftHandTracker;
-        [SerializeField] private Transform rightHandTracker;
-
-        [Header("Hand Tracking (OVRSkeleton)")]
+        [Header("Hand Tracking (OVR Building Block)")]
         [SerializeField] private OVRHand leftOVRHand;
         [SerializeField] private OVRHand rightOVRHand;
         [SerializeField] private OVRSkeleton leftOVRSkeleton;
@@ -22,6 +19,8 @@ namespace Anaglyph.Demo
 
         public InputMode LeftMode  { get; private set; } = InputMode.Off;
         public InputMode RightMode { get; private set; } = InputMode.Off;
+        public Vector3 LeftHandPosition  { get; private set; }
+        public Vector3 RightHandPosition { get; private set; }
 
         private InputDevice leftDevice;
         private InputDevice rightDevice;
@@ -50,42 +49,21 @@ namespace Anaglyph.Demo
                 return;
             }
 
-            bool leftHandTracked  = TryGetOVRHandPos(OVRPlugin.Hand.HandLeft,  out Vector3 leftHandPos,  out Quaternion leftHandRot);
-            bool rightHandTracked = TryGetOVRHandPos(OVRPlugin.Hand.HandRight, out Vector3 rightHandPos, out Quaternion rightHandRot);
+            bool leftHandTracked  = leftOVRHand  != null && leftOVRHand.IsTracked;
+            bool rightHandTracked = rightOVRHand != null && rightOVRHand.IsTracked;
 
             if (leftHandTracked)
-            {
-                leftHandTracker.position = leftHandPos;
-                if (leftOVRHand != null)
-                {
-                    leftOVRHand.transform.position = leftHandPos;
-                    leftOVRHand.transform.rotation = leftHandRot;
-                }
                 leftDevice = default;
-            }
-            else
-            {
-                if (!leftDevice.isValid)
-                    leftDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
-                UpdateTrackerFromDevice(leftDevice, leftHandTracker);
-            }
+            else if (!leftDevice.isValid)
+                leftDevice = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
 
             if (rightHandTracked)
-            {
-                rightHandTracker.position = rightHandPos;
-                if (rightOVRHand != null)
-                {
-                    rightOVRHand.transform.position = rightHandPos;
-                    rightOVRHand.transform.rotation = rightHandRot;
-                }
                 rightDevice = default;
-            }
-            else
-            {
-                if (!rightDevice.isValid)
-                    rightDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
-                UpdateTrackerFromDevice(rightDevice, rightHandTracker);
-            }
+            else if (!rightDevice.isValid)
+                rightDevice = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+
+            LeftHandPosition  = leftHandTracked  ? leftOVRHand.transform.position  : GetControllerWorldPos(leftDevice);
+            RightHandPosition = rightHandTracked ? rightOVRHand.transform.position : GetControllerWorldPos(rightDevice);
 
             LeftMode  = leftHandTracked  ? InputMode.Hand : (leftDevice.isValid  ? InputMode.Controller : InputMode.Off);
             RightMode = rightHandTracked ? InputMode.Hand : (rightDevice.isValid ? InputMode.Controller : InputMode.Off);
@@ -96,53 +74,34 @@ namespace Anaglyph.Demo
                 HandsManager.Instance.RequestToggleServerRpc();
             _prevAButton = aButton;
 
-            bool leftGrip  = GetGrip(leftDevice);
-            bool rightGrip = GetGrip(rightDevice);
+            bool leftGrip  = leftHandTracked  ? IsPinching(leftOVRHand)  : GetGrip(leftDevice);
+            bool rightGrip = rightHandTracked ? IsPinching(rightOVRHand) : GetGrip(rightDevice);
 
             var leftKP  = leftHandTracked  && leftOVRSkeleton  != null ? ReadKeyPoints(leftOVRSkeleton)  : default;
             var rightKP = rightHandTracked && rightOVRSkeleton != null ? ReadKeyPoints(rightOVRSkeleton) : default;
 
+            Vector3 leftGrabPos  = leftHandTracked  ? GetIndexTip(leftOVRSkeleton,  LeftHandPosition)  : LeftHandPosition;
+            Vector3 rightGrabPos = rightHandTracked ? GetIndexTip(rightOVRSkeleton, RightHandPosition) : RightHandPosition;
+
             HandsManager.Instance.ReportHandServerRpc(
-                true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP);
+                true,  LeftHandPosition,  leftGrabPos,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP);
             HandsManager.Instance.ReportHandServerRpc(
-                false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip, rightKP);
+                false, RightHandPosition, rightGrabPos, RightMode != InputMode.Off, RightMode, rightGrip, rightKP);
 
             _debugTimer -= Time.deltaTime;
             if (_debugTimer <= 0f)
             {
                 _debugTimer = 2f;
                 Debug.Log($"[LocalHandsReporter] clientId={NetworkManager.Singleton.LocalClientId} " +
-                          $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
+                          $"L={LeftHandPosition:F2}[{LeftMode}] R={RightHandPosition:F2}[{RightMode}]");
             }
         }
 
-        private bool TryGetOVRHandPos(OVRPlugin.Hand hand, out Vector3 worldPos, out Quaternion worldRot)
+        private Vector3 GetControllerWorldPos(InputDevice device)
         {
-            worldPos = Vector3.zero;
-            worldRot = Quaternion.identity;
-            var state = new OVRPlugin.HandState();
-            if (!OVRPlugin.GetHandState(OVRPlugin.Step.Render, hand, ref state))
-                return false;
-            if ((state.Status & OVRPlugin.HandStatus.HandTracked) == 0)
-                return false;
-
-            var p = state.RootPose.Position;
-            Vector3 trackingPos = new Vector3(p.x, p.y, -p.z);
-
-            var q = state.RootPose.Orientation;
-            Quaternion trackingRot = new Quaternion(-q.x, -q.y, q.z, q.w);
-
-            if (xrOrigin != null)
-            {
-                worldPos = xrOrigin.transform.TransformPoint(trackingPos);
-                worldRot = xrOrigin.transform.rotation * trackingRot;
-            }
-            else
-            {
-                worldPos = trackingPos;
-                worldRot = trackingRot;
-            }
-            return true;
+            if (!device.isValid) return Vector3.zero;
+            if (!device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 localPos)) return Vector3.zero;
+            return xrOrigin != null ? xrOrigin.transform.TransformPoint(localPos) : localPos;
         }
 
         private static HandsManager.HandKeyPoints ReadKeyPoints(OVRSkeleton sk)
@@ -169,29 +128,25 @@ namespace Anaglyph.Demo
             };
         }
 
-        private void UpdateTrackerFromDevice(InputDevice device, Transform tracker)
-        {
-            if (!device.isValid) return;
-            if (!device.TryGetFeatureValue(CommonUsages.devicePosition, out Vector3 localPos)) return;
-            if (!device.TryGetFeatureValue(CommonUsages.deviceRotation, out Quaternion localRot)) return;
-
-            if (xrOrigin != null)
-            {
-                tracker.position = xrOrigin.transform.TransformPoint(localPos);
-                tracker.rotation = xrOrigin.transform.rotation * localRot;
-            }
-            else
-            {
-                tracker.position = localPos;
-                tracker.rotation = localRot;
-            }
-        }
-
         private static bool GetGrip(InputDevice device)
         {
             if (device.isValid && device.TryGetFeatureValue(CommonUsages.gripButton, out bool gripping))
                 return gripping;
             return false;
+        }
+
+        private static bool IsPinching(OVRHand hand)
+        {
+            return hand != null && hand.IsTracked &&
+                   hand.GetFingerIsPinching(OVRHand.HandFinger.Index);
+        }
+
+        private static Vector3 GetIndexTip(OVRSkeleton sk, Vector3 fallback)
+        {
+            if (sk != null && sk.IsDataValid && sk.Bones != null &&
+                sk.Bones.Count > (int)OVRSkeleton.BoneId.Hand_IndexTip)
+                return sk.Bones[(int)OVRSkeleton.BoneId.Hand_IndexTip].Transform.position;
+            return fallback;
         }
     }
 }

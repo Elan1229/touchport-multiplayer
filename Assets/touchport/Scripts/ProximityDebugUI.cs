@@ -8,14 +8,12 @@ namespace Anaglyph.Demo
     /// <summary>
     /// World-space debug panel，挂在 DebugCanvas GO 上。
     /// 跟随相机偏右显示，不遮挡主视野。
-    /// 显示：本地/远端手部世界坐标、最小距离、阈值、HandsAreClose 状态、merge 事件记录。
+    /// 显示：本地/远端手部世界坐标、最小距离、阈值、HandsShaked 状态、merge 事件记录。
     /// </summary>
     public class ProximityDebugUI : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private TextMeshProUGUI debugText;
-        [SerializeField] private Transform localLeftHand;
-        [SerializeField] private Transform localRightHand;
         [SerializeField] private LocalHandsReporter localReporter;
 
         [Header("Camera Follow")]
@@ -41,7 +39,7 @@ namespace Anaglyph.Demo
             var hm = HandsManager.Instance;
             if (!_subscribed && hm != null && hm.IsSpawned)
             {
-                hm.HandsAreClose.OnValueChanged += OnMergeChanged;
+                hm.HandsShaked.OnValueChanged += OnMergeChanged;
                 _subscribed = true;
             }
 
@@ -68,9 +66,9 @@ namespace Anaglyph.Demo
             _sb.AppendLine($"ClientId={localId}  IsServer={nm.IsServer}");
             _sb.AppendLine("---");
 
-            // 本地手部（直接读 tracker transform）
-            Vector3 localL = localLeftHand  != null ? localLeftHand.position  : Vector3.zero;
-            Vector3 localR = localRightHand != null ? localRightHand.position : Vector3.zero;
+            // 本地手部（从 LocalHandsReporter 读）
+            Vector3 localL = localReporter != null ? localReporter.LeftHandPosition  : Vector3.zero;
+            Vector3 localR = localReporter != null ? localReporter.RightHandPosition : Vector3.zero;
             string modeL = localReporter != null ? FmtMode(localReporter.LeftMode)  : "";
             string modeR = localReporter != null ? FmtMode(localReporter.RightMode) : "";
             _sb.AppendLine($"LocalL : {Fmt(localL)} {modeL}");
@@ -112,7 +110,7 @@ namespace Anaglyph.Demo
             _sb.AppendLine("---");
             _sb.AppendLine(remoteHasData ? $"MinDist  : {minDist:F3} m" : "MinDist  : no remote data");
             _sb.AppendLine($"Threshold: {hm.ProximityMinThreshold:F2} ~ {hm.ProximityThreshold:F2} m");
-            _sb.AppendLine($"AreClose : {hm.HandsAreClose.Value}");
+            _sb.AppendLine($"AreClose : {hm.HandsShaked.Value}");
             _sb.AppendLine("---");
             _sb.AppendLine($"MergeEvt : {_mergeLog}");
 
@@ -128,7 +126,7 @@ namespace Anaglyph.Demo
         private void OnDestroy()
         {
             if (_subscribed && HandsManager.Instance != null)
-                HandsManager.Instance.HandsAreClose.OnValueChanged -= OnMergeChanged;
+                HandsManager.Instance.HandsShaked.OnValueChanged -= OnMergeChanged;
         }
 
         private static string Fmt(Vector3 v) => $"({v.x:F2},{v.y:F2},{v.z:F2})";

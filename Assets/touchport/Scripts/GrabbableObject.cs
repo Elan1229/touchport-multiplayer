@@ -8,7 +8,7 @@ namespace Anaglyph.Demo
     /// 替换 NetworkGrab。完全 server-authoritative：
     ///   - server 检测手柄靠近 + 握持 → 跟随手柄移动
     ///   - server 的 transform 变化由 NetworkTransform 同步到所有客户端
-    ///   - 所有客户端根据 gameOwnerId 和 HandsManager.HandsAreClose 控制显示/隐藏
+    ///   - 所有客户端根据 gameOwnerId 和 HandsManager.HandsShaked 控制显示/隐藏
     ///
     /// gameOwnerId:
     ///   0 = host 的物件（方块），客机默认看不见
@@ -67,7 +67,7 @@ namespace Anaglyph.Demo
             var manager = HandsManager.Instance;
             if (manager == null) return;
 
-            bool handsAreClose = manager.HandsAreClose.Value;
+            bool handsAreClose = manager.HandsShaked.Value;
 
             // 如果当前有人抓着
             if (_grabbingClientId != ulong.MaxValue)
@@ -110,7 +110,7 @@ namespace Anaglyph.Demo
 
                 if (!canGrab) continue;
                 if (!hand.isTracked || !hand.isGripping) continue;
-                if (DistanceToObject(hand.position) >= grabRadius) continue;
+                if (DistanceToObject(hand.grabPosition) >= grabRadius) continue;
 
                 _grabbingClientId = clientId;
                 _grabbingLeft     = kvp.Key.Item2;
@@ -124,7 +124,7 @@ namespace Anaglyph.Demo
         private void ApplyVisibility()
         {
             var hm = HandsManager.Instance;
-            bool handsClose = hm != null && hm.HandsAreClose.Value;
+            bool handsClose = hm != null && hm.HandsShaked.Value;
             bool isOwner    = NetworkManager.LocalClientId == gameOwnerId;
             bool visible    = alwaysVisible || isOwner || handsClose;
 
