@@ -28,9 +28,10 @@ namespace Anaglyph.Demo
         [SerializeField] private float grabRadius = 0.15f;
 
         // server-side 状态，不需要同步
-        private ulong _grabbingClientId = ulong.MaxValue;
-        private bool  _grabbingLeft;
-        private Vector3 _grabOffset;
+        private ulong      _grabbingClientId = ulong.MaxValue;
+        private bool       _grabbingLeft;
+        private Vector3    _grabOffset;
+        private Quaternion _grabRotOffset;
 
         // 缓存碰撞体（可能有多个），spawn 后取一次
         private Collider[] _colliders;
@@ -84,7 +85,8 @@ namespace Anaglyph.Demo
                 {
                     if (held.isGripping)
                     {
-                        transform.position = held.position + _grabOffset;
+                        transform.position = held.position + held.rotation * _grabOffset;
+                        transform.rotation = held.rotation * _grabRotOffset;
                         return;
                     }
                     else
@@ -114,7 +116,8 @@ namespace Anaglyph.Demo
 
                 _grabbingClientId = clientId;
                 _grabbingLeft     = kvp.Key.Item2;
-                _grabOffset       = transform.position - hand.position;
+                _grabOffset       = Quaternion.Inverse(hand.rotation) * (transform.position - hand.position);
+                _grabRotOffset    = Quaternion.Inverse(hand.rotation) * transform.rotation;
                 return;
             }
         }

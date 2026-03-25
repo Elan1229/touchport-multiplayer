@@ -11,10 +11,11 @@ namespace Anaglyph.Demo
         // 每只手一个 entry，key = (clientId, isLeft)
         public struct HandData
         {
-            public Vector3   position;
-            public bool      isTracked;
-            public InputMode mode;
-            public bool      isGripping;
+            public Vector3    position;
+            public Quaternion rotation;
+            public bool       isTracked;
+            public InputMode  mode;
+            public bool       isGripping;
         }
 
         // 远端手部 7 个关键点，通过 NetworkVariable 同步
@@ -95,7 +96,7 @@ namespace Anaglyph.Demo
         // 每只手单独上报，含 mode 和关键点
         [ServerRpc(RequireOwnership = false)]
         public void ReportHandServerRpc(
-            bool isLeft, Vector3 position, bool isTracked, InputMode mode, bool isGripping,
+            bool isLeft, Vector3 position, Quaternion rotation, bool isTracked, InputMode mode, bool isGripping,
             HandKeyPoints keyPoints,
             ServerRpcParams rpcParams = default)
         {
@@ -106,6 +107,7 @@ namespace Anaglyph.Demo
             _hands[key] = new HandData
             {
                 position   = position,
+                rotation   = rotation,
                 isTracked  = isTracked,
                 mode       = mode,
                 isGripping = isGripping

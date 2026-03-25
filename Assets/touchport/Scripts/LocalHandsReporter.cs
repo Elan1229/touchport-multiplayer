@@ -59,6 +59,7 @@ namespace Anaglyph.Demo
             if (leftHandTracked)
             {
                 leftHandTracker.position = leftHandPos;
+                leftHandTracker.rotation = leftHandRot;
                 if (leftOVRHand != null)
                 {
                     leftOVRHand.transform.position = leftHandPos;
@@ -76,6 +77,7 @@ namespace Anaglyph.Demo
             if (rightHandTracked)
             {
                 rightHandTracker.position = rightHandPos;
+                rightHandTracker.rotation = rightHandRot;
                 if (rightOVRHand != null)
                 {
                     rightOVRHand.transform.position = rightHandPos;
@@ -106,9 +108,9 @@ namespace Anaglyph.Demo
             var rightKP = rightHandTracked && rightOVRSkeleton != null ? ReadKeyPoints(rightOVRSkeleton) : default;
 
             HandsManager.Instance.ReportHandServerRpc(
-                true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP);
+                true,  leftHandTracker.position,  leftHandTracker.rotation,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP);
             HandsManager.Instance.ReportHandServerRpc(
-                false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip, rightKP);
+                false, rightHandTracker.position, rightHandTracker.rotation, RightMode != InputMode.Off, RightMode, rightGrip, rightKP);
 
             _debugTimer -= Time.deltaTime;
             if (_debugTimer <= 0f)
