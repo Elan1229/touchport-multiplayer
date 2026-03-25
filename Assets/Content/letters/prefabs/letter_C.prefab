@@ -86,7 +86,7 @@ PrefabInstance:
       addedObject: {fileID: -378532855236386520}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5fca21df316c94338bc7fce805a8c8ee, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 6715919960465255040}
+      addedObject: {fileID: -8478332529572336994}
   m_SourcePrefab: {fileID: 100100000, guid: 5fca21df316c94338bc7fce805a8c8ee, type: 3}
 --- !u!1 &3381530879669759208 stripped
 GameObject:
@@ -212,7 +212,7 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
---- !u!114 &6715919960465255040
+--- !u!114 &-8478332529572336994
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,11 +221,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 3381530879669759208}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d8482b9d1b3d8144a5b5b9303ab0b1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
+  ShowTopMostFoldoutHeaderGroup: 1
+  gameOwnerId: 0
+  alwaysVisible: 0
+  grabRadius: 0.15
