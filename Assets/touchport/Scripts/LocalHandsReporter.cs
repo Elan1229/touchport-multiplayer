@@ -6,6 +6,8 @@ using UnityEngine.XR;
 namespace Anaglyph.Demo
 {
     public enum InputMode { Off = -1, Controller = 0, Hand = 1 }
+    
+
 
     public class LocalHandsReporter : MonoBehaviour
     {
@@ -96,7 +98,7 @@ namespace Anaglyph.Demo
             bool aButton = rightDevice.isValid &&
                            rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
             if (aButton && !_prevAButton)
-                HandsManager.Instance.RequestToggleServerRpc();
+                HandsManager.Instance.UIRequestServerRpc();
             _prevAButton = aButton;
 
             bool leftGrip  = leftHandTracked  ? GetPinch(OVRPlugin.Hand.HandLeft)  : GetGrip(leftDevice);

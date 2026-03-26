@@ -1,7 +1,9 @@
 using System.Text;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Anaglyph.Demo
 {
@@ -13,7 +15,9 @@ namespace Anaglyph.Demo
     public class ProximityDebugUI : MonoBehaviour
     {
         [Header("References")]
-        [SerializeField] private TextMeshProUGUI debugText;
+        [SerializeField] private TextMeshProUGUI debugText;      // 固定状态栏
+        [SerializeField] private TextMeshProUGUI logScrollText;        // 滚动日志栏（可选）
+        [SerializeField] private ScrollRect logScrollRect;       // 滚动容器（可选）
         [SerializeField] private Transform localLeftHand;
         [SerializeField] private Transform localRightHand;
         [SerializeField] private LocalHandsReporter localReporter;
@@ -27,10 +31,17 @@ namespace Anaglyph.Demo
         [Header("Refresh Interval (s)")]
         [SerializeField] private float refreshInterval = 0.1f;
 
+        [Header("A Button Handshake Log Panel")]
+        [SerializeField] private int maxLogLines = 80;
+        [SerializeField] private float logFontSize = 18f;
+        [SerializeField] private bool autoScrollToBottom = true;
+
         private bool _subscribed = false;
         private string _mergeLog = "none";
         private float _refreshTimer = 0f;
         private readonly StringBuilder _sb = new();
+
+        private readonly List<string> _logLines = new();
 
         private void Update()
         {
@@ -44,6 +55,7 @@ namespace Anaglyph.Demo
             if (!_subscribed && hm != null && hm.IsSpawned)
             {
                 hm.HandsAreClose.OnValueChanged += OnMergeChanged;
+                hm.AButtonHandshakeEvent += OnAButtonHandshake;
                 _subscribed = true;
             }
 
@@ -128,6 +140,17 @@ namespace Anaglyph.Demo
             _sb.AppendLine($"Skel L=valid:{validL} R=valid:{validR}");
 
             debugText.text = _sb.ToString();
+
+            // 如果你没在 Inspector 里绑 logScrollText/logScrollRect，那就至少把握手日志附加到状态栏末尾。
+            if (logScrollText == null && _logLines.Count > 0)
+            {
+                var sb = new StringBuilder(debugText.text);
+                sb.AppendLine("---");
+                sb.AppendLine("A Handshake Logs:");
+                foreach (var line in _logLines)
+                    sb.AppendLine(line);
+                debugText.text = sb.ToString();
+            }
         }
 
         private void OnMergeChanged(bool oldVal, bool newVal)
@@ -136,10 +159,53 @@ namespace Anaglyph.Demo
             Debug.Log($"[touchport] MergeEvent {oldVal}->{newVal} clientId={NetworkManager.Singleton.LocalClientId}");
         }
 
+        private void OnAButtonHandshake(ulong senderClientId, int stage)
+        {
+            string state = stage switch
+            {
+                0 => $"first press clientId={senderClientId} (waiting other player...)",
+                1 => $"handshake confirmed by clientId={senderClientId}, HandsAreClose={(HandsManager.Instance != null ? HandsManager.Instance.HandsAreClose.Value : false)}",
+                2 => $"re-press same clientId={senderClientId} (timer reset)",
+                _ => $"unknown stage={stage} clientId={senderClientId}"
+            };
+
+            string line = $"{Time.time,6:0.0}s {state}";
+            _logLines.Add(line);
+            if (_logLines.Count > maxLogLines)
+                _logLines.RemoveAt(0);
+
+            // 握手事件来时即时刷新 UI
+            RefreshLogPanel();
+        }
+
+        private void RefreshLogPanel()
+        {
+            if (logScrollText == null) return;
+
+            logScrollText.fontSize = logFontSize;
+            if (_logLines.Count == 0)
+            {
+                logScrollText.text = "A Handshake Logs: none";
+            }
+            else
+            {
+                var sb = new StringBuilder();
+                for (int i = 0; i < _logLines.Count; i++)
+                    sb.AppendLine(_logLines[i]);
+                logScrollText.text = sb.ToString();
+            }
+
+            if (autoScrollToBottom && logScrollRect != null)
+                logScrollRect.verticalNormalizedPosition = 0f;
+        }
+
         private void OnDestroy()
         {
             if (_subscribed && HandsManager.Instance != null)
+            {
                 HandsManager.Instance.HandsAreClose.OnValueChanged -= OnMergeChanged;
+                HandsManager.Instance.AButtonHandshakeEvent -= OnAButtonHandshake;
+            }
         }
 
         private static string Fmt(Vector3 v) => $"({v.x:F2},{v.y:F2},{v.z:F2})";
