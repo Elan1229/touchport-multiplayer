@@ -67,7 +67,7 @@ namespace Anaglyph.Demo
             var manager = HandsManager.Instance;
             if (manager == null) return;
 
-            bool handsAreClose = manager.HandsAreClose.Value;
+            bool handsAreClose = SharedSession.Instance != null && SharedSession.Instance.IsShared.Value;
 
             // 如果当前有人抓着
             if (_grabbingClientId != ulong.MaxValue)
@@ -123,16 +123,15 @@ namespace Anaglyph.Demo
 
         private void ApplyVisibility()
         {
-            var hm = HandsManager.Instance;
-            bool handsClose = hm != null && hm.HandsAreClose.Value;
-            bool isOwner    = NetworkManager.LocalClientId == gameOwnerId;
-            bool visible    = alwaysVisible || isOwner || handsClose;
+            bool isShared = SharedSession.Instance != null && SharedSession.Instance.IsShared.Value;
+            bool isOwner  = NetworkManager.LocalClientId == gameOwnerId;
+            bool visible  = alwaysVisible || isOwner || isShared;
 
             if (visible != _lastVisible)
             {
                 Debug.Log($"[GrabbableObject] {gameObject.name} visible={visible} " +
                           $"localClientId={NetworkManager.LocalClientId} gameOwnerId={gameOwnerId} " +
-                          $"alwaysVisible={alwaysVisible} handsClose={handsClose} hmNull={hm == null}");
+                          $"alwaysVisible={alwaysVisible} isShared={isShared}");
                 _lastVisible = visible;
             }
 
