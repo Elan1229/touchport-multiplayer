@@ -5,6 +5,10 @@ using UnityEngine.Rendering.Universal;
 
 public class ChangeLayer : MonoBehaviour
 {
+    public static ChangeLayer Instance { get; private set; }
+
+    void Awake() => Instance = this;
+
     [SerializeField] private UniversalRendererData rendererData; // 拖入你的 Renderer Data
     //[SerializeField] private LayerMask newLayerMask; // 在 Inspector 中选择新 Layer
     //[SerializeField] private string featureName = "StencilThisWorld";

@@ -4,9 +4,9 @@ using UnityEngine.Events;
 
 public class PortalDirectionTrigger : MonoBehaviour
 {
-    public ChangeLayer ChangeLayer;
+    private ChangeLayer ChangeLayer;
 
-    [Header("联机 / 本地测试")]
+    [Header("network or local")]
     [Tooltip(
         "【正式用 / 打包】勾选：只处理本机玩家（沿父级找 NetworkObject + IsOwner）。\n" +
         "【测 Trigger 用】取消：无 NetworkManager 的空场景里，任意 Rigidbody+Collider 撞进来也会改 Stencil；测完务必勾回去。")]
@@ -16,10 +16,10 @@ public class PortalDirectionTrigger : MonoBehaviour
     public UnityEvent OnEnterFront;
     public UnityEvent OnEnterBack;
 
-    void Awake()
+    void Start()
     {
         if (ChangeLayer == null)
-            ChangeLayer = FindFirstObjectByType<ChangeLayer>();
+            ChangeLayer = ChangeLayer.Instance;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -40,6 +40,7 @@ public class PortalDirectionTrigger : MonoBehaviour
 
         Vector3 dir = (other.transform.position - transform.position).normalized;
         float dot = Vector3.Dot(dir, transform.forward);
+        Debug.Log($"[PortalTrigger] dot={dot:F3} dir={dir} forward={transform.forward} ChangeLayer={ChangeLayer}");
 
         if (dot > 0)
         {

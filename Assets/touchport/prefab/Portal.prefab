@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 2615346180064726196}
   - component: {fileID: 7542335078153350871}
   - component: {fileID: 2226116336938038535}
-  - component: {fileID: 2698099417970273167}
-  - component: {fileID: 1772828686296714965}
   - component: {fileID: 4005941613847540162}
   - component: {fileID: 3338309984979913735}
+  - component: {fileID: 6065211115806520141}
   m_Layer: 0
   m_Name: PortalTrigger
   m_TagString: Untagged
@@ -32,8 +31,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 4, z: 0.05}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1.3333334, z: 0.01666667}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6410515238237606374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -90,42 +89,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2698099417970273167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490951816923829187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1111d7c963eb44b84a0780fd67d4aacd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ChangeLayer: {fileID: 1772828686296714965}
-  OnEnterFront:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnterBack:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &1772828686296714965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1490951816923829187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c62d9c4ac56d4d8090ffeabd1f4d71e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rendererData: {fileID: 11400000, guid: 734d937602c2f4c6faf2c05d353199a1, type: 2}
-  newLayerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  objectsToChange: []
 --- !u!54 &4005941613847540162
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -175,6 +138,25 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &6065211115806520141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490951816923829187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1111d7c963eb44b84a0780fd67d4aacd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  requireLocalNetworkOwner: 0
+  OnEnterFront:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnterBack:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6459127067260702680
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,8 +185,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.2, y: 1.6, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.4, y: 0.5333332, z: 0.33333328}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6410515238237606374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -317,8 +299,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 4, z: 0.05}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1, y: 1.3333334, z: 0.01666667}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 6410515238237606374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -401,7 +383,7 @@ Transform:
   m_GameObject: {fileID: 8600394780899167899}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.82, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -422,7 +404,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 0
+  GlobalObjectIdHash: 1273919607
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
