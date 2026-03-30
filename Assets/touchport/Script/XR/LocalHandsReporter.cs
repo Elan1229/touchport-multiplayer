@@ -18,6 +18,11 @@ public class LocalHandsReporter : MonoBehaviour
     [SerializeField] private Transform leftHandTracker;
     [SerializeField] private Transform rightHandTracker;
 
+    [Header("Wrist Panel")]
+    [SerializeField] private GameObject wristPanel;         // 左手腕 UI 板板（戳了打开 ShareUI）
+    [Tooltip("左手掌心向上的判断阈值，dot(palmUp, worldUp) > 此值时显示板板")]
+    [SerializeField] private float wristUpThreshold = 0.5f;
+
     [Header("Hand Tracking (OVRSkeleton)")]
     // OVR 手追踪组件，有手追踪时用这个拿位置和骨骼
     [SerializeField] private OVRHand leftOVRHand;
@@ -139,6 +144,21 @@ public class LocalHandsReporter : MonoBehaviour
             _debugTimer = 2f;
            // Debug.Log($"[LocalHandsReporter] clientId={NetworkManager.Singleton.LocalClientId} " +
                //       $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
+        }
+
+        // 左手腕朝上检测：掌心向上时显示 wristPanel，向下时隐藏
+        if (wristPanel != null && leftHandTracker != null)
+        {
+            // 手追踪：用 OVRSkeleton 掌心法线；手柄：用 tracker 的 up 轴近似
+            Vector3 palmUp;
+            if (LeftMode == InputMode.Hand && leftOVRSkeleton != null && leftOVRSkeleton.IsDataValid)
+                palmUp = leftOVRSkeleton.transform.up;
+            else
+                palmUp = leftHandTracker.up;
+
+            bool wristFacingUp = Vector3.Dot(palmUp, Vector3.up) > wristUpThreshold;
+            if (wristPanel.activeSelf != wristFacingUp)
+                wristPanel.SetActive(wristFacingUp);
         }
     }
 

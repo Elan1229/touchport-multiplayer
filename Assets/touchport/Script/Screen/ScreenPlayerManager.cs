@@ -1,10 +1,12 @@
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// 桌面场景专用，对应 XR 场景里的 HandsManager。
 /// Server 每帧检测两个玩家距离，靠近时 fire GameManager.FireInteract()，
 /// GameManager 不需要区分来源是 XR 还是桌面。
+/// U 键：切换 ShareUI。
 /// </summary>
 public class ScreenPlayerManager : NetworkBehaviour
 {
@@ -25,6 +27,10 @@ public class ScreenPlayerManager : NetworkBehaviour
 
     private void Update()
     {
+        // U 键切换 ShareUI（所有客户端都响应，不限 Server）
+        if (Keyboard.current != null && Keyboard.current[Key.U].wasPressedThisFrame)
+            ShareUIManager.Instance?.Toggle();
+
         if (!IsServer) return;
 
         if (_cooldownTimer > 0f) _cooldownTimer -= Time.deltaTime;

@@ -20,8 +20,8 @@ public class MultiplayerDebugHud : MonoBehaviour
     [SerializeField] private bool visibleOnPlayStart = true;
 
     [Header("Input")]
-    [SerializeField] private Key inputToggleKey = Key.U;
-    [SerializeField] private KeyCode legacyToggleKey = KeyCode.U;
+    [SerializeField] private Key inputToggleKey = Key.I;
+    [SerializeField] private KeyCode legacyToggleKey = KeyCode.I;
 
     [Header("Canvas")]
     [Tooltip("为 true 时 Play 开始把本 Canvas 的 Sort Order 拉高，避免被别的 UI 盖住")]
