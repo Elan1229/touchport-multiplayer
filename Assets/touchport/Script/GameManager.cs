@@ -1,22 +1,21 @@
+using System;
 using UnityEngine;
 
 /// <summary>
-/// 业务逻辑层。订阅 HandsManager 的手势事件，决定何时调用 SharedState.StartShare/StopShare。
-/// 以后要换触发手势或触发条件，只改这里。
+/// 业务逻辑层。维护 OnInteract 事件，决定何时调用 SharedState.ToggleShare。
+/// XR 场景由 HandsManager fire，桌面场景由 ScreenPlayerManager fire。
 /// </summary>
 public class GameManager : MonoBehaviour
 {
-    private void OnEnable()
-    {
-        HandsManager.OnHandsTouched += OnHandsTouched;
-    }
+    // 触发交互事件，HandsManager 和 ScreenPlayerManager 都通过这里 fire
+    public static event Action OnInteract;
 
-    private void OnDisable()
-    {
-        HandsManager.OnHandsTouched -= OnHandsTouched;
-    }
+    public static void FireInteract() => OnInteract?.Invoke();
 
-    private void OnHandsTouched()
+    private void OnEnable()  => OnInteract += HandleInteract;
+    private void OnDisable() => OnInteract -= HandleInteract;
+
+    private void HandleInteract()
     {
         var session = SharedState.Instance;
         if (session == null || !session.IsServer) return;

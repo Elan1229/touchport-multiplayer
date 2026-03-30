@@ -15,7 +15,7 @@ using UnityEngine;
 /// </summary>
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(NetworkTransform))]
-public class GrabbableObject : NetworkBehaviour
+public class IObjectXR : NetworkBehaviour
 {
     [Tooltip("0 = host 的物件，1 = guest 的物件")]
     public ulong gameOwnerId = 0;

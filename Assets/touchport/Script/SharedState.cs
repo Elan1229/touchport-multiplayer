@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
+using UnityEngine;
 
 /// <summary>
 /// 共享状态权威。维护 IsShared NetworkVariable，广播 OnSharedChanged 给下游所有系统。
@@ -41,5 +43,17 @@ public class SharedState : NetworkBehaviour
     public void ToggleShare()
     {
         if (IsServer) IsShared.Value = !IsShared.Value;
+    }
+
+    // 3秒后停止共享
+    public void StopShareAfterSeconds()
+    {
+        if (IsServer) StartCoroutine(StopShareDelayed());
+    }
+
+    private IEnumerator StopShareDelayed()
+    {
+        yield return new WaitForSeconds(3f);
+        StopShare();
     }
 }

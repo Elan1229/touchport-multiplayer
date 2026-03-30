@@ -12,8 +12,7 @@ public class HandsManager : NetworkBehaviour
 {
     public static HandsManager Instance { get; private set; }
 
-    // 手部接触/A键按下时触发（Server only）。GameManager 订阅这个来决定游戏逻辑。
-    public static event Action OnHandsTouched;
+    // 手部接触/A键按下时触发（Server only）。通过 GameManager.FireInteract() 传出去。
 
     // ─── 数据结构 ────────────────────────────────────────────────
 
@@ -181,8 +180,8 @@ public class HandsManager : NetworkBehaviour
         if (shouldFire && _toggleCooldown <= 0f)
         {
             _toggleCooldown = ToggleCooldownDuration;
-            OnHandsTouched?.Invoke();
-            Debug.Log("[touchport] OnHandsTouched fired");
+            GameManager.FireInteract();
+            Debug.Log("[touchport] FireInteract called");
         }
         else if (shouldFire)
         {

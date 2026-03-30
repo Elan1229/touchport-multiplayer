@@ -1,9 +1,9 @@
 using Unity.Netcode;
 using UnityEngine;
 
-public class PortalProximitySpawner : NetworkBehaviour
+public class PortalSpawner : NetworkBehaviour
 {
-    public static PortalProximitySpawner Instance { get; private set; }
+    public static PortalSpawner Instance { get; private set; }
 
     [SerializeField] private GameObject portalPrefab;
 
@@ -63,7 +63,7 @@ public class PortalProximitySpawner : NetworkBehaviour
         var net = go.GetComponent<NetworkObject>();
         if (net == null)
         {
-            Debug.LogError("[PortalProximitySpawner] portalPrefab 需要带 NetworkObject。");
+            Debug.LogError("[PortalSpawner] portalPrefab 需要带 NetworkObject。");
             Destroy(go);
             return;
         }
@@ -72,16 +72,24 @@ public class PortalProximitySpawner : NetworkBehaviour
         _spawnedPortal = net;
     }
 
-    // 从 HandsManager 拿两个玩家各自的头部位置
+    // 优先用 HandsManager 头部数据（XR），没有则 fallback 到玩家 NetworkObject 位置（桌面）
     private bool TryGetBothPlayerPositions(out Vector3 p0, out Vector3 p1)
     {
         p0 = Vector3.zero;
         p1 = Vector3.zero;
 
         var hm = HandsManager.Instance;
-        if (hm == null) return false;
+        if (hm != null)
+            return hm.TryGetBothHeadPositions(out p0, out p1);
 
-        return hm.TryGetBothHeadPositions(out p0, out p1);
+        // 桌面 fallback：从玩家 NetworkObject 拿位置
+        if (ScreenPlayerManager.TryGetBothPlayers(out Transform t0, out Transform t1))
+        {
+            p0 = t0.position;
+            p1 = t1.position;
+            return true;
+        }
+        return false;
     }
 
     // 收掉 portal，供外部调用（比如 share 结束时）
