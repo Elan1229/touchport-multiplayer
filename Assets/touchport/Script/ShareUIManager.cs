@@ -21,6 +21,12 @@ public class ShareUIManager : MonoBehaviour
     [Header("Root")]
     [SerializeField] private GameObject uiRoot; // 整个 UI 的根节点，Show/Hide 控制它
 
+    [Header("XR Positioning")]
+    [Tooltip("是否在 Show 时把 UI 定位到头部前方（XR 用）")]
+    [SerializeField] private bool positionInFrontOfHead = false;
+    [SerializeField] private float distanceToHead = 0.6f;
+    [SerializeField] private float headHeightOffset = -0.1f;
+
     [Header("Timeout")]
     [SerializeField] private float requestTimeout = 30f; // 等待对方 Accept 的超时秒数
 
@@ -71,9 +77,25 @@ public class ShareUIManager : MonoBehaviour
 
     public void Show()
     {
+        if (positionInFrontOfHead)
+            PositionInFrontOfHead();
         uiRoot.SetActive(true);
         bool isSharing = SharedState.Instance != null && SharedState.Instance.IsShared.Value;
         SetPanel(isSharing ? panelSharing : panelIdle);
+    }
+
+    private void PositionInFrontOfHead()
+    {
+        var cam = Camera.main;
+        if (cam == null) return;
+        var forward = cam.transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+        var pos = cam.transform.position
+                  + forward * distanceToHead
+                  + Vector3.up * headHeightOffset;
+        uiRoot.transform.position = pos;
+        uiRoot.transform.rotation = Quaternion.LookRotation(forward);
     }
 
     public void Hide()
