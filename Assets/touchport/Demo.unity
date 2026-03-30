@@ -144,7 +144,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &119198446
 Transform:
   m_ObjectHideFlags: 0
@@ -280,7 +280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &128270127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1357,6 +1357,10 @@ PrefabInstance:
     - target: {fileID: 807523951069143285, guid: 3ff23f7b1bfe39b4fa03577c24d02825, type: 3}
       propertyPath: m_Name
       value: CanvasShareUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 807523951069143285, guid: 3ff23f7b1bfe39b4fa03577c24d02825, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1369196980425115901, guid: 3ff23f7b1bfe39b4fa03577c24d02825, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2636,7 +2640,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &571821244
 Transform:
   m_ObjectHideFlags: 0
