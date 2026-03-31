@@ -80,7 +80,7 @@ public class ShareUIManager : MonoBehaviour
         if (positionInFrontOfHead)
             PositionInFrontOfHead();
         uiRoot.SetActive(true);
-        bool isSharing = SharedState.Instance != null && SharedState.Instance.IsShared.Value;
+        bool isSharing = SharedState.Instance != null && SharedState.Instance.IsShared;
         SetPanel(isSharing ? panelSharing : panelIdle);
     }
 

@@ -4,8 +4,8 @@ using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
-/// 共享状态权威。维护 IsShared NetworkVariable，广播 OnSharedChanged 给下游所有系统。
-/// 下游系统只依赖这个类，不需要知道触发原因。
+/// 共享状态权威。不再用 NetworkVariable，改用 ClientRpc 广播，彻底绕开权限坑。
+/// 服务端改值 → BroadcastSharedClientRpc → 所有客户端（含host）同步并触发 OnSharedChanged。
 /// </summary>
 public class SharedState : NetworkBehaviour
 {
@@ -13,21 +13,14 @@ public class SharedState : NetworkBehaviour
 
     public static event Action<bool> OnSharedChanged;
 
-    public NetworkVariable<bool> IsShared = new(
-        false,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server);
+    private bool _isShared = false;
+    public bool IsShared => _isShared;
 
     public override void OnNetworkSpawn()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         Debug.Log($"[SS] 已生成 IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
-        IsShared.OnValueChanged += (old, next) =>
-        {
-            Debug.Log($"[SS] 共享状态变化 {old}→{next}");
-            OnSharedChanged?.Invoke(next);
-        };
     }
 
     public override void OnNetworkDespawn()
@@ -37,19 +30,34 @@ public class SharedState : NetworkBehaviour
 
     public void StartShare()
     {
-        if (IsServer) IsShared.Value = true;
+        if (!IsServer) return;
+        Debug.Log("[SS] StartShare");
+        _isShared = true;
+        BroadcastSharedClientRpc(true);
     }
 
     public void StopShare()
     {
-        if (IsServer) IsShared.Value = false;
+        if (!IsServer) return;
+        Debug.Log("[SS] StopShare");
+        _isShared = false;
+        BroadcastSharedClientRpc(false);
     }
 
     public void ToggleShare()
     {
-        Debug.Log($"[SS] 切换共享 IsServer={IsServer} 当前={IsShared.Value}");
-        if (IsServer) IsShared.Value = !IsShared.Value;
-        Debug.Log($"[SS] 赋值后={IsShared.Value}");
+        if (!IsServer) return;
+        _isShared = !_isShared;
+        Debug.Log($"[SS] ToggleShare 赋值后={_isShared}");
+        BroadcastSharedClientRpc(_isShared);
+    }
+
+    [ClientRpc]
+    private void BroadcastSharedClientRpc(bool value)
+    {
+        Debug.Log($"[SS] 共享状态变化 →{value} clientId={NetworkManager.LocalClientId}");
+        _isShared = value;
+        OnSharedChanged?.Invoke(value);
     }
 
     // 3秒后停止共享

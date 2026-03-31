@@ -33,7 +33,7 @@ public class PortalSpawner : NetworkBehaviour
         if (!IsServer) return;
         if (portalPrefab == null) return;
 
-        bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared.Value;
+        bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared;
         bool hasPortal = _spawnedPortal != null && _spawnedPortal.IsSpawned;
 
         // 处于共享状态 且 还没有 portal → 生成（位置由手部数据决定）

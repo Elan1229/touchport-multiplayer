@@ -147,7 +147,7 @@ public class ProximityDebugUI : MonoBehaviour
             _sb.AppendLine(remoteHasData ? $"MinDist  : {minDist:F3} m" : "MinDist  : --");
             _sb.AppendLine($"Threshold: {hm.ProximityMinThreshold:F2} ~ {hm.ProximityThreshold:F2} m");
             _sb.AppendLine($"AreClose : {hm.HandsAreClose.Value}");
-            _sb.AppendLine($"IsShared : {(SharedState.Instance != null ? SharedState.Instance.IsShared.Value.ToString() : "--")}");
+            _sb.AppendLine($"IsShared : {(SharedState.Instance != null ? SharedState.Instance.IsShared.ToString() : "--")}");
         }
         else
         {

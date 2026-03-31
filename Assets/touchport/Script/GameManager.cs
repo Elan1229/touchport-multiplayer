@@ -4,26 +4,27 @@ using UnityEngine;
 
 /// <summary>
 /// 业务逻辑层兼网络中转。所有触发 Share 的入口都在这里。
-/// XR：HandsManager fire OnInteract；桌面：ScreenPlayerManager fire OnInteract。
-/// UI 流程：FireUIRequestShare → 对方弹 Accept → FireUIAcceptShare → StartShare。
+/// XR触发路径：HandsManager检测到握手/A键 → FireInteract() → OnInteract事件 → Handshaked() → SharedState.ToggleShare()
+/// UI触发路径：本机点Share按钮 → FireUIRequestShare() → 对方弹Accept → FireUIAcceptShare() → SharedState.StartShare()
+/// 两条路最终都写 SharedState.IsShared，由 SharedState 广播给下游（PortalSpawner等）
 /// </summary>
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    // ─── 事件 ────────────────────────────────────────────────────
-
-    // 握手 / A键触发（XR + 桌面通用）
+    // ─── 触发事件（XR + 桌面通用）────────────────────────────────
+    // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireInteract()
+    // Handshaked 订阅此事件，收到后调 SharedState.ToggleShare()
     public static event Action OnInteract;
     public static void FireInteract() => OnInteract?.Invoke();
 
-    // UI 流程事件（本地触发，ShareUIManager 订阅）
-    public static event Action OnUIWaiting;       // 发起方进入等待状态
-    public static event Action OnUIRequestShare;  // 接收方收到请求，弹 Accept 窗口
-    public static event Action OnUIAcceptShare;   // 双方 share 开始
+    // ─── UI 流程事件（ShareUIManager 订阅这些来驱动 UI 显示）────
+    public static event Action OnUIWaiting;       // 发起方进入等待状态（显示"等待对方..."）
+    public static event Action OnUIRequestShare;  // 接收方收到请求（弹出 Accept 窗口）
+    public static event Action OnUIAcceptShare;   // 双方 share 开始（隐藏所有 UI）
     public static event Action OnStopSharing;     // share 结束
     public static event Action OnCancelRequest;   // 请求取消/超时，双方静默 Hide
-    public static event Action OnNotAccept;       // 对方拒绝，双方显示 Not Accepted! 1s 后 Hide
+    public static event Action OnNotAccept;       // 对方拒绝，显示 Not Accepted! 1s 后 Hide
 
     // ─── 生命周期 ────────────────────────────────────────────────
 
@@ -39,71 +40,76 @@ public class GameManager : NetworkBehaviour
         if (Instance == this) Instance = null;
     }
 
-    private void OnEnable()  => OnInteract += HandleInteract;
-    private void OnDisable() => OnInteract -= HandleInteract;
+    // OnEnable/OnDisable 订阅 OnInteract，确保 GameManager 激活时才处理事件
+    private void OnEnable()  => OnInteract += Handshaked;
+    private void OnDisable() => OnInteract -= Handshaked;
 
-    private void HandleInteract()
+    // XR握手/A键 触发路径的终点：收到事件后切换共享状态
+    // 只有服务端（IsServer）才能写 SharedState.IsShared
+    private void Handshaked()
     {
         var session = SharedState.Instance;
         Debug.Log($"[GM] 收到握手/A键 SharedState存在={session != null} IsServer={session?.IsServer}");
         if (session == null || !session.IsServer) return;
-        session.ToggleShare();
+        session.ToggleShare(); // False→True 开始共享，True→False 停止共享
     }
 
-    // ─── UI 流程 ─────────────────────────────────────────────────
+    // ─── UI Share流程（本机点按钮 → RPC → 对方UI → Accept → StartShare）
 
-    // 本机点了 Share? 按钮 → 告诉 Server
+    // 第1步：本机点了 Share? 按钮，发 RPC 给服务端
     public static void FireUIRequestShare()
     {
         Debug.Log($"[GM] 点了Share按钮 GM实例存在={Instance != null}");
         Instance?.RequestShareServerRpc();
     }
 
+    // 第2步：服务端收到请求，分别通知发起方（进入等待）和对方（弹Accept窗口）
     [ServerRpc(RequireOwnership = false)]
     private void RequestShareServerRpc(ServerRpcParams rpcParams = default)
     {
         ulong sender = rpcParams.Receive.SenderClientId;
         Debug.Log($"[GM] 服务端收到Share请求 发送方={sender} 在线={string.Join(",", NetworkManager.ConnectedClientsIds)}");
 
+        // 告诉发起方：进入等待状态
         NotifyWaitingClientRpc(new ClientRpcParams
             { Send = new ClientRpcSendParams { TargetClientIds = new[] { sender } } });
 
+        // 告诉其他人：弹出 Accept 窗口
         foreach (var id in NetworkManager.ConnectedClientsIds)
             if (id != sender)
-            {
-                // Debug.Log($"[GM] Notifying client {id} to show Accept");
                 NotifyRequestShareClientRpc(new ClientRpcParams
                     { Send = new ClientRpcSendParams { TargetClientIds = new[] { id } } });
-            }
     }
 
     [ClientRpc]
     private void NotifyWaitingClientRpc(ClientRpcParams _ = default)
-        => OnUIWaiting?.Invoke();
+        => OnUIWaiting?.Invoke(); // 发起方UI：显示"等待中..."
 
     [ClientRpc]
     private void NotifyRequestShareClientRpc(ClientRpcParams _ = default)
-        => OnUIRequestShare?.Invoke();
+        => OnUIRequestShare?.Invoke(); // 接收方UI：显示 Accept 按钮
 
-    // 接收方点了 Accept → 告诉 Server 开始 Share
+    // 第3步：接收方点了 Accept，通知服务端正式开始 Share
     public static void FireUIAcceptShare()
     {
         Instance?.AcceptShareServerRpc();
     }
 
+    // 第4步：服务端调 StartShare()，IsShared变True，PortalSpawner等下游自动响应
     [ServerRpc(RequireOwnership = false)]
     private void AcceptShareServerRpc()
     {
-        SharedState.Instance?.StartShare();
-        // SharedState.OnSharedChanged 会广播给所有客户端
+        SharedState.Instance?.StartShare(); // 只设True，不Toggle
         NotifyAcceptShareClientRpc();
     }
 
     [ClientRpc]
     private void NotifyAcceptShareClientRpc()
-        => OnUIAcceptShare?.Invoke();
+        => OnUIAcceptShare?.Invoke(); // 双方UI：隐藏所有 share UI
 
-    // 任意一方点了 Stop Sharing
+    // ─── 停止共享 ────────────────────────────────────────────────
+
+    // 任意一方点了 Stop Sharing 按钮
     public static void FireStopSharing()
     {
         Instance?.StopSharingServerRpc();
@@ -112,7 +118,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void StopSharingServerRpc()
     {
-        SharedState.Instance?.StopShare();
+        SharedState.Instance?.StopShare(); // IsShared→False，PortalSpawner收到后收门
         NotifyStopSharingClientRpc();
     }
 
@@ -120,7 +126,9 @@ public class GameManager : NetworkBehaviour
     private void NotifyStopSharingClientRpc()
         => OnStopSharing?.Invoke();
 
-    // 请求取消/超时，双方静默 Hide
+    // ─── 取消/拒绝 ───────────────────────────────────────────────
+
+    // 请求超时或发起方主动取消，双方静默恢复初始UI
     public static void FireCancelRequest()
     {
         Instance?.CancelRequestServerRpc();
@@ -134,7 +142,7 @@ public class GameManager : NetworkBehaviour
     private void NotifyCancelRequestClientRpc()
         => OnCancelRequest?.Invoke();
 
-    // 对方拒绝，双方显示 Not Accepted! 1s 后 Hide
+    // 接收方点了拒绝，双方显示 Not Accepted! 提示1秒后收起
     public static void FireNotAccept()
     {
         Instance?.NotAcceptServerRpc();

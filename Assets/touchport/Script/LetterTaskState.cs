@@ -66,8 +66,7 @@ public class LetterTaskState : NetworkBehaviour
         Player1Done.OnValueChanged += OnAnyChanged;
 
         _sharedState = SharedState.Instance ?? FindFirstObjectByType<SharedState>();
-        if (_sharedState != null)
-            _sharedState.IsShared.OnValueChanged += OnAnyChanged;
+        SharedState.OnSharedChanged += OnSharedChangedHandler;
 
         RefreshUI();
     }
@@ -77,14 +76,12 @@ public class LetterTaskState : NetworkBehaviour
         Player0Done.OnValueChanged -= OnAnyChanged;
         Player1Done.OnValueChanged -= OnAnyChanged;
 
-        if (_sharedState != null)
-        {
-            _sharedState.IsShared.OnValueChanged -= OnAnyChanged;
-            _sharedState = null;
-        }
+        SharedState.OnSharedChanged -= OnSharedChangedHandler;
+        _sharedState = null;
     }
 
     void OnAnyChanged(bool _, bool __) => RefreshUI();
+    void OnSharedChangedHandler(bool _) => RefreshUI();
 
     void RefreshUI()
     {
@@ -92,7 +89,7 @@ public class LetterTaskState : NetworkBehaviour
 
         var sb = new StringBuilder();
         if (_sharedState != null)
-            sb.AppendLine(_sharedState.IsShared.Value ? "Shared: ON" : "Shared: OFF");
+            sb.AppendLine(_sharedState.IsShared ? "Shared: ON" : "Shared: OFF");
         if (Player0Done.Value)
             sb.AppendLine("P0 word OK");
         if (Player1Done.Value)

@@ -65,7 +65,7 @@ public class IObjectXR : NetworkBehaviour
         var manager = HandsManager.Instance;
         if (manager == null) return;
 
-        bool handsAreClose = SharedState.Instance != null && SharedState.Instance.IsShared.Value;
+        bool handsAreClose = SharedState.Instance != null && SharedState.Instance.IsShared;
 
         // 如果当前有人抓着
         if (_grabbingClientId != ulong.MaxValue)
@@ -121,7 +121,7 @@ public class IObjectXR : NetworkBehaviour
 
     private void ApplyVisibility()
     {
-        bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared.Value;
+        bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared;
         bool isOwner  = NetworkManager.LocalClientId == gameOwnerId;
         bool visible  = alwaysVisible || isOwner || isShared;
 

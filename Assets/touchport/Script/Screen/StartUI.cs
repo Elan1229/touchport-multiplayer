@@ -26,7 +26,7 @@ public class StartUI : MonoBehaviour
             var ss = SharedState.Instance;
             if (ss != null)
             {
-                GUILayout.Label($"IsShared: {ss.IsShared.Value}");
+                GUILayout.Label($"IsShared: {ss.IsShared}");
             }
 
             if (GUILayout.Button("断开"))

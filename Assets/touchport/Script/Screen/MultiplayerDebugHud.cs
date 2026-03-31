@@ -143,7 +143,7 @@ public class MultiplayerDebugHud : MonoBehaviour
         label.text =
             $"{panelTitle}\n" +
             "────────\n" +
-            $"IsShared: {ss.IsShared.Value}\n" +
+            $"IsShared: {ss.IsShared}\n" +
             $"Dist: {distStr}\n" +
             $"P0: {p0Str}\n" +
             $"P1: {p1Str}\n" +

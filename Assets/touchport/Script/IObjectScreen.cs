@@ -35,11 +35,10 @@ public class IObjectScreen : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
-        if (SharedState.Instance != null)
-            SharedState.Instance.IsShared.OnValueChanged -= OnSharedChanged;
+        SharedState.OnSharedChanged -= HandleSharedChanged;
     }
 
-    void OnSharedChanged(bool _, bool isShared)
+    void HandleSharedChanged(bool isShared)
     {
         ApplyVisibility(isShared);
 
@@ -61,12 +60,12 @@ public class IObjectScreen : NetworkBehaviour
     {
         while (SharedState.Instance == null)
             yield return null;
-        SharedState.Instance.IsShared.OnValueChanged += OnSharedChanged;
+        SharedState.OnSharedChanged += HandleSharedChanged;
         if (IsServer)
-            ApplyVisibility(SharedState.Instance.IsShared.Value);
+            ApplyVisibility(SharedState.Instance.IsShared);
         else
-            yield return null; // 等一帧再读，客户端 NetworkVariable 可能还没同步
-            ApplyVisibility(SharedState.Instance.IsShared.Value);
+            yield return null;
+            ApplyVisibility(SharedState.Instance.IsShared);
     }
 
     void ApplyVisibility(bool isShared)
@@ -97,7 +96,7 @@ public class IObjectScreen : NetworkBehaviour
             return;
 
         var localClientId = NetworkManager.LocalClientId;
-        bool canGrab = SharedState.Instance.IsShared.Value || localClientId == gameOwnerId;
+        bool canGrab = SharedState.Instance.IsShared || localClientId == gameOwnerId;
         if (!canGrab) return;
 
         var localPlayer = GetPlayerTransformByClientId(localClientId);
@@ -151,7 +150,7 @@ public class IObjectScreen : NetworkBehaviour
     private bool CanServerClientGrab(ulong clientId)
     {
         if (SharedState.Instance == null) return clientId == gameOwnerId;
-        return SharedState.Instance.IsShared.Value || clientId == gameOwnerId;
+        return SharedState.Instance.IsShared || clientId == gameOwnerId;
     }
 
     private Transform GetPlayerTransformByClientId(ulong clientId)
