@@ -30,8 +30,8 @@ public class WristButton : MonoBehaviour
         if (nm == null || !nm.IsConnectedClient) return;
 
         Vector3 indexTip = nm.LocalClientId == 0
-            ? hm.KP0R.Value.indexTip
-            : hm.KP1R.Value.indexTip;
+            ? hm.KP0L.Value.indexTip
+            : hm.KP1L.Value.indexTip;
 
         if (indexTip == Vector3.zero) return;
 
