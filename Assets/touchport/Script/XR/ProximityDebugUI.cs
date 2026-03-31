@@ -32,7 +32,7 @@ public class ProximityDebugUI : MonoBehaviour
     private readonly StringBuilder _sb = new();
 
     private CanvasGroup _canvasGroup;
-    private bool _visible = true;
+    private bool _visible = false;
     private bool _prevBButton = false;
     private InputDevice _rightDevice;
 

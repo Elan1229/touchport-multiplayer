@@ -32,6 +32,7 @@ public class GameManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
+        Debug.Log($"[GM] spawned IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()

@@ -40,6 +40,7 @@ public class LocalHandsReporter : MonoBehaviour
     // 当前左右手的世界坐标，给 HandJointVisualizer 的 fallback 显示用
     public Vector3 LeftHandPosition  => leftHandTracker  != null ? leftHandTracker.position  : Vector3.zero;
     public Vector3 RightHandPosition => rightHandTracker != null ? rightHandTracker.position : Vector3.zero;
+    public Transform RightHandTracker => rightHandTracker;
 
     private InputDevice leftDevice;   // 左手柄设备
     private InputDevice rightDevice;  // 右手柄设备
