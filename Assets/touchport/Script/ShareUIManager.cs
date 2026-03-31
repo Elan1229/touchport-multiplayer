@@ -164,7 +164,7 @@ public class ShareUIManager : MonoBehaviour
 
     // ─── 按钮回调 ─────────────────────────────────────────────────
 
-    public void OnClickShare()          => GameManager.FireUIRequestShare();
+    public void OnClickShare()          { Debug.Log("[UI] OnClickShare called"); GameManager.FireUIRequestShare(); }
     public void OnClickAccept()         => GameManager.FireUIAcceptShare();
     public void OnClickStopSharing()    => GameManager.FireStopSharing();
     public void OnClickCloseUI()        => Hide();

@@ -477,6 +477,8 @@ MonoBehaviour:
   - '[GM]'
   - '[SS]'
   - '[touchport]'
+  - '[UI]'
+  - '[WristButton]'
 --- !u!114 &132499355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1954,9 +1956,9 @@ MonoBehaviour:
   onPoke:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 303569619}
         m_TargetAssemblyTypeName: ShareUIManager, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: OnClickShare
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
