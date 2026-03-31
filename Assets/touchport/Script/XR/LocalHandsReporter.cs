@@ -149,13 +149,6 @@ public class LocalHandsReporter : MonoBehaviour
                //       $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
         }
 
-        // 右手是手追踪模式时显示 wristPanel，手柄或无追踪时隐藏
-        if (wristPanel != null)
-        {
-            bool show = RightMode == InputMode.Hand;
-            if (wristPanel.activeSelf != show)
-                wristPanel.SetActive(show);
-        }
     }
 
     // OVR 手追踪：从 OVRPlugin 拿手的世界坐标和朝向，失败返回 false
