@@ -148,19 +148,12 @@ public class LocalHandsReporter : MonoBehaviour
                //       $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
         }
 
-        // 左手腕朝上检测：掌心向上时显示 wristPanel，向下时隐藏
-        if (wristPanel != null && leftHandTracker != null)
+        // 右手是手追踪模式时显示 wristPanel，手柄或无追踪时隐藏
+        if (wristPanel != null)
         {
-            // 手追踪：用 OVRSkeleton 掌心法线；手柄：用 tracker 的 up 轴近似
-            Vector3 palmUp;
-            if (LeftMode == InputMode.Hand && leftOVRSkeleton != null && leftOVRSkeleton.IsDataValid)
-                palmUp = leftOVRSkeleton.transform.up;
-            else
-                palmUp = leftHandTracker.up;
-
-            bool wristFacingUp = Vector3.Dot(palmUp, Vector3.up) > wristUpThreshold;
-            if (wristPanel.activeSelf != wristFacingUp)
-                wristPanel.SetActive(wristFacingUp);
+            bool show = RightMode == InputMode.Hand;
+            if (wristPanel.activeSelf != show)
+                wristPanel.SetActive(show);
         }
     }
 

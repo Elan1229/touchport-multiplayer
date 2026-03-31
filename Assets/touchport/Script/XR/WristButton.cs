@@ -29,15 +29,18 @@ public class WristButton : MonoBehaviour
         var nm = NetworkManager.Singleton;
         if (nm == null || !nm.IsConnectedClient) return;
 
-        Vector3 indexTip = nm.LocalClientId == 0
-            ? hm.KP0L.Value.indexTip
-            : hm.KP1L.Value.indexTip;
+        var kpL = nm.LocalClientId == 0 ? hm.KP0L.Value : hm.KP1L.Value;
+        var kpR = nm.LocalClientId == 0 ? hm.KP0R.Value : hm.KP1R.Value;
 
-        if (indexTip == Vector3.zero) return;
+        Vector3 tipL = kpL.indexTip;
+        Vector3 tipR = kpR.indexTip;
 
-        bool inside = Vector3.Distance(indexTip, transform.position) < pokeRadius;
+        bool insideL = tipL != Vector3.zero && Vector3.Distance(tipL, transform.position) < pokeRadius;
+        bool insideR = tipR != Vector3.zero && Vector3.Distance(tipR, transform.position) < pokeRadius;
+        bool inside = insideL || insideR;
         if (inside && !_wasInside)
         {
+            Debug.Log($"[WristButton] 戳到了 {gameObject.name}");
             if (onPoke.GetPersistentEventCount() > 0)
                 onPoke.Invoke();
             else if (_button != null)

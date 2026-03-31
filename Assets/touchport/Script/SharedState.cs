@@ -20,7 +20,6 @@ public class SharedState : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        Debug.Log($"[SS] 已生成 IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()
@@ -31,7 +30,6 @@ public class SharedState : NetworkBehaviour
     public void StartShare()
     {
         if (!IsServer) return;
-        Debug.Log("[SS] StartShare");
         _isShared = true;
         BroadcastSharedClientRpc(true);
     }
@@ -39,7 +37,6 @@ public class SharedState : NetworkBehaviour
     public void StopShare()
     {
         if (!IsServer) return;
-        Debug.Log("[SS] StopShare");
         _isShared = false;
         BroadcastSharedClientRpc(false);
     }
@@ -48,7 +45,6 @@ public class SharedState : NetworkBehaviour
     {
         if (!IsServer) return;
         _isShared = !_isShared;
-        Debug.Log($"[SS] ToggleShare 赋值后={_isShared}");
         BroadcastSharedClientRpc(_isShared);
     }
 

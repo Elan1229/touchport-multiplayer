@@ -32,7 +32,6 @@ public class GameManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
-        Debug.Log($"[GM] 已生成 IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()
@@ -49,7 +48,6 @@ public class GameManager : NetworkBehaviour
     private void Handshaked()
     {
         var session = SharedState.Instance;
-        Debug.Log($"[GM] 收到握手/A键 SharedState存在={session != null} IsServer={session?.IsServer}");
         if (session == null || !session.IsServer) return;
         session.ToggleShare(); // False→True 开始共享，True→False 停止共享
     }
@@ -92,6 +90,7 @@ public class GameManager : NetworkBehaviour
     // 第3步：接收方点了 Accept，通知服务端正式开始 Share
     public static void FireUIAcceptShare()
     {
+        Debug.Log($"[GM] 点了Accept GM存在={Instance != null}");
         Instance?.AcceptShareServerRpc();
     }
 
@@ -99,6 +98,7 @@ public class GameManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     private void AcceptShareServerRpc()
     {
+        Debug.Log("[GM] 服务端收到Accept，StartShare");
         SharedState.Instance?.StartShare(); // 只设True，不Toggle
         NotifyAcceptShareClientRpc();
     }

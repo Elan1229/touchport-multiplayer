@@ -92,9 +92,6 @@ public class HandsManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        Debug.Log($"[touchport] HandsManager spawned IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
-        HandsAreClose.OnValueChanged += (oldVal, newVal) =>
-            Debug.Log($"[touchport] HandsAreClose {oldVal}->{newVal} clientId={NetworkManager.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()
@@ -131,8 +128,6 @@ public class HandsManager : NetworkBehaviour
             isGripping = isGripping
         };
 
-        if (firstReport)
-            Debug.Log($"[touchport] First hand report clientId={clientId} isLeft={isLeft} mode={mode}");
 
         // 把手部数据写入 debug NetworkVariable，同步给所有客户端显示用
         if      (clientId == 0 &&  isLeft) { Debug0Left.Value  = position; Debug0LeftMode.Value  = (int)mode; KP0L.Value = keyPoints; }
@@ -171,7 +166,6 @@ public class HandsManager : NetworkBehaviour
         {
             NotifyCloseClientRpc();
             shouldFire = true;
-            Debug.Log("[touchport] Proximity touch detected");
         }
 
         if (_aPressedThisFrame)
@@ -184,11 +178,6 @@ public class HandsManager : NetworkBehaviour
         {
             _toggleCooldown = ToggleCooldownDuration;
             GameManager.FireInteract();
-            Debug.Log("[touchport] FireInteract called");
-        }
-        else if (shouldFire)
-        {
-            Debug.Log($"[touchport] On cooldown ({_toggleCooldown:F1}s left)");
         }
 
         _wasClose = proximityTriggered;
@@ -224,10 +213,7 @@ public class HandsManager : NetworkBehaviour
 
     // 通知所有客户端"接触发生了"，目前只用于 debug log
     [ClientRpc]
-    private void NotifyCloseClientRpc()
-    {
-        Debug.Log($"[touchport] Close event received clientId={NetworkManager.LocalClientId}");
-    }
+    private void NotifyCloseClientRpc() { }
 
     // ─── 对外查询接口 ────────────────────────────────────────────
 
