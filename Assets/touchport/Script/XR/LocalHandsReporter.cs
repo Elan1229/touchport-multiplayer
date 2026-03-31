@@ -115,6 +115,8 @@ public class LocalHandsReporter : MonoBehaviour
                        rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
         bool aPressed = aButton && !_prevAButton;
         _prevAButton = aButton;
+        if (aPressed)
+            Debug.Log($"[touchport] A键本地检测到 RightMode={RightMode} rightDevice有效={rightDevice.isValid}");
 
         // 握持/捏合：手追踪用捏合，手柄用 grip 键
         bool leftGrip  = leftHandTracked  ? GetPinch(OVRPlugin.Hand.HandLeft)  : GetGrip(leftDevice);

@@ -31,6 +31,7 @@ public class GameManager : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
+        Debug.Log($"[GM] 已生成 IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
     }
 
     public override void OnNetworkDespawn()
@@ -44,6 +45,7 @@ public class GameManager : NetworkBehaviour
     private void HandleInteract()
     {
         var session = SharedState.Instance;
+        Debug.Log($"[GM] 收到握手/A键 SharedState存在={session != null} IsServer={session?.IsServer}");
         if (session == null || !session.IsServer) return;
         session.ToggleShare();
     }
@@ -53,7 +55,7 @@ public class GameManager : NetworkBehaviour
     // 本机点了 Share? 按钮 → 告诉 Server
     public static void FireUIRequestShare()
     {
-        // Debug.Log($"[GM] FireUIRequestShare Instance={Instance}");
+        Debug.Log($"[GM] 点了Share按钮 GM实例存在={Instance != null}");
         Instance?.RequestShareServerRpc();
     }
 
@@ -61,7 +63,7 @@ public class GameManager : NetworkBehaviour
     private void RequestShareServerRpc(ServerRpcParams rpcParams = default)
     {
         ulong sender = rpcParams.Receive.SenderClientId;
-        // Debug.Log($"[GM] RequestShareServerRpc sender={sender} connectedClients={string.Join(",", NetworkManager.ConnectedClientsIds)}");
+        Debug.Log($"[GM] 服务端收到Share请求 发送方={sender} 在线={string.Join(",", NetworkManager.ConnectedClientsIds)}");
 
         NotifyWaitingClientRpc(new ClientRpcParams
             { Send = new ClientRpcSendParams { TargetClientIds = new[] { sender } } });

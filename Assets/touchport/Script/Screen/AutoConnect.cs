@@ -18,7 +18,7 @@ public class AutoConnect : MonoBehaviour
         if (tags.Contains("Host"))
         {
             NetworkManager.Singleton.StartHost();
-            Debug.Log("猫老大上线，开房间了！");
+            Debug.Log("[AutoConnect] StartHost");
         }
         else if (tags.Contains("Client"))
         {
@@ -30,6 +30,6 @@ public class AutoConnect : MonoBehaviour
     void ConnectAsClient()
     {
         NetworkManager.Singleton.StartClient();
-        Debug.Log("猫小弟上线，进房间了！");
+        Debug.Log("[AutoConnect] StartClient");
     }
 }

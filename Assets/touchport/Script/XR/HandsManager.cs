@@ -142,7 +142,10 @@ public class HandsManager : NetworkBehaviour
 
         // A键状态暂存，Update 里和 proximity 一起统一处理
         if (aButtonPressed && !isLeft)
+        {
             _aPressedThisFrame = true;
+            Debug.Log($"[touchport] 服务端收到A键 来自clientId={clientId}");
+        }
     }
 
     // ─── 触发检测（每帧，Server only）──────────────────────────

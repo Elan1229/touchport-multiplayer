@@ -22,7 +22,12 @@ public class SharedState : NetworkBehaviour
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        IsShared.OnValueChanged += (_, next) => OnSharedChanged?.Invoke(next);
+        Debug.Log($"[SS] 已生成 IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
+        IsShared.OnValueChanged += (old, next) =>
+        {
+            Debug.Log($"[SS] 共享状态变化 {old}→{next}");
+            OnSharedChanged?.Invoke(next);
+        };
     }
 
     public override void OnNetworkDespawn()
@@ -42,7 +47,9 @@ public class SharedState : NetworkBehaviour
 
     public void ToggleShare()
     {
+        Debug.Log($"[SS] 切换共享 IsServer={IsServer} 当前={IsShared.Value}");
         if (IsServer) IsShared.Value = !IsShared.Value;
+        Debug.Log($"[SS] 赋值后={IsShared.Value}");
     }
 
     // 3秒后停止共享

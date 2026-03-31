@@ -14,10 +14,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/touchport/SceneArchive/Demo 1.unity
     guid: edd3a39347e8c2345931adc19a40d52a
-  - enabled: 1
+  - enabled: 0
     path: Assets/touchport/MultiDemoScreen.unity
     guid: 60994a6461342c542a6434d6ed4e9bb7
-  - enabled: 1
+  - enabled: 0
     path: Assets/touchport/MultiTest.unity
     guid: 2bf872098072fad4aacd995a4a14c2f3
   m_configObjects:
