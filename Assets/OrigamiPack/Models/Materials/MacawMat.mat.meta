@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fe24bd8b3957a6b4ba0e102c52e6224c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Models/Materials/MacawMat.mat
+  uploadId: 10376

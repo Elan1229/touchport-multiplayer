@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d3f0154e77292eb4dab2f0c77ae6753c
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Prefabs/Tulip.prefab
+  uploadId: 10376

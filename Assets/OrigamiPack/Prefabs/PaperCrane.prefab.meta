@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8320fe799056b3e40b457249fc6b7138
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Prefabs/PaperCrane.prefab
+  uploadId: 10376

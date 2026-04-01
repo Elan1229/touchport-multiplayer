@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 34fc2cdacc062ab47a674a535ab6e463
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Models/Materials/TulipMat.mat
+  uploadId: 10376

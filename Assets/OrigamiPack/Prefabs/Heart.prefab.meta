@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: c4fd7e8a1d971d849a87f5a7bde3c16e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Prefabs/Heart.prefab
+  uploadId: 10376

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 9b7ca1e190302c5418889a1888301d2b
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Models/Materials/CrownMat.mat
+  uploadId: 10376

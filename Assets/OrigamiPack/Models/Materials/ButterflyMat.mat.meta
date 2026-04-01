@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 1fde230974981a64d9a14c66a5a6309e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 21146
+  packageName: Origami Pack
+  packageVersion: Initial
+  assetPath: Assets/OrigamiPack/Models/Materials/ButterflyMat.mat
+  uploadId: 10376
