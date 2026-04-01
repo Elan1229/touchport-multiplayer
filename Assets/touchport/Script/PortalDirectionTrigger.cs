@@ -24,7 +24,13 @@ public class PortalDirectionTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        
+
         Debug.Log("Collide!");
+
+        if (!other.CompareTag("Head"))
+            return;
+            
         if (requireLocalNetworkOwner)
         {
             // 正式联机：Collider 可在子物体，NetworkObject 在父级时用 InParent
