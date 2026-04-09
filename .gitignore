@@ -54,7 +54,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
-*.glb
+
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -100,4 +100,3 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 
-Assets/Marble Worlds/
