@@ -70,7 +70,7 @@ public class PortalSpawner : NetworkBehaviour
     {
         if (!TryGetBothPlayerPositions(out Vector3 p0, out Vector3 p1)) return;
 
-        Vector3 mid = (p0 + p1) * 0.5f;
+        Vector3 mid = (p0 + p1) * 0.5f + Vector3.up * 0.2f;
         Vector3 line = p1 - p0;
         line.y = 0f;
         if (line.sqrMagnitude < 1e-4f)

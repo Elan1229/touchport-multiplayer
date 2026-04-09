@@ -6,6 +6,11 @@ public class IObjectScreen : NetworkBehaviour
 {
     public ulong gameOwnerId;
 
+    private NetworkVariable<ulong> _networkOwnerId = new(
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
     private Transform _followTarget;
     private Vector3 _offset;
     private Rigidbody _rb;
@@ -22,6 +27,14 @@ public class IObjectScreen : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _rb = GetComponent<Rigidbody>();
+        if (IsServer) _networkOwnerId.Value = gameOwnerId;
+        _networkOwnerId.OnValueChanged += (_, newVal) =>
+        {
+            gameOwnerId = newVal;
+            string layerName = newVal == 0 ? "layer0" : "layer1";
+            ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
+            Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{newVal}");
+        };
 
         // Make movement deterministic when held (network transform will sync position).
         if (_rb != null)
@@ -161,6 +174,15 @@ public class IObjectScreen : NetworkBehaviour
                 return no.transform;
         }
         return null;
+    }
+
+    // PortalDirectionTrigger 调用
+    public void TransferToOther()
+    {
+        if (!IsServer) return;
+        ulong newOwner = gameOwnerId == 0 ? 1UL : 0UL;
+        Debug.Log($"[touchport] IObject Collided! {gameObject.name} owner {gameOwnerId}→{newOwner}");
+        _networkOwnerId.Value = newOwner;
     }
 
     /// <summary>

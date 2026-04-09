@@ -20,6 +20,11 @@ public class IObjectXR : NetworkBehaviour
     [Tooltip("0 = host 的物件，1 = guest 的物件")]
     public ulong gameOwnerId = 0;
 
+    private NetworkVariable<ulong> _networkOwnerId = new(
+        0,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
     [Tooltip("勾选后忽略 gameOwnerId，所有人都能看见并抓取（如 SharedCube）")]
     public bool alwaysVisible = false;
 
@@ -36,6 +41,23 @@ public class IObjectXR : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _colliders = GetComponentsInChildren<Collider>();
+        if (IsServer) _networkOwnerId.Value = gameOwnerId;
+        _networkOwnerId.OnValueChanged += (_, newVal) =>
+        {
+            gameOwnerId = newVal;
+            string layerName = newVal == 0 ? "layer0" : "layer1";
+            ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
+            Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{newVal}");
+        };
+    }
+
+    // PortalDirectionTrigger 调用：把物品传递给对方世界
+    public void TransferToOther()
+    {
+        if (!IsServer) return;
+        ulong newOwner = gameOwnerId == 0 ? 1UL : 0UL;
+        Debug.Log($"[touchport] IObject Collided! {gameObject.name} owner {gameOwnerId}→{newOwner}");
+        _networkOwnerId.Value = newOwner;
     }
 
     // 返回手柄到物体表面（或中心）的最近距离

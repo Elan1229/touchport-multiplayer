@@ -26,6 +26,16 @@ public class PortalDirectionTrigger : MonoBehaviour
     {
         Debug.Log("Collide!");
 
+        // 花或其他可传递物品（XR）
+        var objXR = other.GetComponentInParent<IObjectXR>();
+        Debug.Log($"[touchport] PortalTrigger hit: {other.name} IObjectXR={objXR != null}");
+        if (objXR != null) { objXR.TransferToOther(); return; }
+
+        // 花或其他可传递物品（Screen）
+        var objScreen = other.GetComponentInParent<IObjectScreen>();
+        Debug.Log($"[touchport] PortalTrigger hit: {other.name} IObjectScreen={objScreen != null}");
+        if (objScreen != null) { objScreen.TransferToOther(); return; }
+
         if(!other.CompareTag("Head"))
         return;
 
