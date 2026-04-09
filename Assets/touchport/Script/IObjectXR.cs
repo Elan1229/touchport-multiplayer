@@ -29,6 +29,7 @@ public class IObjectXR : NetworkBehaviour
     private ulong _grabbingClientId = ulong.MaxValue;
     private bool  _grabbingLeft;
     private Vector3 _grabOffset;
+    private Drifting _drifting;
 
     // 缓存碰撞体（可能有多个），spawn 后取一次
     private Collider[] _colliders;
@@ -36,6 +37,7 @@ public class IObjectXR : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _colliders = GetComponentsInChildren<Collider>();
+        _drifting = GetComponent<Drifting>();
     }
 
     // 返回手柄到物体表面（或中心）的最近距离
@@ -77,6 +79,7 @@ public class IObjectXR : NetworkBehaviour
             if (!stillAuthorized)
             {
                 _grabbingClientId = ulong.MaxValue;
+                _drifting?.Resume();
             }
             else if (manager.TryGetHand(_grabbingClientId, _grabbingLeft, out var held))
             {
@@ -88,11 +91,13 @@ public class IObjectXR : NetworkBehaviour
                 else
                 {
                     _grabbingClientId = ulong.MaxValue;
+                    _drifting?.Resume();
                 }
             }
             else
             {
                 _grabbingClientId = ulong.MaxValue;
+                _drifting?.Resume();
             }
         }
 
@@ -113,6 +118,7 @@ public class IObjectXR : NetworkBehaviour
             _grabbingClientId = clientId;
             _grabbingLeft     = kvp.Key.Item2;
             _grabOffset       = transform.position - hand.position;
+            _drifting?.Pause();
             return;
         }
     }
@@ -121,6 +127,12 @@ public class IObjectXR : NetworkBehaviour
 
     private void ApplyVisibility()
     {
+        if (NetworkManager == null)
+        {
+            foreach (var r in GetComponentsInChildren<Renderer>())
+                r.enabled = true;
+            return;
+        }
         bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared;
         bool isOwner  = NetworkManager.LocalClientId == gameOwnerId;
         bool visible  = alwaysVisible || isOwner || isShared;

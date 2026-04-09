@@ -27,8 +27,27 @@ public class Drifting : MonoBehaviour
         offsetZ = Random.Range(0f, 100f);
     }
 
+    public bool IsPaused { get; private set; }
+
+    public void Pause()
+    {
+        IsPaused = true;
+    }
+
+    public void Resume()
+    {
+        startPos = transform.position;
+        startRot = transform.rotation;
+        offsetX = Random.Range(0f, 100f);
+        offsetY = Random.Range(0f, 100f);
+        offsetZ = Random.Range(0f, 100f);
+        IsPaused = false;
+    }
+
     void Update()
     {
+        if (IsPaused) return;
+
         // 位置漂移
         float x = Mathf.Sin((Time.time + offsetX) * moveSpeed) * moveRange;
         float y = Mathf.Sin((Time.time + offsetY) * moveSpeed * 0.7f) * moveRange;
