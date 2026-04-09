@@ -11,6 +11,7 @@ public class ShareUIManager : MonoBehaviour
     public static ShareUIManager Instance { get; private set; }
 
     [Header("Panels")]
+    [SerializeField] private GameObject panelPeopleNearby; // 选人面板（演示用）
     [SerializeField] private GameObject panelIdle;     // Share? + Cancel
     [SerializeField] private GameObject panelWaiting;  // Waiting... + Cancel
     [SerializeField] private GameObject panelAccept;   // Accept Share? + Cancel
@@ -26,6 +27,9 @@ public class ShareUIManager : MonoBehaviour
     [SerializeField] private bool positionInFrontOfHead = false;
     [SerializeField] private float distanceToHead = 0.6f;
     [SerializeField] private float headHeightOffset = -0.1f;
+
+    [Header("People Nearby")]
+    [SerializeField] private GameObject[] highlightRings; // 3个，对应三个头像的高亮圈
 
     [Header("Timeout")]
     [SerializeField] private float requestTimeout = 30f; // 等待对方 Accept 的超时秒数
@@ -81,7 +85,7 @@ public class ShareUIManager : MonoBehaviour
             PositionInFrontOfHead();
         uiRoot.SetActive(true);
         bool isSharing = SharedState.Instance != null && SharedState.Instance.IsShared;
-        SetPanel(isSharing ? panelSharing : panelIdle);
+        SetPanel(isSharing ? panelSharing : panelPeopleNearby);
     }
 
     private void PositionInFrontOfHead()
@@ -152,8 +156,21 @@ public class ShareUIManager : MonoBehaviour
         Hide();
     }
 
+    // ─── 按钮回调（People Nearby）────────────────────────────────
+
+    public void OnClickPerson(int index)
+    {
+        // 高亮选中的圈，其余隐藏
+        if (highlightRings != null)
+            for (int i = 0; i < highlightRings.Length; i++)
+                if (highlightRings[i] != null)
+                    highlightRings[i].SetActive(i == index);
+        SetPanel(panelIdle);
+    }
+
     private void SetPanel(GameObject active)
     {
+        if (panelPeopleNearby) panelPeopleNearby.SetActive(panelPeopleNearby == active);
         if (panelIdle)     panelIdle.SetActive(panelIdle      == active);
         if (panelWaiting)  panelWaiting.SetActive(panelWaiting  == active);
         if (panelAccept)   panelAccept.SetActive(panelAccept   == active);
