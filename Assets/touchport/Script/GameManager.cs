@@ -1,10 +1,11 @@
 using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
 /// <summary>
 /// 业务逻辑层兼网络中转。所有触发 Share 的入口都在这里。
-/// XR触发路径：HandsManager检测到握手/A键 → FireInteract() → OnInteract事件 → Handshaked() → SharedState.ToggleShare()
+/// XR触发路径：HandsManager检测到握手/A键 → FireHandshake() → OnHandshake事件 → Handshaked() → SharedState.ToggleShare()
 /// UI触发路径：本机点Share按钮 → FireUIRequestShare() → 对方弹Accept → FireUIAcceptShare() → SharedState.StartShare()
 /// 两条路最终都写 SharedState.IsShared，由 SharedState 广播给下游（PortalSpawner等）
 /// </summary>
@@ -13,10 +14,10 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance { get; private set; }
 
     // ─── 触发事件（XR + 桌面通用）────────────────────────────────
-    // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireInteract()
+    // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireHandshake()
     // Handshaked 订阅此事件，收到后调 SharedState.ToggleShare()
-    public static event Action OnInteract;
-    public static void FireInteract() => OnInteract?.Invoke();
+    public static event Action OnHandshake;
+    public static void FireHandshake() => OnHandshake?.Invoke();
 
     // ─── UI 流程事件（ShareUIManager 订阅这些来驱动 UI 显示）────
     public static event Action OnUIWaiting;       // 发起方进入等待状态（显示"等待对方..."）
@@ -40,9 +41,9 @@ public class GameManager : NetworkBehaviour
         if (Instance == this) Instance = null;
     }
 
-    // OnEnable/OnDisable 订阅 OnInteract，确保 GameManager 激活时才处理事件
-    private void OnEnable()  => OnInteract += Handshaked;
-    private void OnDisable() => OnInteract -= Handshaked;
+    // OnEnable/OnDisable 订阅 OnHandshake，确保 GameManager 激活时才处理事件
+    private void OnEnable()  => OnHandshake += Handshaked;
+    private void OnDisable() => OnHandshake -= Handshaked;
 
     // XR握手/A键 触发路径的终点：收到事件后切换共享状态
     // 只有服务端（IsServer）才能写 SharedState.IsShared
@@ -96,13 +97,27 @@ public class GameManager : NetworkBehaviour
     }
 
     // 第4步：服务端调 StartShare()，IsShared变True，PortalSpawner等下游自动响应
+    // accepter（点Accept的人）的 stencil 在 2s 后切换，对应 "Connecting..." 面板时长
     [ServerRpc(RequireOwnership = false)]
-    private void AcceptShareServerRpc()
+    private void AcceptShareServerRpc(ServerRpcParams rpcParams = default)
     {
         Debug.Log("[GM] 服务端收到Accept，StartShare");
         SharedState.Instance?.StartShare(); // 只设True，不Toggle
         NotifyAcceptShareClientRpc();
+        ulong accepter = rpcParams.Receive.SenderClientId;
+        StartCoroutine(DelayedSwitchStencil(accepter));
     }
+
+    private IEnumerator DelayedSwitchStencil(ulong targetClientId)
+    {
+        yield return new WaitForSeconds(2f);
+        SwitchStencilClientRpc(new ClientRpcParams
+            { Send = new ClientRpcSendParams { TargetClientIds = new[] { targetClientId } } });
+    }
+
+    [ClientRpc]
+    private void SwitchStencilClientRpc(ClientRpcParams _ = default)
+        => ChangeLayer.Instance?.SwitchStencilLocal();
 
     [ClientRpc]
     private void NotifyAcceptShareClientRpc()

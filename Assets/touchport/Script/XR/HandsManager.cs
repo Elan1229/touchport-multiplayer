@@ -177,7 +177,7 @@ public class HandsManager : NetworkBehaviour
         if (shouldFire && _toggleCooldown <= 0f)
         {
             _toggleCooldown = ToggleCooldownDuration;
-            GameManager.FireInteract();
+            GameManager.FireHandshake();
         }
 
         _wasClose = proximityTriggered;

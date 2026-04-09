@@ -8,6 +8,7 @@ public class PortalSpawner : NetworkBehaviour
     [SerializeField] private GameObject portalPrefab;
 
     private NetworkObject _spawnedPortal;
+    private bool _spawnPending = false;
 
     void Awake() => Instance = this;
 
@@ -25,6 +26,18 @@ public class PortalSpawner : NetworkBehaviour
             ChangeLayer.Instance.ChangeRendererLayerMask("StencilThisWorld", "layer1");
             ChangeLayer.Instance.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
         }
+        GameManager.OnHandshake += OnHandshakeTriggered;
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        GameManager.OnHandshake -= OnHandshakeTriggered;
+    }
+
+    private void OnHandshakeTriggered()
+    {
+        if (!IsServer) return;
+        _spawnPending = true;
     }
 
     // 每帧检测 portal 的生死
@@ -36,9 +49,16 @@ public class PortalSpawner : NetworkBehaviour
         bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared;
         bool hasPortal = _spawnedPortal != null && _spawnedPortal.IsSpawned;
 
-        // 处于共享状态 且 还没有 portal → 生成（位置由手部数据决定）
-        if (!hasPortal && isShared)
+        // 握手/A键触发了（_spawnPending），且处于共享状态，且还没有 portal → 生成
+        if (_spawnPending && isShared && !hasPortal)
+        {
+            _spawnPending = false;
             SpawnPortalServer();
+        }
+        else if (_spawnPending && !isShared)
+        {
+            _spawnPending = false; // 握手把 sharing 关掉了，不生成
+        }
 
         // 不再共享 且 还有 portal → 收门
         if (hasPortal && !isShared)

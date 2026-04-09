@@ -135,7 +135,7 @@ public class ShareUIManager : MonoBehaviour
     {
         uiRoot.SetActive(true);
         SetPanel(panelAccepted);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(2f);
         Hide();
     }
 

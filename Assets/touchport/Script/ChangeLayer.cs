@@ -62,6 +62,24 @@ public class ChangeLayer : MonoBehaviour
 
     }
 
+    /// <summary>把 Stencil 两个 feature 设为与出生相反（UI sharing 接收方用：直接切换到对方世界）。</summary>
+    public void SwitchStencilLocal()
+    {
+        var nm = NetworkManager.Singleton;
+        if (nm == null || !nm.IsClient) return;
+
+        if (nm.LocalClientId == 0)
+        {
+            ChangeRendererLayerMask("StencilThisWorld", "layer1");
+            ChangeRendererLayerMask("StencilPortalWorld", "layer0");
+        }
+        else if (nm.LocalClientId == 1)
+        {
+            ChangeRendererLayerMask("StencilThisWorld", "layer0");
+            ChangeRendererLayerMask("StencilPortalWorld", "layer1");
+        }
+    }
+
     /// <summary>按本机 ClientId 把 Stencil 两个 feature 设回与出生一致。</summary>
     public void ResetStencilLocal()
     {
