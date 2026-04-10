@@ -12,7 +12,7 @@ public class Drifting : MonoBehaviour
     public float rotateSpeed = 0.5f;
     public float rotateRange = 15f;
 
-    private Vector3 startPos;
+    public Vector3 startPos;
     private Quaternion startRot;
     private float offsetX, offsetY, offsetZ;
 

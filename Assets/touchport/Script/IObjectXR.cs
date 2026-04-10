@@ -35,6 +35,8 @@ public class IObjectXR : NetworkBehaviour
     private bool  _grabbingLeft;
     private Vector3 _grabOffset;
 
+    public bool IsBeingHeld => _grabbingClientId != ulong.MaxValue;
+
     // 缓存碰撞体（可能有多个），spawn 后取一次
     private Collider[] _colliders;
 
