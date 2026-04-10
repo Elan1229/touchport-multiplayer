@@ -113,7 +113,7 @@ public class HandsManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void ReportHandServerRpc(
         bool isLeft, Vector3 position, bool isTracked, InputMode mode, bool isGripping,
-        HandKeyPoints keyPoints, bool aButtonPressed,
+        HandKeyPoints keyPoints, bool aButtonPressed, bool triggerPressed,
         ServerRpcParams rpcParams = default)
     {
         ulong clientId = rpcParams.Receive.SenderClientId;
@@ -141,6 +141,9 @@ public class HandsManager : NetworkBehaviour
             _aPressedThisFrame = true;
             Debug.Log($"[touchport] 服务端收到A键 来自clientId={clientId}");
         }
+
+        if (triggerPressed && !isLeft)
+            GameManager.FirePortalToggle();
     }
 
     // ─── 触发检测（每帧，Server only）──────────────────────────

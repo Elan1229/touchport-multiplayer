@@ -145,6 +145,23 @@ public class GameManager : NetworkBehaviour
         ChangeLayer.Instance?.ResetStencilLocal();
     }
 
+    // ─── Portal Double Toggle ────────────────────────────────────
+
+    [SerializeField] private GameObject portalDouble; // 场景里放好的 portaldouble 物件
+
+    public static void FirePortalToggle() => Instance?.PortalToggleServerRpc();
+
+    [ServerRpc(RequireOwnership = false)]
+    private void PortalToggleServerRpc()
+        => TogglePortalDoubleClientRpc();
+
+    [ClientRpc]
+    private void TogglePortalDoubleClientRpc()
+    {
+        if (portalDouble != null)
+            portalDouble.SetActive(!portalDouble.activeSelf);
+    }
+
     // ─── 取消/拒绝 ───────────────────────────────────────────────
 
     // 请求超时或发起方主动取消，双方静默恢复初始UI

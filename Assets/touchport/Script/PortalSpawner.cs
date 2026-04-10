@@ -7,6 +7,9 @@ public class PortalSpawner : NetworkBehaviour
 
     [SerializeField] private GameObject portalPrefab;
 
+    [Tooltip("勾选后 portal 生成在对方玩家位置，否则生成在两人中点")]
+    [SerializeField] private bool spawnAtOpponent = false;
+
     private NetworkObject _spawnedPortal;
     private bool _spawnPending = false;
 
@@ -65,21 +68,31 @@ public class PortalSpawner : NetworkBehaviour
             DespawnPortal();
     }
 
-    // 在两手中点生成 portal，朝向两人连线方向，并触发 StartShare
+    // 生成 portal：中点模式或对方位置模式
     private void SpawnPortalServer()
     {
         if (!TryGetBothPlayerPositions(out Vector3 p0, out Vector3 p1)) return;
 
-        Vector3 mid = (p0 + p1) * 0.5f + Vector3.up * 0.2f;
         Vector3 line = p1 - p0;
         line.y = 0f;
         if (line.sqrMagnitude < 1e-4f)
             line = Vector3.right; // 两人重叠时的 fallback 方向
         line.Normalize();
 
+        Vector3 spawnPos;
+        if (spawnAtOpponent)
+        {
+            spawnPos = p1 + Vector3.up * 0.2f;
+            line = -line; // 朝向从对方指向自己
+        }
+        else
+        {
+            spawnPos = (p0 + p1) * 0.5f + Vector3.up * 0.2f;
+        }
+
         Quaternion rot = Quaternion.LookRotation(line, Vector3.up);
 
-        var go = Instantiate(portalPrefab, mid, rot);
+        var go = Instantiate(portalPrefab, spawnPos, rot);
         var net = go.GetComponent<NetworkObject>();
         if (net == null)
         {

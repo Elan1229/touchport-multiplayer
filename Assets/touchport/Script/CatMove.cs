@@ -37,6 +37,14 @@ public class CatMove : NetworkBehaviour
         _grab = GetComponent<IObjectXR>();
         _mover = GetComponent<CreatureMover>();
         _cc = GetComponent<CharacterController>();
+
+        if (IsServer && runTarget == null)
+        {
+            ulong opponentId = _grab.gameOwnerId == 0 ? 1UL : 0UL;
+            foreach (var no in FindObjectsByType<NetworkObject>(FindObjectsSortMode.None))
+                if (no.IsSpawned && no.IsPlayerObject && no.OwnerClientId == opponentId)
+                { runTarget = no.transform; break; }
+        }
     }
 
     private void Update()

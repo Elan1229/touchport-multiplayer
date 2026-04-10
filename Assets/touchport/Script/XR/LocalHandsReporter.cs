@@ -46,7 +46,8 @@ public class LocalHandsReporter : MonoBehaviour
     private InputDevice rightDevice;  // 右手柄设备
     private XROrigin xrOrigin;        // 用来把 tracking space 坐标转成世界坐标
     private float _timer;             // 上报计时器
-    private bool _prevAButton = false; // 上一帧 A 键状态，用来检测按下瞬间
+    private bool _prevAButton = false;       // 上一帧 A 键状态，用来检测按下瞬间
+    private bool _prevTriggerButton = false; // 上一帧 trigger 状态
     private float _debugTimer = 0f;   // debug log 计时器，防止每帧刷屏
 
     private void Start()
@@ -116,6 +117,12 @@ public class LocalHandsReporter : MonoBehaviour
                        rightDevice.TryGetFeatureValue(CommonUsages.primaryButton, out bool a) && a;
         bool aPressed = aButton && !_prevAButton;
         _prevAButton = aButton;
+
+        // 食指 trigger（右手柄），只上报按下的那一帧
+        bool triggerButton = rightDevice.isValid &&
+                             rightDevice.TryGetFeatureValue(CommonUsages.triggerButton, out bool t) && t;
+        bool triggerPressed = triggerButton && !_prevTriggerButton;
+        _prevTriggerButton = triggerButton;
         if (aPressed)
             Debug.Log($"[touchport] A键本地检测到 RightMode={RightMode} rightDevice有效={rightDevice.isValid}");
 
@@ -129,9 +136,9 @@ public class LocalHandsReporter : MonoBehaviour
 
         // 把所有采集到的数据一次性发给服务端，左右手分两条
         HandsManager.Instance.ReportHandServerRpc(
-            true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP,  false);
+            true,  leftHandTracker.position,  LeftMode  != InputMode.Off, LeftMode,  leftGrip,  leftKP,  false, false);
         HandsManager.Instance.ReportHandServerRpc(
-            false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip, rightKP, aPressed);
+            false, rightHandTracker.position, RightMode != InputMode.Off, RightMode, rightGrip, rightKP, aPressed, triggerPressed);
 
         // 上报头部位置（Center Eye）
         var headDevice = InputDevices.GetDeviceAtXRNode(XRNode.CenterEye);
