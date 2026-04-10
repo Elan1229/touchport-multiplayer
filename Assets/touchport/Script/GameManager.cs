@@ -140,7 +140,10 @@ public class GameManager : NetworkBehaviour
 
     [ClientRpc]
     private void NotifyStopSharingClientRpc()
-        => OnStopSharing?.Invoke();
+    {
+        OnStopSharing?.Invoke();
+        ChangeLayer.Instance?.ResetStencilLocal();
+    }
 
     // ─── 取消/拒绝 ───────────────────────────────────────────────
 
