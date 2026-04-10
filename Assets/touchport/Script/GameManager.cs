@@ -153,7 +153,15 @@ public class GameManager : NetworkBehaviour
 
     [ServerRpc(RequireOwnership = false)]
     private void PortalToggleServerRpc()
-        => TogglePortalDoubleClientRpc();
+    {
+        var state = SharedState.Instance;
+        if (state == null) return;
+        if (state.IsShared)
+            state.StopShare();
+        else
+            state.StartShare();
+        TogglePortalDoubleClientRpc();
+    }
 
     [ClientRpc]
     private void TogglePortalDoubleClientRpc()

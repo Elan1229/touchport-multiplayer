@@ -279,6 +279,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 6397291155531275063, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6499904794721092959, guid: 44a0de0f766c9634eb66f1d56b7edc9d, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -3205,7 +3209,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 2.9, y: 0.0000048002753}
+  m_AnchoredPosition: {x: 2.9, y: 0.0005629101}
   m_SizeDelta: {x: 183, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &792567667
@@ -5148,7 +5152,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1286357470}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.98883975
+  m_Size: 0.9999948
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
