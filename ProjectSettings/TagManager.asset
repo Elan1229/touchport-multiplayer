@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Head
   - Base
+  - DreamCore
   layers:
   - Default
   - TransparentFX

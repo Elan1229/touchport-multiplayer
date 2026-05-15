@@ -13,6 +13,10 @@ public class OrbGlow : MonoBehaviour
     [SerializeField] private float pulseLightIntensity = 4f;
     [SerializeField] private float pulseDuration       = 0.6f;  // 从亮到暗的时间
 
+    [Header("Pulse Triggers")]
+    [SerializeField] private bool pulseOnCollision = true;
+    [SerializeField] private bool pulseOnTrigger = true;
+
     [Header("Emission")]
     [SerializeField] private Color glowColor = new Color(0.4f, 0.8f, 1f); // 淡蓝白
     [SerializeField] private float idleEmission  = 0.4f;
@@ -34,8 +38,22 @@ public class OrbGlow : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log($"[OrbGlow] 碰到了 {collision.gameObject.name}，mat={_mat != null}");
-        if (_pulseRoutine != null) return; // 冷却中，忽略
+        if (!pulseOnCollision) return;
+
+        TryPulse(collision.gameObject);
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!pulseOnTrigger) return;
+
+        TryPulse(other.gameObject);
+    }
+
+    private void TryPulse(GameObject source)
+    {
+        Debug.Log($"[OrbGlow] Pulse from {source.name}, mat={_mat != null}");
+        if (_pulseRoutine != null) return; // cooldown
         _pulseRoutine = StartCoroutine(Pulse());
     }
 

@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 6467433402952280685}
   - component: {fileID: 2578715787957031862}
   - component: {fileID: -914748932998782206}
+  - component: {fileID: 2285347643335881881}
   m_Layer: 0
   m_Name: SM_Hyacinth_PastellBlue_Big
   m_TagString: Untagged
@@ -136,3 +137,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &2285347643335881881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4809857706931833784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d923df54f0e4fb985d8e858dfc4a0a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  elementType: 2
+  elementID: SM_Hyacinth_PastellBlue_Big
+  displayName: PastellBlue
