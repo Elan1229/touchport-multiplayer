@@ -517,8 +517,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 892590356}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.00029043108, y: -0.946138, z: 0.0008499995, w: -0.3237624}
-  m_LocalPosition: {x: -0.66575015, y: 1.1648383, z: 1.1737502}
+  m_LocalRotation: {x: 0.12924907, y: 0.47506046, z: -0.07077717, w: 0.8675269}
+  m_LocalPosition: {x: -0.34421507, y: 0.71024704, z: -0.07462553}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -685,8 +685,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 360933055563848828, guid: 12db646a15a4847bdb57ba5a72b4e00a, type: 3}
+      propertyPath: idleEmission
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 360933055563848828, guid: 12db646a15a4847bdb57ba5a72b4e00a, type: 3}
       propertyPath: pulseDuration
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 360933055563848828, guid: 12db646a15a4847bdb57ba5a72b4e00a, type: 3}
+      propertyPath: pulseLightIntensity
+      value: 0.01
       objectReference: {fileID: 0}
     - target: {fileID: 2376825388919012233, guid: 12db646a15a4847bdb57ba5a72b4e00a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -767,6 +775,10 @@ PrefabInstance:
     - target: {fileID: 548665603113508248, guid: 302fdea07d00c4efbb60d8793d8aebb2, type: 3}
       propertyPath: m_Name
       value: Room0
+      objectReference: {fileID: 0}
+    - target: {fileID: 548665603113508248, guid: 302fdea07d00c4efbb60d8793d8aebb2, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2443330966063561779, guid: 302fdea07d00c4efbb60d8793d8aebb2, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1273,7 +1285,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6203968673742381471}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
