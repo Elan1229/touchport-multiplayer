@@ -180,6 +180,128 @@ Dream 系统里 Room 和 Skybox 两类 Element 换成 GS 资产非常合理：
 
 ---
 
+### 激活态颜色改为 HSV Hue 循环
+
+**用户**：激活态颜色不固定，从 _Color 的 Hue 出发，以 PulseSpeed 同周期在 Hue 空间循环，S/V 不变。
+
+**实现**：
+- 移除 `_ActivatedColor` 属性
+- Shader 内加 `RGBtoHSV` / `HSVtoRGB` 工具函数
+- `hueOffset = frac(Time.y * _PulseSpeed / 2π)` → 和 sine 完全同周期
+- `cycleHSV = float3(frac(baseHSV.x + hueOffset), baseHSV.y, baseHSV.z)`
+- 激活态 emission = `HSVtoRGB(cycleHSV) * _ActivatedIntensity + rim`
+
+---
+
+### collisionIntensity 和 _ActivatedIntensity 的关系
+
+碰撞发生时，Controller 的 `collisionIntensity` 会通过 `_mat.SetFloat("_ActivatedIntensity", ...)` 覆盖材质里的 `_ActivatedIntensity`。两个字段并存，脚本优先。材质里的值只是初始默认值，运行时被 Controller 覆盖。**已知行为，保持现状。**
+
+---
+
+### 去掉 GlowNeonController 里的 collisionColor
+
+**用户**：Controller 里的 collisionColor 和 Material 里的 _ActivatedColor 重复，去掉 Controller 里的 color。
+
+**修改**：移除 `collisionColor` 字段和 `_activatedColor` 私有变量，`Activate(Color, float)` → `Activate(float)`，`ApplyActivatedParams` 不再写 `_ActivatedColor`。颜色统一在 Material Inspector 里的 Activated Color 设置。
+
+---
+
+### GlowNeonController 移植 Point Light 控制
+
+**用户**：把 OrbGlow 里控制 Point Light 的部分移植到 GlowNeonController，Point Light 已复制挂在 GlowingCapsule 子物体下。
+
+**实现**：
+- 新增 Inspector 字段：`pointLight`、`idleLightIntensity`（0.3）、`activatedLightIntensity`（4）
+- Awake 里从材质读取 `_PulseSpeed` 存为私有变量，与 Shader 保持同步
+- Update 里用同款 sine 公式驱动 light breathing：`Mathf.Sin(Time.time * _pulseSpeed) * 0.35f + 0.65f`
+- `pointLight.intensity = Mathf.Lerp(idleLight, activatedLightIntensity, _activatedWeight)`，_activatedWeight 已由协程平滑驱动，light 自动跟随激活/退出过渡
+
+---
+
+### 修复 GlowNeonController 编译错误
+
+**问题**：Inspector 只显示 Transition，Collision Activation 不见了。原因：`[HDR]` 是 ShaderLab 语法，在 C# 里不存在，导致编译错误，Unity 展示旧版编译结果。
+
+**修复**：`[HDR]` → `[ColorUsage(true, true)]`（C# 中 HDR 颜色的正确 attribute）
+
+---
+
+### GlowNeon 碰撞触发激活
+
+**用户**：碰到任何有 Collider 的物体就激活，一直碰就一直激活，离开后 3s 恢复呼吸。写到 GlowNeonController 里。
+
+**实现**：在 GlowNeonController 加入 `HashSet<Collider> _contacts` 追踪当前所有接触：
+- `OnCollisionEnter` / `OnTriggerEnter` → `ContactEnter`：加入集合，取消冷却，立即 Activate
+- `OnCollisionExit` / `OnTriggerExit` → `ContactExit`：移出集合，Count == 0 时才开始 3s 倒计时
+- 3s 后调用 Deactivate，平滑过渡回呼吸
+
+新增 Inspector 参数：`cooldownAfterExit`（默认 3s）、`collisionColor`（HDR）、`collisionIntensity`。
+
+---
+
+### GlowNeon 激活态接口
+
+**用户**：当小球碰撞到其他物体后有激活状态，亮度和颜色需要可调，留出接口供外部代码输入，没有输入时按自己的节奏呼吸。
+
+**实现方案**：
+- `GlowNeon.shader` 新增三个属性：`_ActivatedColor`（HDR）、`_ActivatedIntensity`（float）、`_Activated`（float 0~1）
+- Shader 内 `lerp(breathingEmission, activatedEmission, _Activated)`：0 = 呼吸，1 = 激活，中间值平滑过渡
+- 新建 `GlowNeonController.cs`：`Activate(Color, float)`、`ActivateFor(Color, float, float)`、`Deactivate()`，用协程驱动 `_Activated` 的平滑过渡
+
+**接口示例**：
+```csharp
+glow.Activate(new Color(1f, 0.4f, 0f), 5f);      // 永久激活
+glow.ActivateFor(Color.yellow, 6f, 2f);            // 激活2秒后自动退出
+glow.Deactivate();                                  // 手动退出
+```
+
+**相关文件**：
+- `Assets/touchport/Material/GlowNeon.shader`（修改）
+- `Assets/touchport/Script/GlowNeonController.cs`（新建）
+
+---
+
+### 创建 GlowNeon 发光胶囊体
+
+**用户**：在 DemoSinglePlayerNoMR 场景中创建发光胶囊体，需要 Shader Graph（Lit, URP）含 Fresnel + 脉动发光 + 全属性暴露，配套材质，场景中添加 GlowingCapsule，检查 URP HDR 和 Bloom。
+
+**诊断**：
+- URP Asset `m_SupportsHDR: 0` → HDR 渲染器级别关闭，Bloom 无效
+- DefaultVolumeProfile 的 GUID 和 URP Global Settings 中 `m_VolumeProfile` 一致，Bloom 设置（上次已改 intensity 1.5）是有效的
+- Camera 的 `m_HDR: 1` 已开启
+
+**实现选择**：ShaderGraph JSON 手写有几百行且版本敏感，改用 URP HLSL `.shader` 实现，属性和效果完全一致。
+
+**已修改/创建的文件**：
+- `Assets/Settings/URP Asset.asset`：m_SupportsHDR 0 → 1
+- `Assets/touchport/Material/GlowNeon.shader`：HLSL shader，属性：Color(HDR)、Glow Intensity、Rim Color(HDR)、Rim Intensity、Fresnel Power、Pulse Speed
+- `Assets/touchport/Material/GlowNeon.shader.meta`：GUID f1e2d3c4b5a697880b1c2d3e4f5a6b78
+- `Assets/touchport/Material/GlowNeon_Mat.mat`：默认参数青色/紫色
+- `Assets/touchport/Material/GlowNeon_Mat.mat.meta`：GUID a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6
+- `Assets/touchport/DemoSinglePlayerNoMR.unity`：添加 GlowingCapsule（位置 0,1,2），加入 SceneRoots
+
+---
+
+### DreamCore 小球发光效果修复
+
+**用户**：小球暗暗的没有发光感，想要 Inside Out 那种自己会发光的视觉。
+
+**诊断出的根本原因**：
+1. `DefaultVolumeProfile.asset` 中 Bloom intensity = 0（完全关闭）
+2. DreamCore prefab 中 OrbGlow 的 `idleEmission: 0.2`，实际 emission = 0.2 × 0.96 ≈ 0.19，远低于 Bloom threshold 0.9
+3. Point Light intensity = 0.002，几乎不存在
+
+**已修改的文件**：
+- `Assets/DefaultVolumeProfile.asset`：Bloom intensity 0 → 1.5，threshold 0.9 → 0.8
+- `Assets/touchport/Prefab/DreamCore.prefab`：idleEmission 0.2 → 2.5，pulseEmission 0.4 → 6，idleLightIntensity 0.002 → 0.3，pulseLightIntensity 0.005 → 4
+
+**仍需在 Editor 手动完成**：
+- Glow Shell：给 DreamCore 加 1.3x 的 Sphere child，Additive blending + radial gradient 材质
+- 粒子 Trace：当前 prefab 里没有 Particle System，需要新增，材质用 Particles/Unlit + Additive blend
+
+---
+
 ### 确认 GS 方向：预制资产，不做实时
 
 **用户**：预制的预制的，不要想实时，还要等几年吧
