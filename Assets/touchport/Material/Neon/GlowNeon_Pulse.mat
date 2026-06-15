@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GlowPulse
+  m_Name: GlowNeon_Pulse
   m_Shader: {fileID: -6465566751694194690, guid: 77d365e88b4816743b4404d2365a7d42, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -100,11 +100,12 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GlowStrength: 12
+    - _GlowStrength: 2
+    - _GlowStrengthNeonColor: 0.05
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
-    - _PulseSpeed: 5
+    - _PulseSpeed: 2
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -119,8 +120,8 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 1, g: 0.6987091, b: 0, a: 1}
-    - _NeonColor: {r: 1, g: 0.82796687, b: 0.514151, a: 0}
+    - _EmissionColor: {r: 1, g: 0.6583849, b: 0, a: 1}
+    - _NeonColor: {r: 1, g: 0.8, b: 0.96402997, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

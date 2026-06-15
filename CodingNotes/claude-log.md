@@ -336,3 +336,66 @@ glow.Deactivate();                                  // 手动退出
 重点观察：帧率 + Inspector 显示的 splat 数量，判断 Room 级场景的 splat 上限。
 
 ---
+
+---
+
+## Session 3（续上次 TriggerForwarder 中断）
+
+### TriggerForwarder 删除
+
+**背景**：上次对话中断时，TriggerForwarder.cs 已创建，但 GlowNeonController 缺少 ForwardTriggerEnter/ForwardTriggerExit 方法。
+
+**用户**：加了 Rigidbody（Kinematic）到 GlowingCapsule，不要 TriggerForwarder 了。
+
+**操作**：
+- 删除 TriggerForwarder.cs 及 .meta
+- 删除 GlowNeonController 里的 ForwardTriggerEnter/ForwardTriggerExit
+- 原因：有 Rigidbody 后，子物体 trigger 事件自动传到父节点，OrbGlow 也是同理
+
+---
+
+### NeonGlow_Pulse 新材质（ShaderGraph）
+
+**用户**：换了一个新的 ShaderGraph 材质，效果好，但 Game 视图没有光晕。
+
+**问题**：Camera 未勾选 Post Processing。
+**修复**：Hierarchy → Camera → Inspector → 勾 Post Processing。
+
+**ShaderGraph 节点链路**：Time → Multiply(PulseSpeed) → Sine → Remap → Emission
+
+---
+
+### 呼吸灯优化
+
+**用户**：呼吸太急促。
+**修复**：PulseSpeed 从 2.0 降到 0.5 左右。
+
+**用户**：想要 x^8 的波形（高峰短、暗处长），但太多时间全黑。
+**修复**：
+- Sine → Remap 后加 Power 节点（A=Remap输出，B=8）
+- Power 后加 Lerp 节点（A=0.15打底，B=1，T=Power输出）→ Emission
+- 效果：[0.15, 1] 范围呼吸，永不全黑
+
+---
+
+### GlowNeonController 大幅简化
+
+**用户**：去掉 Point Light、Transition、_Activated 整套，碰撞只改 PulseSpeed 和 GlowStrength。
+
+**新逻辑**：
+- 碰撞进入 → `_PulseSpeed = 3, _GlowStrength = 3`
+- 全部离开后 5s cooldown → 渐变回 `_PulseSpeed = 1, _GlowStrength = 1`
+- 子物体 Trigger + 父物体 Rigidbody，OnTriggerEnter/Exit 自动接收
+
+**注意**：ShaderGraph property 的 Reference 名默认加下划线前缀，`PulseSpeed` → `_PulseSpeed`。
+
+---
+
+### 退出时闪烁 bug 修复
+
+**问题**：deactivate 时把 PulseSpeed 也做了 Lerp，导致 sine 波形频率变化、相位跳变，出现狂闪。
+
+**修复**：
+- PulseSpeed 直接 snap 回 idlePulseSpeed
+- 只对 GlowStrength 做 Lerp 渐变（deactivateDuration 默认 1.5s）
+

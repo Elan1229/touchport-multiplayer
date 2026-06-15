@@ -3,180 +3,107 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 挂在使用 GlowNeon 材质的物体上。
-/// 平时自动呼吸（由 Shader 内部 Time 驱动）。
-/// 碰到任何有 Collider 的物体时激活；所有接触离开后 3s 自动恢复呼吸。
-/// 外部代码也可以直接调用 Activate / Deactivate。
+/// 挂在使用 NeonGlow_Pulse 材质的物体上。
+/// 需要：本物体有 Rigidbody（Kinematic），子物体有 Trigger Collider。
+/// 碰撞进入 → PulseSpeed/GlowStrength 切换到激活值；
+/// 所有接触离开后 cooldownAfterExit 秒恢复闲置值。
 /// </summary>
 public class GlowNeonController : MonoBehaviour
 {
-    [Header("Collision Activation")]
-    [SerializeField] private float cooldownAfterExit  = 3f;  // 离开后多久恢复呼吸
-    [SerializeField] private float collisionIntensity = 2f;
+    [Header("Idle State")]
+    [SerializeField] private float idlePulseSpeed   = 1f;
+    [SerializeField] private float idleGlowStrength = 1f;
 
-    [Header("Point Light")]
-    [SerializeField] private Light pointLight;
-    [SerializeField] private float idleLightIntensity     = 0.05f;   // 呼吸时的光强基准
-    [SerializeField] private float activatedLightIntensity = 0.2f;    // 激活时的光强
-
-    [Header("Transition")]
-    [SerializeField] private float activateSpeed   = 4f;
-    [SerializeField] private float deactivateSpeed = 2f;
-
-    // 当前激活权重，由协程驱动，写入 Shader 的 _Activated 属性
-    private float _activatedWeight;
-    private float _activatedIntensity = 5f;
-    private float _pulseSpeed         = 1f;   // 从材质读取，与 Shader 保持同步
+    [Header("Active State")]
+    [SerializeField] private float activePulseSpeed    = 3f;
+    [SerializeField] private float activeGlowStrength  = 3f;
+    [SerializeField] private float cooldownAfterExit   = 5f;
+    [SerializeField] private float deactivateDuration  = 1.5f;  // 渐变回闲置的时长
 
     private Material _mat;
-    private Coroutine _transitionRoutine;
-    private Coroutine _autoDeactivateRoutine;
-
-    // 正在接触的 Collider 集合；全部离开才开始倒计时
     private readonly HashSet<Collider> _contacts = new HashSet<Collider>();
+    private Coroutine _cooldownRoutine;
 
-    // ── 只读状态 ───────────────────────────────────────────────
-    public bool IsActivated => _activatedWeight > 0.01f;
-
-    // ── Unity 生命周期 ─────────────────────────────────────────
     private void Awake()
     {
         var rend = GetComponent<Renderer>();
         if (rend != null)
-        {
-            _mat = rend.material; // 实例化，不影响场景里其他物体
-            _pulseSpeed = _mat.GetFloat("_PulseSpeed");
-        }
-
-        if (pointLight != null)
-            pointLight.intensity = idleLightIntensity;
-    }
-
-    private void Update()
-    {
-        if (pointLight == null) return;
-
-        // 与 Shader 同步的呼吸脉动（公式和 GlowNeon.shader 里一致）
-        float pulse      = Mathf.Sin(Time.time * _pulseSpeed) * 0.45f + 0.55f;
-        float idleLight  = idleLightIntensity * pulse;
-
-        // 激活时过渡到 activatedLightIntensity，_activatedWeight 由协程平滑驱动
-        pointLight.intensity = Mathf.Lerp(idleLight, activatedLightIntensity, _activatedWeight);
+            _mat = rend.material;
     }
 
     private void OnDisable()
     {
         _contacts.Clear();
-        SetWeight(0f);
-        if (pointLight != null)
-            pointLight.intensity = 0f;
+        CancelCooldown();
+        SetIdle();
     }
 
-    // ── 碰撞检测 ───────────────────────────────────────────────
+    // ── Trigger 检测（子物体 Trigger + 本物体 Rigidbody，事件自动上传）──
 
-    private void OnCollisionEnter(Collision collision)  => ContactEnter(collision.collider);
-    private void OnCollisionExit(Collision collision)   => ContactExit(collision.collider);
-    private void OnTriggerEnter(Collider other)         => ContactEnter(other);
-    private void OnTriggerExit(Collider other)          => ContactExit(other);
-
-    private void ContactEnter(Collider col)
+    private void OnTriggerEnter(Collider other)
     {
-        _contacts.Add(col);
-        // 新接触进来：取消冷却倒计时，立即激活
-        CancelAutoDeactivate();
-        Activate(collisionIntensity);
-        Debug.Log("Glowing Neon Collide");
+        _contacts.Add(other);
+        CancelCooldown();
+        SetActive();
     }
 
-    private void ContactExit(Collider col)
+    private void OnTriggerExit(Collider other)
     {
-        _contacts.Remove(col);
+        _contacts.Remove(other);
         if (_contacts.Count == 0)
         {
-            // 所有接触都离开了，开始 cooldown 倒计时
-            CancelAutoDeactivate();
-            _autoDeactivateRoutine = StartCoroutine(AutoDeactivate(cooldownAfterExit));
+            CancelCooldown();
+            _cooldownRoutine = StartCoroutine(CooldownRoutine());
         }
     }
 
-    // ── 公开接口 ───────────────────────────────────────────────
+    // ── 状态切换 ───────────────────────────────────────────────
 
-    /// <summary>
-    /// 激活：亮度切换到 intensity，颜色由 Material 的 _ActivatedColor 决定。
-    /// </summary>
-    public void Activate(float intensity)
-    {
-        _activatedIntensity = intensity;
-        ApplyActivatedParams();
-        StartTransition(1f, activateSpeed);
-        CancelAutoDeactivate();
-    }
-
-    /// <summary>
-    /// 激活并在 duration 秒后自动退出激活态。
-    /// </summary>
-    public void ActivateFor(float intensity, float duration)
-    {
-        Activate(intensity);
-        CancelAutoDeactivate();
-        _autoDeactivateRoutine = StartCoroutine(AutoDeactivate(duration));
-    }
-
-    /// <summary>
-    /// 退出激活态，平滑过渡回呼吸状态。
-    /// </summary>
-    public void Deactivate()
-    {
-        CancelAutoDeactivate();
-        StartTransition(0f, deactivateSpeed);
-    }
-
-    // ── 内部逻辑 ───────────────────────────────────────────────
-
-    private void ApplyActivatedParams()
+    private void SetActive()
     {
         if (_mat == null) return;
-        _mat.SetFloat("_ActivatedIntensity", _activatedIntensity);
+        _mat.SetFloat("_PulseSpeed",   activePulseSpeed);
+        _mat.SetFloat("_GlowStrength", activeGlowStrength);
     }
 
-    private void SetWeight(float weight)
+    private void SetIdle()
     {
-        _activatedWeight = weight;
-        if (_mat != null)
-            _mat.SetFloat("_Activated", _activatedWeight);
+        if (_mat == null) return;
+        _mat.SetFloat("_PulseSpeed",   idlePulseSpeed);
+        _mat.SetFloat("_GlowStrength", idleGlowStrength);
     }
 
-    private void StartTransition(float target, float speed)
-    {
-        if (_transitionRoutine != null)
-            StopCoroutine(_transitionRoutine);
-        _transitionRoutine = StartCoroutine(TransitionTo(target, speed));
-    }
+    // ── Cooldown 协程 ──────────────────────────────────────────
 
-    private IEnumerator TransitionTo(float target, float speed)
+    private IEnumerator CooldownRoutine()
     {
-        while (!Mathf.Approximately(_activatedWeight, target))
+        yield return new WaitForSeconds(cooldownAfterExit);
+
+        // PulseSpeed 直接 snap 回闲置（lerp 频率会导致波形相位跳变闪烁）
+        if (_mat != null) _mat.SetFloat("_PulseSpeed", idlePulseSpeed);
+
+        // 只对 GlowStrength 做渐变
+        float fromGlow = _mat != null ? _mat.GetFloat("_GlowStrength") : activeGlowStrength;
+        float elapsed  = 0f;
+
+        while (elapsed < deactivateDuration)
         {
-            SetWeight(Mathf.MoveTowards(_activatedWeight, target, speed * Time.deltaTime));
+            elapsed += Time.deltaTime;
+            float t = elapsed / deactivateDuration;
+            _mat.SetFloat("_GlowStrength", Mathf.Lerp(fromGlow, idleGlowStrength, t));
             yield return null;
         }
-        SetWeight(target);
-        _transitionRoutine = null;
+
+        SetIdle();
+        _cooldownRoutine = null;
     }
 
-    private IEnumerator AutoDeactivate(float delay)
+    private void CancelCooldown()
     {
-        yield return new WaitForSeconds(delay);
-        Deactivate();
-        _autoDeactivateRoutine = null;
-    }
-
-    private void CancelAutoDeactivate()
-    {
-        if (_autoDeactivateRoutine != null)
+        if (_cooldownRoutine != null)
         {
-            StopCoroutine(_autoDeactivateRoutine);
-            _autoDeactivateRoutine = null;
+            StopCoroutine(_cooldownRoutine);
+            _cooldownRoutine = null;
         }
     }
 }
