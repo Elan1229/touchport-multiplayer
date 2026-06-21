@@ -196,9 +196,11 @@ MonoBehaviour:
   - {fileID: -9086347727100294814}
   - {fileID: -6475163135174674507}
   - {fileID: 8651874951400080553}
+  - {fileID: 3175854034652185792}
   - {fileID: -2920563367967174663}
+  - {fileID: 4816659267525974591}
   - {fileID: -4809713883164207646}
-  m_RendererFeatureMap: 6249823ce2cee681b57735796f9923a6a9444dbf6da21178f94f4c34171378d7e295bbcab47640bd
+  m_RendererFeatureMap: 6249823ce2cee681b57735796f9923a6a9444dbf6da21178c044ef096be6122cf94f4c34171378d73f9afa841536d842e295bbcab47640bd
   m_UseNativeRenderPass: 0
   xrSystemData: {fileID: 0}
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
@@ -224,6 +226,32 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &3175854034652185792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1420da76f6c802f47b69847c98678787, type: 3}
+  m_Name: PortalClipPlaneBegin
+  m_EditorClassIdentifier: 
+  m_Active: 1
+--- !u!114 &4816659267525974591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1765ac015ea5e924d83bec90b73e1ea1, type: 3}
+  m_Name: PortalClipPlaneEnd
+  m_EditorClassIdentifier: 
+  m_Active: 1
 --- !u!114 &8651874951400080553
 MonoBehaviour:
   m_ObjectHideFlags: 0

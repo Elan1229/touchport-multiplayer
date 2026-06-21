@@ -14,7 +14,8 @@ GameObject:
   - component: {fileID: 4005941613847540162}
   - component: {fileID: 3338309984979913735}
   - component: {fileID: 6065211115806520141}
-  m_Layer: 0
+  - component: {fileID: 2838772868883963846}
+  m_Layer: 8
   m_Name: PortalTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,6 +158,18 @@ MonoBehaviour:
   OnEnterBack:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2838772868883963846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490951816923829187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e294280cffa6abc4dbc7a754dcfb2395, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6459127067260702680
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +181,7 @@ GameObject:
   - component: {fileID: 8644834607874700138}
   - component: {fileID: 5390969371570488601}
   - component: {fileID: 20827634157652319}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Portal VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -282,7 +295,7 @@ GameObject:
   - component: {fileID: 2789742838352414470}
   - component: {fileID: 6548816731616142524}
   - component: {fileID: 6086333436550851132}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PortalRender
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -368,7 +381,7 @@ GameObject:
   - component: {fileID: 6410515238237606374}
   - component: {fileID: 6757730337560535714}
   - component: {fileID: -1232651449142491913}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Portal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -385,8 +398,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2615346180064726196}
   - {fileID: 2789742838352414470}
@@ -405,7 +418,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1273919607
+  GlobalObjectIdHash: 1193481297
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1

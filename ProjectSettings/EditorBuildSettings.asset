@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/touchport/SceneArchive/Demo 1.unity
     guid: edd3a39347e8c2345931adc19a40d52a
   - enabled: 0
-    path: Assets/touchport/DemoMultiplayerNoMR.unity
+    path: Assets/touchport/DemoMultiplayer_NoMR.unity
     guid: 60994a6461342c542a6434d6ed4e9bb7
   - enabled: 0
     path: Assets/touchport/MultiTest.unity
