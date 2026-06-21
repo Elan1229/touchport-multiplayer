@@ -26,3 +26,4 @@ Shader "Custom/StencilGeom"
         }
     }
 }
+
