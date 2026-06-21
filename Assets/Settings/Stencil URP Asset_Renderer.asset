@@ -238,7 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1420da76f6c802f47b69847c98678787, type: 3}
   m_Name: PortalClipPlaneBegin
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
 --- !u!114 &4816659267525974591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1765ac015ea5e924d83bec90b73e1ea1, type: 3}
   m_Name: PortalClipPlaneEnd
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
 --- !u!114 &8651874951400080553
 MonoBehaviour:
   m_ObjectHideFlags: 0
