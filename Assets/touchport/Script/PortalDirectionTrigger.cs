@@ -1,71 +1,255 @@
+// using Unity.Netcode;
+// using UnityEngine;
+// using UnityEngine.Events;
+
+// public class PortalDirectionTrigger : MonoBehaviour
+// {
+//     private ChangeLayer changeLayer;
+
+
+//     [Header("Network or Local")]
+//     [Tooltip(
+//         "【正式用 / 打包】勾选：只处理本机玩家（沿父级找 NetworkObject + IsOwner）。\n" +
+//         "【本地测试】取消：任意 Rigidbody+Collider 撞进来也会触发。")]
+//     [SerializeField] private bool requireNetwork = true;
+
+
+//     [Header("Events")]
+//     public UnityEvent OnCrossedToWorldB;   // 原 OnEnterFront
+//     public UnityEvent OnCrossedToWorldA;   // 原 OnEnterBack
+
+
+//     // 当前世界状态：false = 在A世界（portal显示B），true = 在B世界（portal显示A）
+//     private bool inOtherWorld = false;
+
+
+//     // 记录本次触发的进入方向和来源 Collider
+//     private float entryDot = 0f;
+//     private Collider trackedHead = null;
+
+//     void Start()
+//     {
+//         if (changeLayer == null)
+//             changeLayer = ChangeLayer.Instance;
+
+       
+//     }
+
+//     private void OnTriggerEnter(Collider other)
+//     {
+//         // 可传递物品（XR / Screen），不影响世界状态
+//         var objXR = other.GetComponentInParent<IObjectXR>();
+//         if (objXR != null) { objXR.TransferToOther(); return; }
+
+//         var objScreen = other.GetComponentInParent<IObjectScreen>();
+//         if (objScreen != null) { objScreen.TransferToOther(); return; }
+
+//         if (!other.CompareTag("Head")) return;
+
+//         if (requireNetwork)
+//         {
+//             var netObj = other.GetComponentInParent<NetworkObject>();
+//             if (netObj == null || !netObj.IsOwner) return;
+//         }
+
+//         // 记录进入时的方向（head在portal哪一侧）
+//         entryDot = GetDot(other.transform.position);
+//         trackedHead = other;
+
+//         // 脑袋碰到portal → 立刻切世界
+//         inOtherWorld = !inOtherWorld;
+//         ApplyLayers();
+//         (inOtherWorld ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
+
+//         Debug.Log($"[Portal] Enter dot={entryDot:F3} → 现在在 {(inOtherWorld ? "B" : "A")} 世界");
+//     }
+
+//     private void OnTriggerExit(Collider other)
+//     {
+//         if (other != trackedHead) return;
+//         trackedHead = null;
+
+//         float exitDot = GetDot(other.transform.position);
+
+//         // 出去方向和进来方向同侧 → 退回来了，撤销切换
+//         bool retreated = Mathf.Sign(exitDot) == Mathf.Sign(entryDot);
+
+//         if (retreated)
+//         {
+//             inOtherWorld = !inOtherWorld;
+//             ApplyLayers();
+//             (inOtherWorld ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
+//             Debug.Log($"[Portal] 退回来了 → 恢复到 {(inOtherWorld ? "B" : "A")} 世界");
+//         }
+//         else
+//         {
+//             Debug.Log($"[Portal] 穿过去了 → 保持 {(inOtherWorld ? "B" : "A")} 世界");
+//         }
+//     }
+
+//     // portal中心到head的方向，与portal正面做点积
+//     private float GetDot(Vector3 otherPos)
+//         => Vector3.Dot((otherPos - transform.position).normalized, transform.forward);
+
+//     private void ApplyLayers()
+//     {
+//         if (changeLayer == null) changeLayer = ChangeLayer.Instance;
+//         if (changeLayer == null) { Debug.LogWarning("[Portal] ChangeLayer.Instance is null"); return; }
+
+//         if (inOtherWorld)
+//         {
+//             // 身在B世界，portal窗口显示A
+//             changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
+//             changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
+//         }
+//         else
+//         {
+//             // 身在A世界，portal窗口显示B
+//             changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer0");
+//             changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer1");
+//         }
+//     }
+// }
+
+
+
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class PortalDirectionTrigger : MonoBehaviour
 {
-    private ChangeLayer ChangeLayer;
+    [Header("References")]
+    [Tooltip("CenterEyeAnchor 上的 Camera")]
+    [SerializeField] private Camera headCamera;
+    [Tooltip("portal 面片的 Renderer，进入区域时隐藏")]
+    [SerializeField] private Renderer portalRenderer;
 
-    [Header("network or local")]
-    [Tooltip(
-        "【正式用 / 打包】勾选：只处理本机玩家（沿父级找 NetworkObject + IsOwner）。\n" +
-        "【测 Trigger 用】取消：无 NetworkManager 的空场景里，任意 Rigidbody+Collider 撞进来也会改 Stencil；测完务必勾回去。")]
-    [SerializeField] private bool requireLocalNetworkOwner = true;
+    [Header("Network")]
+    [SerializeField] private bool requireNetwork = true;
+
+    [Header("Threshold")]
+    [Tooltip("切换距离，建议和 nearClipPlane 一致，Quest 约 0.1m")]
+    [SerializeField] private float switchDistance = 0.1f;
 
     [Header("Events")]
-    public UnityEvent OnEnterFront;
-    public UnityEvent OnEnterBack;
+    public UnityEvent OnCrossedToWorldB;
+    public UnityEvent OnCrossedToWorldA;
+
+    private ChangeLayer changeLayer;
+    private bool inWorldB = false;
+
+    // 状态机
+    private bool insideZone = false;
+    private bool enteredFromPositiveSide;
+    private float lastDist;
+    private bool initialized = false;
 
     void Start()
     {
-        if (ChangeLayer == null)
-            ChangeLayer = ChangeLayer.Instance;
+        changeLayer = ChangeLayer.Instance;
+        if (headCamera == null) headCamera = Camera.main;
+
+        if (headCamera != null)
+        {
+            lastDist = GetSignedDist();
+            initialized = true;
+        }
+
+        ApplyLayers();
     }
 
+    // 物体传递仍走 Trigger（花之类的）
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Collide!");
-
-        // 花或其他可传递物品（XR）
         var objXR = other.GetComponentInParent<IObjectXR>();
-        Debug.Log($"[touchport] PortalTrigger hit: {other.name} IObjectXR={objXR != null}");
         if (objXR != null) { objXR.TransferToOther(); return; }
 
-        // 花或其他可传递物品（Screen）
         var objScreen = other.GetComponentInParent<IObjectScreen>();
-        Debug.Log($"[touchport] PortalTrigger hit: {other.name} IObjectScreen={objScreen != null}");
         if (objScreen != null) { objScreen.TransferToOther(); return; }
+    }
 
-        if(!other.CompareTag("Head"))
-        return;
+    void Update()
+    {
+        if (!initialized || headCamera == null || changeLayer == null) return;
 
+        float dist = GetSignedDist();
+        float t = switchDistance;
 
-        if (requireLocalNetworkOwner)
+        if (!insideZone)
         {
-            // 正式联机：Collider 可在子物体，NetworkObject 在父级时用 InParent
-            var netObj = other.GetComponentInParent<NetworkObject>();
-            if (netObj == null || !netObj.IsOwner)
-                return;
+            // 监听两条线，哪条进来都切，并记住是哪条
+            if (lastDist >= t && dist < t)
+            {
+                insideZone = true;
+                enteredFromPositiveSide = true;
+                FlipWorld();
+            }
+            else if (lastDist <= -t && dist > -t)
+            {
+                insideZone = true;
+                enteredFromPositiveSide = false;
+                FlipWorld();
+            }
         }
         else
         {
-            // 仅本地测物理/Trigger：不校验 NGO；谁撞进来都改 Layer（勿用于正式联机）
-            Debug.Log($"[PortalTrigger 调试] 进入: {other.name}（requireLocalNetworkOwner=false）", this);
+            if (enteredFromPositiveSide)
+            {
+                if (lastDist < t && dist >= t)        // 同一条线出去 → 退回 → 切回
+                {
+                    insideZone = false;
+                    FlipWorld();
+                }
+                else if (lastDist > -t && dist <= -t) // 另一条线出去 → 穿过 → 忽略
+                {
+                    insideZone = false;
+                }
+            }
+            else
+            {
+                if (lastDist > -t && dist <= -t)      // 同一条线出去 → 退回 → 切回
+                {
+                    insideZone = false;
+                    FlipWorld();
+                }
+                else if (lastDist < t && dist >= t)   // 另一条线出去 → 穿过 → 忽略
+                {
+                    insideZone = false;
+                }
+            }
         }
 
-        Vector3 dir = (other.transform.position - transform.position).normalized;
-        float dot = Vector3.Dot(dir, transform.forward);
-        Debug.Log($"[PortalTrigger] dot={dot:F3} dir={dir} forward={transform.forward} ChangeLayer={ChangeLayer}");
+        // 在区域内隐藏面片（near clip 范围内反正看不见，隐藏更干净）
+        if (portalRenderer != null)
+            portalRenderer.enabled = !insideZone;
 
-        if (dot > 0)
+        lastDist = dist;
+    }
+
+    private float GetSignedDist()
+        => Vector3.Dot(headCamera.transform.position - transform.position, transform.forward);
+
+    private void FlipWorld()
+    {
+        inWorldB = !inWorldB;
+        ApplyLayers();
+        (inWorldB ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
+        Debug.Log($"[Portal] 切换到 {(inWorldB ? "B" : "A")} 世界");
+    }
+
+    private void ApplyLayers()
+    {
+        if (changeLayer == null) return;
+        if (inWorldB)
         {
-            ChangeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer0");
-            ChangeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer1");
+            changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
+            changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
         }
-        else if (dot < 0)
+        else
         {
-            ChangeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-            ChangeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
+            changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer0");
+            changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer1");
         }
     }
 }
