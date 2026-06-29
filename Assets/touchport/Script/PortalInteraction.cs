@@ -1,3 +1,5 @@
+using System.Text;
+using TMPro;
 using UnityEngine;
 
 public class PortalInteraction : MonoBehaviour
@@ -15,6 +17,9 @@ public class PortalInteraction : MonoBehaviour
     }
 
     // ── Inspector ────────────────────────────────────────────────────────────
+
+    [Header("Debug")]
+    [SerializeField] private TextMeshProUGUI debugText;
 
     [Header("Input")]
     [SerializeField] private HandInputSource input;
@@ -57,14 +62,16 @@ public class PortalInteraction : MonoBehaviour
     // dual move用
     private Vector3 lastHandCenter;
 
-    // scale grab snapshot
-    private Vector3  leftGrabLocalPos,  rightGrabLocalPos;
+    // scale grab snapshot（世界坐标，不受 scale 变化影响）
+    private Vector3  leftGrabWorldPos,  rightGrabWorldPos;
     private Vector3  leftGrabScale,     rightGrabScale;
     private bool     leftGrabbing,      rightGrabbing;
-    private Collider leftGrabbedEdge,   rightGrabbedEdge;  // grab时锁定的edge
+    private Collider leftHandGrabbedEdge,   rightHandGrabbedEdge;  // grab时锁定的edge
 
     // 每帧input
     private PortalHandState left, right;
+
+    private readonly StringBuilder _sb = new();
 
     // ── Start ────────────────────────────────────────────────────────────────
 
@@ -97,6 +104,7 @@ public class PortalInteraction : MonoBehaviour
 
         UpdateSensors();
         RunStateMachine();
+        RefreshDebugText();
     }
 
     // ── 传感器层（每帧刷新原始检测数据）────────────────────────────────────
@@ -180,9 +188,9 @@ public class PortalInteraction : MonoBehaviour
 
     void UpdateIdle()
     {
-        // Scale优先
-        if ((left.isScaleIntent  && leftTouchedEdge  != null) ||
-            (right.isScaleIntent && rightTouchedEdge != null))
+        // Scale toggle：按下 G + 手在任意 edge 上 → 进入 Scaling
+        bool scalePressed = left.isScaleJustPressed || right.isScaleJustPressed;
+        if (scalePressed && (leftTouchedEdge != null || rightTouchedEdge != null))
         {
             EnterScaling();
             return;
@@ -329,79 +337,64 @@ public class PortalInteraction : MonoBehaviour
     void EnterScaling()
     {
         mode = PortalMode.Scaling;
-        leftGrabbing      = false;
-        rightGrabbing     = false;
-        leftGrabbedEdge   = null;
-        rightGrabbedEdge  = null;
+
+        // 进入时立即锁定当前接触的 edge 并记录 grab 快照
+        leftGrabbing = leftTouchedEdge != null;
+        if (leftGrabbing)
+        {
+            leftGrabWorldPos    = left.worldPosition;
+            leftGrabScale       = transform.localScale;
+            leftHandGrabbedEdge = leftTouchedEdge;
+        }
+        else leftHandGrabbedEdge = null;
+
+        rightGrabbing = rightTouchedEdge != null;
+        if (rightGrabbing)
+        {
+            rightGrabWorldPos    = right.worldPosition;
+            rightGrabScale       = transform.localScale;
+            rightHandGrabbedEdge = rightTouchedEdge;
+        }
+        else rightHandGrabbedEdge = null;
     }
 
     void UpdateScaling()
     {
-        // 退出条件：key 松开且没有新的 edge 接触
-        // 一旦 grab 住，只看 key 是否还按着；不要求手一直贴着 edge
-        bool leftActive  = left.isScaleIntent  && (leftGrabbing  || leftTouchedEdge  != null);
-        bool rightActive = right.isScaleIntent && (rightGrabbing || rightTouchedEdge != null);
-
-        if (!leftActive && !rightActive) { EnterIdle(); return; }
-
-        if (leftActive)
+        // Toggle 退出：再按一次 G → 回 Idle，不看手在不在 edge
+        if (left.isScaleJustPressed || right.isScaleJustPressed)
         {
-            if (!leftGrabbing)
-            {
-                leftGrabLocalPos = transform.InverseTransformPoint(left.worldPosition);
-                leftGrabScale    = transform.localScale;
-                leftGrabbedEdge  = leftTouchedEdge;   // 锁定触发的 edge
-                leftGrabbing     = true;
-            }
-            if (leftGrabbedEdge != null)
-                ApplyScale(left.worldPosition, leftGrabbedEdge, leftGrabLocalPos, leftGrabScale);
+            EnterIdle();
+            return;
         }
-        else leftGrabbing = false;
 
-        if (rightActive)
-        {
-            if (!rightGrabbing)
-            {
-                rightGrabLocalPos = transform.InverseTransformPoint(right.worldPosition);
-                rightGrabScale    = transform.localScale;
-                rightGrabbedEdge  = rightTouchedEdge;
-                rightGrabbing     = true;
-            }
-            if (rightGrabbedEdge != null)
-                ApplyScale(right.worldPosition, rightGrabbedEdge, rightGrabLocalPos, rightGrabScale);
-        }
-        else rightGrabbing = false;
+        if (leftGrabbing && leftHandGrabbedEdge != null)
+            ApplyScale(left.worldPosition, leftHandGrabbedEdge, leftGrabWorldPos, leftGrabScale);
+
+        if (rightGrabbing && rightHandGrabbedEdge != null)
+            ApplyScale(right.worldPosition, rightHandGrabbedEdge, rightGrabWorldPos, rightGrabScale);
     }
 
-    void ApplyScale(Vector3 worldPos, Collider edge, Vector3 grabLocalPos, Vector3 grabScale)
+    void ApplyScale(Vector3 worldPos, Collider edge, Vector3 grabWorldPos, Vector3 grabScale)
     {
         if (edge == edgeLeft || edge == edgeRight)
         {
+            // 沿 portal 本地 X 轴方向的世界空间位移，不受 scale 变化影响
             float sign    = (edge == edgeRight) ? 1f : -1f;
-            float distant = (transform.InverseTransformPoint(worldPos).x - grabLocalPos.x) * sign;
-            if (distant < 0f)
-                distant = Mathf.Max(distant, -Mathf.Min(
-                    (grabScale.x - minScaleX) / 2f,
-                     grabScale.y - minScaleY,
-                     grabScale.z - minScaleZ));
+            float distant = Vector3.Dot(worldPos - grabWorldPos, transform.right) * sign;
             transform.localScale = new Vector3(
-                Mathf.Max(grabScale.x + 2f * distant, minScaleX),
-                Mathf.Max(grabScale.y +      distant, minScaleY),
-                Mathf.Max(grabScale.z +      distant, minScaleZ));
+                Mathf.Max(grabScale.x + 2f        * distant, minScaleX),
+                Mathf.Max(grabScale.y + 0.25f     * distant, minScaleY),
+                Mathf.Max(grabScale.z + 0.25f     * distant, minScaleZ));
         }
         else if (edge == edgeTop || edge == edgeBottom)
         {
+            // portal 只绕 Y 旋转，本地 Y 始终与世界 Y 对齐
             float sign    = (edge == edgeTop) ? 1f : -1f;
-            float distant = (worldPos.y - transform.TransformPoint(grabLocalPos).y) * sign;
-            if (distant < 0f)
-                distant = Mathf.Max(distant, -Mathf.Min(
-                     grabScale.x - minScaleX,
-                    (grabScale.y - minScaleY) / 2f,
-                     grabScale.z - minScaleZ));
+            float distant = (worldPos.y - grabWorldPos.y) * sign;
             transform.localScale = new Vector3(
-                Mathf.Max(grabScale.x +      distant, minScaleX),
-                Mathf.Max(grabScale.y + 2f * distant, minScaleY),
-                Mathf.Max(grabScale.z +      distant, minScaleZ));
+                Mathf.Max(grabScale.x + 0.25f     * distant, minScaleX),
+                Mathf.Max(grabScale.y + 2f        * distant, minScaleY),
+                Mathf.Max(grabScale.z + 0.25f     * distant, minScaleZ));
         }
     }
 
@@ -437,16 +430,18 @@ public class PortalInteraction : MonoBehaviour
 
     // ── Debug ────────────────────────────────────────────────────────────────
 
-    void OnGUI()
+    void RefreshDebugText()
     {
-        GUI.Label(new Rect(10, 10, 500, 240),
-            $"Mode: {mode}\n" +
-            $"L face: {leftFaceSide} | R face: {rightFaceSide}\n" +
-            $"L edge: {(leftTouchedEdge  != null ? leftTouchedEdge.name  : "none")}\n" +
-            $"R edge: {(rightTouchedEdge != null ? rightTouchedEdge.name : "none")}\n" +
-            $"WaitTimer: {waitTimer:F2}\n" +
-            $"Scale: {transform.localScale}\n" +
-            $"Rot Y: {transform.eulerAngles.y:F1}");
+        if (debugText == null) return;
+        _sb.Clear();
+        _sb.AppendLine($"Mode: {mode}");
+        _sb.AppendLine($"L face: {leftFaceSide} | R face: {rightFaceSide}");
+        _sb.AppendLine($"L edge: {(leftTouchedEdge  != null ? leftTouchedEdge.name  : "none")}");
+        _sb.AppendLine($"R edge: {(rightTouchedEdge != null ? rightTouchedEdge.name : "none")}");
+        _sb.AppendLine($"WaitTimer: {waitTimer:F2}");
+        _sb.AppendLine($"Scale: {transform.localScale}");
+        _sb.Append    ($"Rot Y: {transform.eulerAngles.y:F1}");
+        debugText.text = _sb.ToString();
     }
 
     void OnDrawGizmosSelected()
