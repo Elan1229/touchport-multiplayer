@@ -100,7 +100,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _GlowStrength: 2
+    - _GlowStrength: 1
     - _GlowStrengthNeonColor: 0.05
     - _Metallic: 0
     - _OcclusionStrength: 1

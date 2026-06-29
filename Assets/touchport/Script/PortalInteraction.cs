@@ -18,10 +18,10 @@ public class PortalInteraction : MonoBehaviour
 
     // ── Inspector ────────────────────────────────────────────────────────────
 
-    [Header("Debug")]
+    [Header("Debug | fallback = GetComponentInChildren<TextMeshProUGUI>")]
     [SerializeField] private TextMeshProUGUI debugText;
 
-    [Header("Input")]
+    [Header("Input | fallback = FindObjectOfType<HandInputSource>")]
     [SerializeField] private HandInputSource input;
 
     [Header("Scale Limits")]
