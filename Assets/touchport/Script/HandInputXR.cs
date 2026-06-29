@@ -15,7 +15,7 @@ public class HandInputXR : HandInputSource
     [SerializeField] private OVRSkeleton leftSkeleton;
     [SerializeField] private OVRSkeleton rightSkeleton;
 
-    [Header("Tip Colliders（自动创建，也可手动拖入）")]
+    [Header("Tip Colliders （auto generated or use reference in the Inspector")]
     [SerializeField] private SphereCollider leftTipCollider;
     [SerializeField] private SphereCollider rightTipCollider;
     [SerializeField] private float tipRadius = 0.015f;   // 1.5cm，指尖大小

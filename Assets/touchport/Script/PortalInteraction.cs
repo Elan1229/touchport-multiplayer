@@ -360,8 +360,8 @@ public class PortalInteraction : MonoBehaviour
 
     void UpdateScaling()
     {
-        // Toggle 退出：再按一次 G → 回 Idle，不看手在不在 edge
-        if (left.isScaleJustPressed || right.isScaleJustPressed)
+        // 退出：两手的 scale intent 都消失（Desktop: G toggle 关闭；XR: pinch 松开）
+        if (!left.isScaleIntent && !right.isScaleIntent)
         {
             EnterIdle();
             return;

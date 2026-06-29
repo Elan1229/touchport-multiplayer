@@ -102,7 +102,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -210,7 +210,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -318,7 +318,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -347,7 +347,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &8187951887708003767
 Transform:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 364711310
+  GlobalObjectIdHash: 3619344924
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -523,17 +523,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4cc021a5eab94fa3bcd17fb913d6dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftHand: {fileID: 0}
-  rightHand: {fileID: 0}
-  scaleKey: 20
+  debugText: {fileID: 0}
+  input: {fileID: 0}
   minScaleX: 0.3
   minScaleY: 0.4
   minScaleZ: 0.09
   faceEnterDuration: 2
   rotateSensitivity: 150
   moveSensitivity: 1
-  edgeContactThreshold: 0.15
-  faceContactThreshold: 0.05
+  pushThreshold: 0
+  retractThreshold: 0.05
 --- !u!1 &4421029795892076089
 GameObject:
   m_ObjectHideFlags: 0
@@ -636,7 +635,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -744,7 +743,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -852,7 +851,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -1024,7 +1023,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 364711310
+  GlobalObjectIdHash: 619970087
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1064,14 +1063,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4cc021a5eab94fa3bcd17fb913d6dcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftHand: {fileID: 0}
-  rightHand: {fileID: 0}
-  scaleKey: 20
+  debugText: {fileID: 0}
+  input: {fileID: 0}
   minScaleX: 0.3
   minScaleY: 0.4
   minScaleZ: 0.09
-  faceEnterDuration: 2
+  faceEnterDuration: 1
   rotateSensitivity: 150
   moveSensitivity: 1
-  edgeContactThreshold: 0.15
-  faceContactThreshold: 0.05
+  pushThreshold: 0
+  retractThreshold: 0.05

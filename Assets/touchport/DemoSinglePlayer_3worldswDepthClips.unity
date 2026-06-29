@@ -2778,7 +2778,7 @@ GameObject:
   - component: {fileID: 1780027006}
   - component: {fileID: 1780027005}
   m_Layer: 0
-  m_Name: HandInputManager
+  m_Name: Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3757,10 +3757,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1373141344804742115, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1415873946054276803, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 619970087
@@ -3805,14 +3801,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4395918593345582207, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5986184165281031133, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6408833629639585854, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
       propertyPath: m_Name
       value: PortalSquare
@@ -3821,46 +3809,14 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 3619344924
       objectReference: {fileID: 0}
-    - target: {fileID: 6560377865437672053, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6916226192503561162, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7735092738254747563, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
       propertyPath: input
       value: 
       objectReference: {fileID: 1780027005}
     - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: leftHand
-      value: 
-      objectReference: {fileID: 752658316}
-    - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: scaleKey
-      value: 21
-      objectReference: {fileID: 0}
-    - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
       propertyPath: debugText
       value: 
       objectReference: {fileID: 89796131}
-    - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: rightHand
-      value: 
-      objectReference: {fileID: 2023541399}
-    - target: {fileID: 8478835996920360370, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: faceEnterDuration
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8619145925403117742, guid: 34272de3039014b11bce9a7cc59cc0d1, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
