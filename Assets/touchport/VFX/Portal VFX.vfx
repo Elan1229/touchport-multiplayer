@@ -1214,7 +1214,7 @@ MonoBehaviour:
   raytracedScaleMode: 0
   needsOwnSort: 0
   needsOwnAabbBuffer: 0
-  shaderGraph: {fileID: 0}
+  shaderGraph: {fileID: 4333940904281232215, guid: 7c5af6e2b8d94f1a983c2e7b6d0f5a93, type: 3}
   materialSettings:
     m_PropertyNames: []
     m_PropertyValues: []
@@ -1974,7 +1974,7 @@ MonoBehaviour:
   raytracedScaleMode: 0
   needsOwnSort: 0
   needsOwnAabbBuffer: 0
-  shaderGraph: {fileID: 0}
+  shaderGraph: {fileID: 4333940904281232215, guid: 7c5af6e2b8d94f1a983c2e7b6d0f5a93, type: 3}
   materialSettings:
     m_PropertyNames: []
     m_PropertyValues: []
