@@ -1649,7 +1649,7 @@ Transform:
   m_GameObject: {fileID: 354192997}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.89493144, y: -1.5859381, z: -1.4713762}
+  m_LocalPosition: {x: -0.18299997, y: 0.21000004, z: 0.09899998}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -2864,7 +2864,7 @@ GameObject:
   - component: {fileID: 744138202}
   - component: {fileID: 744138201}
   m_Layer: 0
-  m_Name: Portal VFX
+  m_Name: Portal VFX occlusion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2949,24 +2949,24 @@ VisualEffect:
       m_Array:
       - m_Value:
           serializedVersion: 2
-          key0: {r: 0.85348094, g: 0.36080098, b: 0, a: 1}
-          key1: {r: 1.139464, g: 0.69174916, b: 0.14512043, a: 1}
-          key2: {r: 0.85348094, g: 0.52915823, b: 0, a: 0}
-          key3: {r: 0, g: 0, b: 0, a: 0}
+          key0: {r: 3.5137255, g: 68.4, b: 96.87843, a: 1}
+          key1: {r: 6.3845143, g: 53.60547, b: 115.808784, a: 1}
+          key2: {r: 10.859676, g: 30.542837, b: 145.31859, a: 1}
+          key3: {r: 0, g: 16.690197, b: 7.9058824, a: 0}
           key4: {r: 0, g: 0, b: 0, a: 0}
           key5: {r: 0, g: 0, b: 0, a: 0}
           key6: {r: 0, g: 0, b: 0, a: 0}
           key7: {r: 0, g: 0, b: 0, a: 0}
           ctime0: 0
-          ctime1: 41056
-          ctime2: 65535
-          ctime3: 0
+          ctime1: 13107
+          ctime2: 33539
+          ctime3: 65535
           ctime4: 0
           ctime5: 0
           ctime6: 0
           ctime7: 0
-          atime0: 5975
-          atime1: 53777
+          atime0: 0
+          atime1: 65535
           atime2: 65535
           atime3: 0
           atime4: 0
@@ -2974,9 +2974,9 @@ VisualEffect:
           atime6: 0
           atime7: 0
           m_Mode: 0
-          m_ColorSpace: -1
-          m_NumColorKeys: 3
-          m_NumAlphaKeys: 3
+          m_ColorSpace: 1
+          m_NumColorKeys: 4
+          m_NumAlphaKeys: 2
         m_Name: Gradient Color
         m_Overridden: 1
     m_NamedObject:
@@ -3729,7 +3729,7 @@ Transform:
   m_GameObject: {fileID: 1036239255}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.9228238, y: 0.4680618, z: -0.58614147}
+  m_LocalPosition: {x: -0.15510762, y: 2.264, z: 0.9842347}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -4242,7 +4242,7 @@ Transform:
   m_GameObject: {fileID: 1232792663}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0779314, y: 1.7959381, z: 1.5703762}
+  m_LocalPosition: {x: 0, y: 2.937, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4382,7 +4382,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!73398921 &1255836011
 VFXRenderer:
   serializedVersion: 1
@@ -4391,7 +4391,7 @@ VFXRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1255836010}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -4473,9 +4473,9 @@ Transform:
   m_GameObject: {fileID: 1255836010}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.9, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: 0, y: 2.905, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4722,10 +4722,10 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -0.18299997, y: 0.21000004, z: 0.09899998}
+      - m_Value: {x: -0.18299997, y: 3.147, z: 0.09899998}
         m_Name: StartPoint
         m_Overridden: 1
-      - m_Value: {x: 0.21430004, y: 0.16900003, z: 0.22930002}
+      - m_Value: {x: 0.21430004, y: 3.106, z: 0.22930002}
         m_Name: EndPoint
         m_Overridden: 1
     m_Vector4f:
@@ -4941,7 +4941,7 @@ Transform:
   m_GameObject: {fileID: 1425745724}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0779314, y: 1.7959381, z: 1.5703762}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5659,7 +5659,39 @@ VisualEffect:
     m_AnimationCurve:
       m_Array: []
     m_Gradient:
-      m_Array: []
+      m_Array:
+      - m_Value:
+          serializedVersion: 2
+          key0: {r: 1.7069619, g: 0.72160196, b: 0, a: 1}
+          key1: {r: 16.94838, g: 10.289072, b: 2.1585202, a: 1}
+          key2: {r: 1.7069619, g: 1.0583165, b: 0, a: 0}
+          key3: {r: 0, g: 0, b: 0, a: 0}
+          key4: {r: 0, g: 0, b: 0, a: 0}
+          key5: {r: 0, g: 0, b: 0, a: 0}
+          key6: {r: 0, g: 0, b: 0, a: 0}
+          key7: {r: 0, g: 0, b: 0, a: 0}
+          ctime0: 0
+          ctime1: 41441
+          ctime2: 65535
+          ctime3: 0
+          ctime4: 0
+          ctime5: 0
+          ctime6: 0
+          ctime7: 0
+          atime0: 5975
+          atime1: 53777
+          atime2: 65535
+          atime3: 0
+          atime4: 0
+          atime5: 0
+          atime6: 0
+          atime7: 0
+          m_Mode: 0
+          m_ColorSpace: 1
+          m_NumColorKeys: 3
+          m_NumAlphaKeys: 3
+        m_Name: Gradient Color
+        m_Overridden: 1
     m_NamedObject:
       m_Array: []
     m_Bool:
@@ -5923,7 +5955,7 @@ Transform:
   m_GameObject: {fileID: 1803555945}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.2922314, y: -1.6269381, z: -1.3410761}
+  m_LocalPosition: {x: 0.21430004, y: 0.16900003, z: 0.22930002}
   m_LocalScale: {x: 0.05, y: 0.05, z: 0.05}
   m_ConstrainProportionsScale: 1
   m_Children: []
