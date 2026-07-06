@@ -34,10 +34,12 @@ public class LetterTaskState : NetworkBehaviour
 
     void OnDisable() => UnbindUI();
 
-    void OnDestroy()
+    public override void OnDestroy()
     {
+        UnbindUI();
         if (Instance == this)
             Instance = null;
+        base.OnDestroy();
     }
 
     /// <summary>P0 的垫子算完字母后调用（仅 Server）。</summary>

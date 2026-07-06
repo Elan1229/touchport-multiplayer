@@ -2,13 +2,13 @@
   <Project Path="Anaglyph.csproj" />
   <Project Path="Anaglyph.Menu.csproj" />
   <Project Path="Anaglyph.Lasertag.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Anaglyph.DepthKit.csproj" />
   <Project Path="Anaglyph.Netcode.csproj" />
   <Project Path="Anaglyph.Files.csproj" />
   <Project Path="AprilTag.Runtime.csproj" />
   <Project Path="Anaglyph.XRTemplate.SharedSpaces.csproj" />
   <Project Path="Anaglyph.VariableObjects.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Freecam.csproj" />
   <Project Path="Anaglyph.XRTemplate.AprilTags.csproj" />
   <Project Path="Anaglyph.XRTemplate.csproj" />

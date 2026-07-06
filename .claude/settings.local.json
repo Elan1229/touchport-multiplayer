@@ -1,8 +1,15 @@
 {
   "permissions": {
+    "defaultMode": "bypassPermissions",
+    "deny": [
+      "Bash(git*)",
+      "Bash(rm -rf*)"
+    ],
     "allow": [
       "Bash(find:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "mcp__UnityMCP__read_console",
+      "mcp__UnityMCP__refresh_unity"
     ]
   }
 }

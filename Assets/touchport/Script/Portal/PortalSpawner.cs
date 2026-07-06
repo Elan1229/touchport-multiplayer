@@ -15,10 +15,12 @@ public class PortalSpawner : NetworkBehaviour
 
     void Awake() => Instance = this;
 
-    void OnDestroy()
+    public override void OnDestroy()
     {
+        GameManager.OnHandshake -= OnHandshakeTriggered;
         if (Instance == this)
             Instance = null;
+        base.OnDestroy();
     }
 
     public override void OnNetworkSpawn()

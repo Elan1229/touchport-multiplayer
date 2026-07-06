@@ -72,6 +72,8 @@ public class ShareUIManager : MonoBehaviour
         SharedState.OnSharedChanged  -= OnSharedChanged;
     }
 
+    private void OnDestroy() => OnDisable();
+
     private void OnSharedChanged(bool isShared)
     {
         if (!isShared) Hide();

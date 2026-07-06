@@ -11,6 +11,14 @@ public class PortalClipPlaneProvider : MonoBehaviour
     public static Vector3 PlaneNormal;
     public static bool Active;
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        PlanePosition = Vector3.zero;
+        PlaneNormal = Vector3.forward;
+        Active = false;
+    }
+
     void OnEnable() => Active = true;
     void OnDisable() => Active = false;
 

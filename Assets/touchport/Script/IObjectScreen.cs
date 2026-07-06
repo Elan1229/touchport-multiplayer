@@ -51,6 +51,12 @@ public class IObjectScreen : NetworkBehaviour
         SharedState.OnSharedChanged -= HandleSharedChanged;
     }
 
+    public override void OnDestroy()
+    {
+        SharedState.OnSharedChanged -= HandleSharedChanged;
+        base.OnDestroy();
+    }
+
     void HandleSharedChanged(bool isShared)
     {
         ApplyVisibility(isShared);

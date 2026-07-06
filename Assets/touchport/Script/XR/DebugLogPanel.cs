@@ -25,6 +25,7 @@ public class DebugLogPanel : MonoBehaviour
 
     private void OnEnable()  { Application.logMessageReceived += OnLog; }
     private void OnDisable() { Application.logMessageReceived -= OnLog; }
+    private void OnDestroy() { Application.logMessageReceived -= OnLog; }
 
     private void OnLog(string message, string stackTrace, LogType type)
     {

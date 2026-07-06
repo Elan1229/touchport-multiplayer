@@ -44,6 +44,11 @@ public class GameManager : NetworkBehaviour
     // OnEnable/OnDisable 订阅 OnHandshake，确保 GameManager 激活时才处理事件
     private void OnEnable()  => OnHandshake += Handshaked;
     private void OnDisable() => OnHandshake -= Handshaked;
+    public override void OnDestroy()
+    {
+        OnHandshake -= Handshaked;
+        base.OnDestroy();
+    }
 
     // XR握手/A键 触发路径的终点：收到事件后切换共享状态
     // 只有服务端（IsServer）才能写 SharedState.IsShared
