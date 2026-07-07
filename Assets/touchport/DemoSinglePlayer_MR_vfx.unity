@@ -3002,7 +3002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6693274593394695957, guid: afe649ec45921e34695a083d1360234d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6699504305036969989, guid: afe649ec45921e34695a083d1360234d, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -3305,7 +3305,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6147318990756805896, guid: fb8896a75ee7fe649b82338fc0cd08f1, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6358892882503037325, guid: fb8896a75ee7fe649b82338fc0cd08f1, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -3969,7 +3969,7 @@ Transform:
   m_GameObject: {fileID: 1232792663}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.098, z: -1.512}
+  m_LocalPosition: {x: -0.45, y: 1.098, z: -3.391}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4500,7 +4500,7 @@ VisualEffect:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1345051183}
   m_Enabled: 1
-  m_Asset: {fileID: 8926484042661614526, guid: 5c1db639c0c8f4692b5d0acbf2ae2205, type: 3}
+  m_Asset: {fileID: 8926484042661614526, guid: b1852e82bf4ac4bd8ac1162b7fdef461, type: 3}
   m_InitialEventName: OnPlay
   m_InitialEventNameOverriden: 0
   m_StartSeed: 0
@@ -4514,10 +4514,10 @@ VisualEffect:
       m_Array: []
     m_Vector3f:
       m_Array:
-      - m_Value: {x: -0.18299997, y: 1.3080001, z: -1.413}
+      - m_Value: {x: -0.63299996, y: 1.3080001, z: -3.292}
         m_Name: StartPoint
         m_Overridden: 1
-      - m_Value: {x: 0.21430004, y: 1.2670001, z: -1.2827}
+      - m_Value: {x: -0.23569995, y: 1.2670001, z: -3.1617}
         m_Name: EndPoint
         m_Overridden: 1
     m_Vector4f:
@@ -4755,13 +4755,33 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_Asset
+      value: 
+      objectReference: {fileID: 8926484042661614526, guid: 84a4f31e14ef24438a2d0b6b8886eff5, type: 3}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Name
+      value: speed
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Overridden
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6410515238237606374, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.262
+      value: -0.262
       objectReference: {fileID: 0}
     - target: {fileID: 6410515238237606374, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.175
+      value: 1.135
       objectReference: {fileID: 0}
     - target: {fileID: 6410515238237606374, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_LocalPosition.z
