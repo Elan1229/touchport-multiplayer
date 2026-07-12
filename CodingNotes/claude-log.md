@@ -399,3 +399,38 @@ glow.Deactivate();                                  // 手动退出
 - PulseSpeed 直接 snap 回 idlePulseSpeed
 - 只对 GlowStrength 做 Lerp 渐变（deactivateDuration 默认 1.5s）
 
+---
+
+## 2026-07-07
+
+### Fake Bloom 方案（替代 Post-processing）
+
+**背景**：Post-processing（HDR Bloom）与 Quest Passthrough 不兼容，改用 VFX Graph 内 Fake Bloom。
+
+**核心原理**：Additive 混合模式下粒子颜色叠加，密集处自然变亮，模拟 bloom 效果，不需要 HDR。
+
+**贴图**：三张软光晕贴图生成到 `_assets/`：
+- `glow_halo_only.png` — 纯软晕，无硬核，用于叠加光晕层
+- `glow_psf_core_halo.png` — 亮核 + 光晕，用于主光点粒子
+- `glow_psf_tight.png` — 更紧实的核
+
+---
+
+### HandshakeFBloom
+
+- 已有 Output Particle Unlit Quad（Additive）只是缺贴图，补上 `glow_psf_core_halo` 即可
+- 删除原有的随机强烈闪光节点（Random Float → Compare < 3 → Random Int 5~300 → Multiply Color，会把 3% 粒子颜色乘以最高 300 倍爆白）
+- **Twinkle 效果**：`TotalTime(Game) × 2.5` + `Random Float(Per Particle, 0~6.28)` → `Frac` → `Sample Curve(sin 波)` → `Multiply Alpha` + `Multiply Size`
+- Orient 改为 Face Camera Position；删掉 Set Angle Z: 90
+
+---
+
+### Portal VFX occlusion FBloom
+
+- 两个 Output Particle Shader Graph 共用同一套 Initialize → Update，都走 VFXParticleOccluded（保留 occlusion）
+- 主 Output：Default-Particle 贴图，Orient Along Velocity
+- 光晕 Output：`glow_psf_core_halo`，Orient Face Camera Plane
+- **筛掉 90% 粒子**（只在光晕 Output 里）：`Random Float(Per Particle, 0~1)` → `Compare < 0.1` → `Branch(True=原alpha, False=0)` → Output alpha
+- Shader Graph block 后面的 block 有效（可加 Multiply Color、Multiply Alpha 等）
+- Multiply Color 加轻微亮度变化
+

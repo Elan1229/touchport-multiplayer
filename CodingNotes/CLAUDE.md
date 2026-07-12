@@ -65,7 +65,7 @@
 
 ## 已知坑 (Known Issues)
 
->（待记录）
+- **Post-processing 与 Quest Passthrough 不兼容**：HDR/Bloom 等 Post-processing 效果无法在 Passthrough 模式下使用。改用 VFX Graph 内的 Fake Bloom 方案（Additive 混合 + 软光晕贴图）。
 
 ## 维护规则
 
