@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 5CloudRoom
   m_EditorClassIdentifier: 
-  worldId: CloudRoom
+  dreamId: CloudRoom
   signature:
   - keyword: {fileID: 11400000, guid: 55722a65ae9ed43e186c10666d96f0fc, type: 2}
     weight: 3
@@ -25,10 +25,9 @@ MonoBehaviour:
   gifts:
   - {fileID: 11400000, guid: 36cec1d3993534ff9b7a44452e0f31f2, type: 2}
   - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: 89f35ebcdd18a43cab20d895a6a73c7b
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 6745139852988868353, guid: 89f35ebcdd18a43cab20d895a6a73c7b, type: 3}
+    m_EditorAssetChanged: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 4SunsetPhoneBooth
   m_EditorClassIdentifier: 
-  worldId: SunsetPhoneBooth
+  dreamId: SunsetPhoneBooth
   signature:
   - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
     weight: 2
@@ -33,10 +33,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}
   - {fileID: 11400000, guid: 2ce5dfff7debd409385e8770ad8286ee, type: 2}
   - {fileID: 11400000, guid: d2b53d2584db64c8cb29bc57052f1eed, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: 00706df3f4e034a0ba62a3e6143df5be
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 6758299919210777847, guid: 00706df3f4e034a0ba62a3e6143df5be, type: 3}
+    m_EditorAssetChanged: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 1ChildRoom
   m_EditorClassIdentifier: 
-  worldId: ChildRoom
+  dreamId: ChildRoom
   signature:
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
     weight: 3
@@ -27,10 +27,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 250211fc7b6c24cb3adbadb3e82031f0, type: 2}
   - {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
   - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: 29042d950ed0047f2bc78dc0bc341f16
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 2859083282095726355, guid: 29042d950ed0047f2bc78dc0bc341f16, type: 3}
+    m_EditorAssetChanged: 0

@@ -49,14 +49,16 @@ namespace DreamTouch
                 if (bags.Length > 1 && bags[1] != null)
                     bags[1].OnDreamChanged += (p, from, to) => Dream1Index.Value = IndexOf(to);
 
-                // Publish the starting dreams (bags set Current in their own Awake, before this).
+                // Setting these fires OnValueChanged above -> ApplyVisual once (server side).
                 Dream0Index.Value = IndexOf(bags.Length > 0 ? bags[0]?.Current : null);
                 Dream1Index.Value = IndexOf(bags.Length > 1 ? bags[1]?.Current : null);
             }
-
-            // Show whatever the replicated values already are (clients + late joiners).
-            ApplyVisual(0, Dream0Index.Value);
-            ApplyVisual(1, Dream1Index.Value);
+            else
+            {
+                // Clients get NO OnValueChanged for the already-synced initial value -> apply once.
+                ApplyVisual(0, Dream0Index.Value);
+                ApplyVisual(1, Dream1Index.Value);
+            }
         }
 
         // Called on the SERVER when a gift crosses the portal into `targetPlayer`'s world.
@@ -94,9 +96,23 @@ namespace DreamTouch
 
         void ApplyVisual(int world, int index)
         {
-            if (presenters == null || world >= presenters.Length || presenters[world] == null) return;
+            bool hasPresenter = presenters != null && world < presenters.Length && presenters[world] != null;
             var dream = (allDreams != null && index >= 0 && index < allDreams.Length) ? allDreams[index] : null;
-            if (dream != null) presenters[world].Switch(dream);
+            Debug.Log($"[DreamNet] ApplyVisual world={world} index={index} dream={(dream ? dream.dreamId : "null")} " +
+                      $"presenter={hasPresenter} IsServer={IsServer} IsClient={IsClient}");
+            if (IsClient && !IsServer)   // surface the CLIENT's result to the HOST console for debugging
+                ReportClientServerRpc(world, index, dream != null, hasPresenter,
+                                      allDreams != null ? allDreams.Length : -1);
+            if (!hasPresenter || dream == null) return;
+            presenters[world].Switch(dream);
+        }
+
+        [ServerRpc(RequireOwnership = false)]
+        void ReportClientServerRpc(int world, int index, bool dreamResolved, bool hasPresenter,
+                                   int allDreamsLen, ServerRpcParams p = default)
+        {
+            Debug.Log($"[DreamNet<-Client{p.Receive.SenderClientId}] ApplyVisual world={world} index={index} " +
+                      $"dreamResolved={dreamResolved} presenter={hasPresenter} allDreamsLen={allDreamsLen}");
         }
 
         int IndexOf(DefinitionDream d)

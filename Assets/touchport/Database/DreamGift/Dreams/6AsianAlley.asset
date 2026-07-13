@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 6AsianAlley
   m_EditorClassIdentifier: 
-  worldId: AsianAlley
+  dreamId: AsianAlley
   signature:
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
     weight: 2
@@ -28,10 +28,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
   - {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
   - {fileID: 11400000, guid: 9508d5690bd6d4343bc889b963d8cb5b, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: ed8bcd2f1f3cd4ec1900eb8c2dc0d674
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 5093356329593704685, guid: ed8bcd2f1f3cd4ec1900eb8c2dc0d674, type: 3}
+    m_EditorAssetChanged: 0

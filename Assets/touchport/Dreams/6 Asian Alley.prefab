@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 105f2d0707ee8471ea6fa3e943841938, type: 2}
 --- !u!1 &2713170070325853156
 GameObject:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 105f2d0707ee8471ea6fa3e943841938, type: 2}
 --- !u!1 &5782047514512526075
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,7 +452,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 105f2d0707ee8471ea6fa3e943841938, type: 2}
 --- !u!1 &7890025514166937055
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,7 +639,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 105f2d0707ee8471ea6fa3e943841938, type: 2}
 --- !u!1001 &4864052128174318693
 PrefabInstance:
   m_ObjectHideFlags: 0

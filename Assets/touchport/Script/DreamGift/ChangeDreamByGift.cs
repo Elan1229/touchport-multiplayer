@@ -19,11 +19,13 @@ namespace DreamTouch
         GameObject currentInstance;
         AsyncOperationHandle<GameObject> currentHandle;
         bool hasHandle;
-        string loadingId;                            // guards against overlapping switches
+        string loadingId;                            // guards against overlapping switches (diff dreams)
+        DefinitionDream pendingOrCurrent;            // idempotency: skip re-Switch of the SAME dream
 
         public void Switch(DefinitionDream to)
         {
-            if (to == null) return;
+            if (to == null || to == pendingOrCurrent) return;
+            pendingOrCurrent = to;
             var parent = dreamRoot != null ? dreamRoot : transform;
 
             ClearCurrent();                          // unload the previous dream first
@@ -81,6 +83,7 @@ namespace DreamTouch
             if (root == null) return;
             int layer = worldLayer >= 0 ? worldLayer : gameObject.layer;
             SetLayerRecursively(root.transform, layer);
+            Debug.Log($"[ChangeDream] '{name}' spawned '{root.name}' on layer {layer} ({LayerMask.LayerToName(layer)})", this);
         }
 
         static void SetLayerRecursively(Transform t, int layer)

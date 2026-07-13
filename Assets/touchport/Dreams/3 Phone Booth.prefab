@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
 --- !u!1 &873357442449339206
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,41 +193,9 @@ Transform:
   - {fileID: 1502522827935645804}
   - {fileID: 7514612628854054290}
   - {fileID: 8480226339350801908}
-  - {fileID: 516758168857223650}
   - {fileID: 775634981533185625}
   - {fileID: 5004869806087473815}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3503948504492505257
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 516758168857223650}
-  m_Layer: 0
-  m_Name: flower2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &516758168857223650
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3503948504492505257}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.043784022, y: -0.30249393, z: 0.26108176}
-  m_LocalScale: {x: 0.85, y: 0.85, z: 0.85}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 283707794704054462}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5405909396999945119
 GameObject:
@@ -379,7 +347,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 0243692af71ef4e6495ae370bb0c18c9, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
 --- !u!1001 &232760557243350210
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -388,6 +356,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.51000005
@@ -466,6 +438,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5
@@ -544,6 +520,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.6
@@ -622,6 +602,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.42500004
@@ -700,6 +684,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5100001
@@ -842,6 +830,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8029396408524853161, guid: fe0901a4c5c7e624d9a28c1f47e24125, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -924,6 +916,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8029396408524853161, guid: fe0901a4c5c7e624d9a28c1f47e24125, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1006,6 +1002,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8029396408524853161, guid: fe0901a4c5c7e624d9a28c1f47e24125, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1114,6 +1114,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.25500003
@@ -1192,6 +1196,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.42499995
@@ -1334,6 +1342,10 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8029396408524853161, guid: fe0901a4c5c7e624d9a28c1f47e24125, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1352,6 +1364,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 283707794704054462}
     m_Modifications:
+    - target: {fileID: 1893453658279414206, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
     - target: {fileID: 8544804667876200758, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.5

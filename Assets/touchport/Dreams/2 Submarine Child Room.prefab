@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8424014932474919225}
   - component: {fileID: 1030312284320800727}
   - component: {fileID: 7390995212228370982}
+  - component: {fileID: 4051384354991595735}
   m_Layer: 0
   m_Name: Balloon
   m_TagString: Untagged
@@ -136,6 +137,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4051384354991595735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165276966445275689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gift: {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &1897745665165466411
 GameObject:
   m_ObjectHideFlags: 0
@@ -286,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &4951960839171985468
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,6 +315,7 @@ GameObject:
   - component: {fileID: 2519619723706010264}
   - component: {fileID: 8338587856195982895}
   - component: {fileID: 2412448184920061482}
+  - component: {fileID: 7220661804831078958}
   m_Layer: 0
   m_Name: Balloon2
   m_TagString: Untagged
@@ -423,6 +439,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &7220661804831078958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4951960839171985468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gift: {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &6038565047491444304
 GameObject:
   m_ObjectHideFlags: 0
@@ -573,7 +603,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 8f5e306caa15d4e7d84d79b98e4cbb9d, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &6421213093036626838
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,7 +754,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &7809705193484371970
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,6 +768,7 @@ GameObject:
   - component: {fileID: 7893810906440271151}
   - component: {fileID: 6053933847802085305}
   - component: {fileID: 7309065213047092969}
+  - component: {fileID: 510454911465041531}
   m_Layer: 0
   m_Name: Balloon1
   m_TagString: Untagged
@@ -861,6 +892,20 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &510454911465041531
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7809705193484371970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gift: {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &8358956741586804060
 GameObject:
   m_ObjectHideFlags: 0
@@ -1011,7 +1056,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 8f5e306caa15d4e7d84d79b98e4cbb9d, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &8594223418673161273
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,7 +1207,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &8664625383631211943
 GameObject:
   m_ObjectHideFlags: 0
@@ -1313,7 +1358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 8f5e306caa15d4e7d84d79b98e4cbb9d, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
 --- !u!1 &8863083356189000437
 GameObject:
   m_ObjectHideFlags: 0

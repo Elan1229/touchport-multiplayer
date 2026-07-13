@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 3PhoneBooth
   m_EditorClassIdentifier: 
-  worldId: PhoneBooth
+  dreamId: PhoneBooth
   signature:
   - keyword: {fileID: 11400000, guid: 7ea96d44136f54cbf82b6ce7278c5d56, type: 2}
     weight: 2
@@ -30,10 +30,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a9bcc0eb961c494eb204e0df5e7a15c, type: 2}
   - {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}
   - {fileID: 11400000, guid: 0243692af71ef4e6495ae370bb0c18c9, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: 991168bc8c14f485ea10ff1530ce5c09
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
-    m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 6685297529606118319, guid: 991168bc8c14f485ea10ff1530ce5c09, type: 3}
+    m_EditorAssetChanged: 0

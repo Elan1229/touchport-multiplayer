@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 36cec1d3993534ff9b7a44452e0f31f2, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 3ed795bd2475743e4a2940ba1b1f0af1, type: 2}
 --- !u!1 &4878952995228842876
 GameObject:
   m_ObjectHideFlags: 0
@@ -791,7 +791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gift: {fileID: 11400000, guid: 36cec1d3993534ff9b7a44452e0f31f2, type: 2}
-  originDream: {fileID: 0}
+  originDream: {fileID: 11400000, guid: 3ed795bd2475743e4a2940ba1b1f0af1, type: 2}
 --- !u!1001 &738653112513692085
 PrefabInstance:
   m_ObjectHideFlags: 0
