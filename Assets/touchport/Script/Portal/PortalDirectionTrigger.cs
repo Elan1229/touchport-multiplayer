@@ -132,6 +132,13 @@ public class PortalDirectionTrigger : MonoBehaviour
     [Tooltip("切换距离，建议和 nearClipPlane 一致，Quest 约 0.1m")]
     [SerializeField] private float switchDistance = 0.1f;
 
+    [Tooltip("可见开口参照物（拖 PortalRender 进来）。开口的实际世界大小 = 它的世界尺寸；空则退回 portalRenderer / 自身。")]
+    [SerializeField] private Transform openingReference;
+
+    [Tooltip("开口范围：相对上面参照物(PortalRender)网格的本地半尺寸。0.5=正好等于可见开口" +
+             "（InverseTransformPoint 已自动含它的缩放/非等比 + 父级缩放）。调大=更宽松。")]
+    [SerializeField] private Vector2 openingHalfSize = new Vector2(0.5f, 0.5f);
+
     [Header("Events")]
     public UnityEvent OnCrossedToWorldB;
     public UnityEvent OnCrossedToWorldA;
@@ -156,7 +163,8 @@ public class PortalDirectionTrigger : MonoBehaviour
             initialized = true;
         }
 
-        ApplyLayers();
+        // Do NOT set stencil here — respect each player's spawn-time config (PortalSpawner sets
+        // Player1 reversed). Crossing flips it per-player via ChangeLayer.SwitchStencilLocal/Reset.
     }
 
     // 物体传递仍走 Trigger（花之类的）
@@ -178,14 +186,14 @@ public class PortalDirectionTrigger : MonoBehaviour
 
         if (!insideZone)
         {
-            // 监听两条线，哪条进来都切，并记住是哪条
-            if (lastDist >= t && dist < t)
+            // 监听两条线，哪条进来都切，并记住是哪条；但只在 portal 开口范围内才算
+            if (lastDist >= t && dist < t && HeadInsideOpening())
             {
                 insideZone = true;
                 enteredFromPositiveSide = true;
                 FlipWorld();
             }
-            else if (lastDist <= -t && dist > -t)
+            else if (lastDist <= -t && dist > -t && HeadInsideOpening())
             {
                 insideZone = true;
                 enteredFromPositiveSide = false;
@@ -230,10 +238,22 @@ public class PortalDirectionTrigger : MonoBehaviour
     private float GetSignedDist()
         => Vector3.Dot(headCamera.transform.position - transform.position, transform.forward);
 
+    // 头投影到可见开口(PortalRender)本地平面后，是否落在开口矩形内。
+    // 用 PortalRender 作参照：InverseTransformPoint 已包含它的全部缩放（含 y 非等比 + 父级缩放），
+    // 所以 openingHalfSize=0.5 就正好等于可见开口，不用手动乘 scale。
+    private bool HeadInsideOpening()
+    {
+        Transform opening = openingReference != null ? openingReference
+                          : (portalRenderer != null ? portalRenderer.transform : transform);
+        Vector3 local = opening.InverseTransformPoint(headCamera.transform.position);
+        return Mathf.Abs(local.x) <= openingHalfSize.x && Mathf.Abs(local.y) <= openingHalfSize.y;
+    }
+
     private void FlipWorld()
     {
         inWorldB = !inWorldB;
-        ApplyLayers();
+        if (inWorldB) changeLayer?.SwitchStencilLocal();   // 穿到对方世界（按 LocalClientId 翻转）
+        else          changeLayer?.ResetStencilLocal();     // 退回自己世界
         (inWorldB ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
         Debug.Log($"[Portal] 切换到 {(inWorldB ? "B" : "A")} 世界");
     }

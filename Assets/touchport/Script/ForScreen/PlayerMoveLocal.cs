@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerMove : MonoBehaviour
+public class PlayerMoveLocal : MonoBehaviour
 {
     // first person view
     public float moveSpeed = 5f;       // 移动速度

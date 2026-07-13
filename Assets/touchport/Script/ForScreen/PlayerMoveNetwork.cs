@@ -6,6 +6,12 @@ using UnityEngine.InputSystem;
 public class PlayerMoveNetwork : NetworkBehaviour
 {
     public float speed = 5f;
+    [Tooltip("鼠标转向灵敏度（可在 Inspector 拖）。鼠标 delta 已是每帧位移，不再乘 deltaTime。")]
+    public float lookSensitivity = 0.2f;
+
+    private Transform camT;
+    private float yaw;
+    private float pitch;
 
     static readonly Color[] PlayerColors =
     {
@@ -45,6 +51,9 @@ public class PlayerMoveNetwork : NetworkBehaviour
         // 摄像机：只给本地玩家
         var cam = GetComponentInChildren<Camera>(true);
         if (cam != null) cam.enabled = IsOwner;
+        camT = cam != null ? cam.transform : null;
+        yaw = transform.eulerAngles.y;
+        if (IsOwner) Cursor.lockState = CursorLockMode.Locked;
 
         ApplyLocalAudioListeners();
         if (IsOwner)
@@ -87,20 +96,30 @@ public class PlayerMoveNetwork : NetworkBehaviour
     void Update()
     {
         if (!IsOwner) return;
-
         var kb = Keyboard.current;
         if (kb == null) return;
 
+        // 第一人称转头：鼠标 X 转身体(yaw)、鼠标 Y 抬头低头(相机 pitch，纯本地视角)
+        var md = Mouse.current != null ? Mouse.current.delta.ReadValue() : Vector2.zero;
+        yaw  += md.x * lookSensitivity;
+        pitch = Mathf.Clamp(pitch - md.y * lookSensitivity, -80f, 80f);
+        if (camT != null) camT.localRotation = Quaternion.Euler(pitch, 0f, 0f);
+
+        // 朝向相关的 WASD 移动
         float h = (kb.dKey.isPressed ? 1f : 0f) - (kb.aKey.isPressed ? 1f : 0f);
         float v = (kb.wKey.isPressed ? 1f : 0f) - (kb.sKey.isPressed ? 1f : 0f);
-        if (h == 0f && v == 0f) return;
+        var face = Quaternion.Euler(0f, yaw, 0f);
+        Vector3 move = (face * Vector3.right * h + face * Vector3.forward * v) * speed * Time.deltaTime;
 
-        MoveServerRpc(new Vector3(h, 0, v) * speed * Time.deltaTime);
+        // server 权威：把朝向和位移交给 server（NetworkTransform 再同步给所有人）
+        if (md.sqrMagnitude > 0f || h != 0f || v != 0f)
+            MoveLookServerRpc(yaw, move);
     }
 
     [ServerRpc]
-    void MoveServerRpc(Vector3 move)
+    void MoveLookServerRpc(float yawDeg, Vector3 move)
     {
+        transform.rotation = Quaternion.Euler(0f, yawDeg, 0f);
         transform.Translate(move, Space.World);
     }
 }

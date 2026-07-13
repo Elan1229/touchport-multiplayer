@@ -3,7 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PortalPlayerController : NetworkBehaviour
+public class PlayerMovePortal : NetworkBehaviour
 {
     public float speed = 5f;
     public float mouseSensitivity = 2f;
