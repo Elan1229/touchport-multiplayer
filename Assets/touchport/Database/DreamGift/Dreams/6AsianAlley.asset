@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
+  m_Name: 6AsianAlley
+  m_EditorClassIdentifier: 
+  worldId: AsianAlley
+  signature:
+  - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
+    weight: 3
+  - keyword: {fileID: 11400000, guid: 7ea96d44136f54cbf82b6ce7278c5d56, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 4e8ec7b50f0144f1c8fd99ec182ef250, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
+    weight: 1
+  gifts:
+  - {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
+  - {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
+  - {fileID: 11400000, guid: 9508d5690bd6d4343bc889b963d8cb5b, type: 2}
+  worldAsset:
+    m_AssetGUID: ed8bcd2f1f3cd4ec1900eb8c2dc0d674
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  worldPrefab: {fileID: 5093356329593704685, guid: ed8bcd2f1f3cd4ec1900eb8c2dc0d674, type: 3}

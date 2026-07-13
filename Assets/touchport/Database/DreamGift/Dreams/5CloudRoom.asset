@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
+  m_Name: 5CloudRoom
+  m_EditorClassIdentifier: 
+  worldId: CloudRoom
+  signature:
+  - keyword: {fileID: 11400000, guid: 55722a65ae9ed43e186c10666d96f0fc, type: 2}
+    weight: 3
+  - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 3a632ed60fb3e49ecadbed4f7ac42e5b, type: 2}
+    weight: 2
+  gifts:
+  - {fileID: 11400000, guid: 36cec1d3993534ff9b7a44452e0f31f2, type: 2}
+  - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  worldAsset:
+    m_AssetGUID: 89f35ebcdd18a43cab20d895a6a73c7b
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  worldPrefab: {fileID: 6745139852988868353, guid: 89f35ebcdd18a43cab20d895a6a73c7b, type: 3}

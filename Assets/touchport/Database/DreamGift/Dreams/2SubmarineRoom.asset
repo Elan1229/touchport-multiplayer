@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
+  m_Name: 2SubmarineRoom
+  m_EditorClassIdentifier: 
+  worldId: SubmarineRoom
+  signature:
+  - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
+    weight: 3
+  - keyword: {fileID: 11400000, guid: 8b441e9e85cf947f4b59b85327dfc776, type: 2}
+    weight: 1
+  - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
+    weight: 3
+  - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
+    weight: 1
+  gifts:
+  - {fileID: 11400000, guid: e056317ad96d54367ba9d7574476f0ae, type: 2}
+  - {fileID: 11400000, guid: 8f5e306caa15d4e7d84d79b98e4cbb9d, type: 2}
+  - {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
+  worldAsset:
+    m_AssetGUID: 84097872b9b2643538f3ab92e8da3757
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  worldPrefab: {fileID: 3209228280705195097, guid: 84097872b9b2643538f3ab92e8da3757, type: 3}

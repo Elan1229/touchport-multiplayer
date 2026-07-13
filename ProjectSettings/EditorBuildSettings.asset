@@ -9,25 +9,26 @@ EditorBuildSettings:
     path: Assets/Anaglyph/LaserTag/MainScene.unity
     guid: 3d5565edd2ae19e4db4617ed4de717e3
   - enabled: 0
-    path: Assets/touchport/Demo.unity
+    path: Assets/touchport/Scenes/Demo.unity
     guid: 541351e5de6213b438360e514e7f455d
   - enabled: 0
-    path: Assets/touchport/SceneArchive/Demo 1.unity
+    path: Assets/touchport/Scenes/SceneArchive/Demo 1.unity
     guid: edd3a39347e8c2345931adc19a40d52a
   - enabled: 0
-    path: Assets/touchport/DemoMultiplayer_NoMR.unity
+    path: Assets/touchport/Scenes/DemoMultiplayer_NoMR.unity
     guid: 60994a6461342c542a6434d6ed4e9bb7
   - enabled: 0
-    path: Assets/touchport/MultiTest.unity
+    path: Assets/touchport/Scenes/MultiTest.unity
     guid: 2bf872098072fad4aacd995a4a14c2f3
   - enabled: 0
-    path: Assets/touchport/DemoSinglePlayer_MR_3worldswDepthClips.unity
+    path: Assets/touchport/Scenes/DemoSinglePlayer_MR_3worldswDepthClips.unity
     guid: fc4ea84d708cde142a53d2485d1cf1e9
   - enabled: 1
-    path: Assets/touchport/DemoSinglePlayer_MR_vfx.unity
+    path: Assets/touchport/Scenes/DemoSinglePlayer_MR_vfx.unity
     guid: 5d0a4dee69743460abfe26447e54311f
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4c41dd6ad791e2a4b8898d0ea8b277ec, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: f1b2282835c9f4f41b6824885c4c1d68, type: 2}
     com.unity.input.settings: {fileID: 11400000, guid: 98f64f4b2a2851449894736b3332276f, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 616e1c785ffcdf143b4e0c78a1535fad, type: 3}
     com.unity.xr.arfoundation.simulation_settings: {fileID: 11400000, guid: 16192c2774dbdcc4db267dfee3cea44b, type: 2}

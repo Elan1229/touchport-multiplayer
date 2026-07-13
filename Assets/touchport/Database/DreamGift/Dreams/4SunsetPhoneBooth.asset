@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
+  m_Name: 4SunsetPhoneBooth
+  m_EditorClassIdentifier: 
+  worldId: SunsetPhoneBooth
+  signature:
+  - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 3f84541eab9474885a6f1f8de6a29cc0, type: 2}
+    weight: 5
+  - keyword: {fileID: 11400000, guid: 4e8ec7b50f0144f1c8fd99ec182ef250, type: 2}
+    weight: 1
+  - keyword: {fileID: 11400000, guid: 7ea96d44136f54cbf82b6ce7278c5d56, type: 2}
+    weight: 2
+  - keyword: {fileID: 11400000, guid: 3a632ed60fb3e49ecadbed4f7ac42e5b, type: 2}
+    weight: 1
+  - keyword: {fileID: 11400000, guid: a4938036880c7423380cf0b9e3ffe98e, type: 2}
+    weight: 10
+  - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
+    weight: 1
+  gifts:
+  - {fileID: 11400000, guid: be08d2cc4365243f48d9bc6fe0e47e6a, type: 2}
+  - {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}
+  - {fileID: 11400000, guid: 2ce5dfff7debd409385e8770ad8286ee, type: 2}
+  - {fileID: 11400000, guid: d2b53d2584db64c8cb29bc57052f1eed, type: 2}
+  worldAsset:
+    m_AssetGUID: 00706df3f4e034a0ba62a3e6143df5be
+    m_SubObjectName: 
+    m_SubObjectType: 
+    m_SubObjectGUID: 
+    m_EditorAssetChanged: 1
+  worldPrefab: {fileID: 6758299919210777847, guid: 00706df3f4e034a0ba62a3e6143df5be, type: 3}

@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_GUID: 5f670fdec59e545dda86179d7cfaa911
+  m_SerializeEntries:
+  - m_GUID: 00706df3f4e034a0ba62a3e6143df5be
+    m_Address: SunsetPhoneBooth
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29042d950ed0047f2bc78dc0bc341f16
+    m_Address: ChildRoom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84097872b9b2643538f3ab92e8da3757
+    m_Address: SubmarineRoom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89f35ebcdd18a43cab20d895a6a73c7b
+    m_Address: CloudRoom
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 991168bc8c14f485ea10ff1530ce5c09
+    m_Address: PhoneBooth
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed8bcd2f1f3cd4ec1900eb8c2dc0d674
+    m_Address: AsianAlley
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef72ac2667f1646ac89a3ffddd4d1ee2
+    m_Address: Greenhouse
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 620b563645b0948658f54114b85244fe, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: c3bfba9b83cb04953a3b4f8b93a2f60d, type: 2}
+    - {fileID: 11400000, guid: 7cb7e0c45aa9d497986abce7f2b09c69, type: 2}
