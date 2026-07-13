@@ -12,6 +12,10 @@ namespace DreamTouch
         [Tooltip("Where the dream is parented. Defaults to this object.")]
         [UnityEngine.Serialization.FormerlySerializedAs("worldRoot")] public Transform dreamRoot;
 
+        [Tooltip("Layer to put the whole spawned dream on, for the portal stencil " +
+                 "(World0 = layer0, World1 = layer1). -1 = use this GameObject's layer.")]
+        public int worldLayer = -1;
+
         GameObject currentInstance;
         AsyncOperationHandle<GameObject> currentHandle;
         bool hasHandle;
@@ -48,6 +52,7 @@ namespace DreamTouch
                     currentInstance = op.Result;
                     currentHandle = op;
                     hasHandle = true;
+                    ApplyLayer(currentInstance);
                 }
                 else
                 {
@@ -68,6 +73,21 @@ namespace DreamTouch
 
             currentInstance = null;
             hasHandle = false;
+        }
+
+        // Put the whole dream on the world's stencil layer so the portal renders it correctly.
+        void ApplyLayer(GameObject root)
+        {
+            if (root == null) return;
+            int layer = worldLayer >= 0 ? worldLayer : gameObject.layer;
+            SetLayerRecursively(root.transform, layer);
+        }
+
+        static void SetLayerRecursively(Transform t, int layer)
+        {
+            t.gameObject.layer = layer;
+            for (int i = 0; i < t.childCount; i++)
+                SetLayerRecursively(t.GetChild(i), layer);
         }
 
         void OnDestroy() => ClearCurrent();
