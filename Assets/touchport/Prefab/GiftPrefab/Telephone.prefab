@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8457970020362098953
+--- !u!1 &5108848909347770843
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,50 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9091481525109015475}
-  - component: {fileID: 5297558975312120854}
-  - component: {fileID: 7953430179420420316}
-  - component: {fileID: 3348133370851017664}
-  - component: {fileID: 7783390418723613664}
-  - component: {fileID: -4449414356722456412}
-  - component: {fileID: 2464417727750895139}
+  - component: {fileID: 669741422186185582}
+  - component: {fileID: 6030840580798520184}
+  - component: {fileID: 3383369613866714093}
+  - component: {fileID: 8691415266547408192}
+  - component: {fileID: 393930977030491416}
+  - component: {fileID: 2937813084257464184}
   m_Layer: 0
-  m_Name: SM_Dandelion_Small
+  m_Name: Telephone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9091481525109015475
+--- !u!4 &669741422186185582
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
+  m_GameObject: {fileID: 5108848909347770843}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.222, y: -0.787, z: -0.591}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5297558975312120854
+--- !u!33 &6030840580798520184
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
-  m_Mesh: {fileID: -3466438512201219694, guid: 49f1eb77d1eac2b4b951528b0b494a91, type: 3}
---- !u!23 &7953430179420420316
+  m_GameObject: {fileID: 5108848909347770843}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &3383369613866714093
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
+  m_GameObject: {fileID: 5108848909347770843}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -68,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: dd78ab307d686a6409db14ba36b7c8a5, type: 2}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -90,13 +89,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &3348133370851017664
+--- !u!65 &8691415266547408192
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
+  m_GameObject: {fileID: 5108848909347770843}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -109,15 +108,15 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.22, y: 1.1760656, z: 0.33}
-  m_Center: {x: 0.02, y: 0.6, z: -0.09}
---- !u!54 &7783390418723613664
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &393930977030491416
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
+  m_GameObject: {fileID: 5108848909347770843}
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
@@ -136,34 +135,19 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-4449414356722456412
+--- !u!114 &2937813084257464184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d923df54f0e4fb985d8e858dfc4a0a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  elementType: 2
-  elementID: SM_Dandelion_Small
-  displayName: Dandelion_Small
---- !u!114 &2464417727750895139
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8457970020362098953}
+  m_GameObject: {fileID: 5108848909347770843}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gift: {fileID: 11400000, guid: 2a9bcc0eb961c494eb204e0df5e7a15c, type: 2}
-  originDream: {fileID: 0}
+  gift: {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}
+  originDream: {fileID: 11400000, guid: 949de15a6dbbd4944966b87edb24c154, type: 2}
