@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3294815195320992542}
   - component: {fileID: 2266516912300960611}
   - component: {fileID: 5678214780515211441}
+  - component: {fileID: -4637906636277517669}
   m_Layer: 0
   m_Name: smilingsphere
   m_TagString: Untagged
@@ -152,6 +153,20 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.95
   m_Center: {x: 0, y: -0.00000023841858, z: 0}
+--- !u!114 &-4637906636277517669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3803237898912067182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gift: {fileID: 0}
+  originDream: {fileID: 0}
 --- !u!1001 &5140948855585281304
 PrefabInstance:
   m_ObjectHideFlags: 0

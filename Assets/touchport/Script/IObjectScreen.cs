@@ -182,7 +182,9 @@ public class IObjectScreen : NetworkBehaviour
         return null;
     }
 
-    // PortalDirectionTrigger 调用
+    // 由 PortalDirectionTrigger.OnTriggerEnter 在物体的 Collider 进了 PortalTrigger 时调用
+    // （普通 Trigger 碰撞，不是距离判断）：翻转 gameOwnerId，下面 _networkOwnerId.OnValueChanged
+    // 会顺带把 layer 切过去。
     public void TransferToOther()
     {
         if (!IsServer) return;

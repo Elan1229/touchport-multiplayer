@@ -19,6 +19,9 @@ namespace DreamTouch
 
         static bool IsServer => NetworkManager.Singleton != null && NetworkManager.Singleton.IsServer;
 
+        // 物体穿门：跟 PortalDirectionTrigger.OnTriggerEnter 是同一层级的另一套独立逻辑，
+        // 只认 ObjectGift（DreamGift 礼物），走普通 Trigger 碰撞，不做任何距离/平面判断。
+        // IObjectXR/IObjectScreen（花、球等可抓取道具）不归这里管，见 PortalDirectionTrigger.OnTriggerEnter。
         void OnTriggerEnter(Collider other)
         {
             if (!IsServer) return;
