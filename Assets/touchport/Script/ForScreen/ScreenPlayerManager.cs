@@ -6,7 +6,8 @@ using UnityEngine.InputSystem;
 /// 桌面场景专用，对应 XR 场景里的 HandsManager。
 /// Server 每帧检测两个玩家距离，靠近时 fire GameManager.FireInteract()，
 /// GameManager 不需要区分来源是 XR 还是桌面。
-/// U 键：切换 ShareUI。
+/// 靠近只负责触发开始共享；已经在共享中时靠近不再重复触发/解除。
+/// U 键：未共享时切换 ShareUI；已共享时按 U 解除共享。
 /// </summary>
 public class ScreenPlayerManager : NetworkBehaviour
 {
@@ -27,9 +28,15 @@ public class ScreenPlayerManager : NetworkBehaviour
 
     private void Update()
     {
-        // U 键切换 ShareUI（所有客户端都响应，不限 Server）
+        // U 键（所有客户端都响应，不限 Server）：
+        // 已共享 → 解除共享；未共享 → 照常切换 ShareUI 面板
         if (Keyboard.current != null && Keyboard.current[Key.U].wasPressedThisFrame)
-            ShareUIManager.Instance?.Toggle();
+        {
+            if (SharedState.Instance != null && SharedState.Instance.IsShared)
+                GameManager.FireStopSharing();
+            else
+                ShareUIManager.Instance?.Toggle();
+        }
 
         if (!IsServer) return;
 
@@ -43,12 +50,21 @@ public class ScreenPlayerManager : NetworkBehaviour
 
         if (nowClose)
         {
-            _closeTimer += Time.deltaTime;
-            if (_closeTimer >= holdSeconds && _cooldownTimer <= 0f)
+            bool alreadyShared = SharedState.Instance != null && SharedState.Instance.IsShared;
+            if (alreadyShared)
             {
-                _cooldownTimer = cooldown;
+                // 共享中：靠近不再重复计时/不再触发解除，解除交给 U 键
                 _closeTimer = 0f;
-                GameManager.FireHandshake();
+            }
+            else
+            {
+                _closeTimer += Time.deltaTime;
+                if (_closeTimer >= holdSeconds && _cooldownTimer <= 0f)
+                {
+                    _cooldownTimer = cooldown;
+                    _closeTimer = 0f;
+                    GameManager.FireHandshake();
+                }
             }
         }
         else
