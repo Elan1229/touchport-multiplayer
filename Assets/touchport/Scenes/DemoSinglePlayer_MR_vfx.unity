@@ -3002,7 +3002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6693274593394695957, guid: afe649ec45921e34695a083d1360234d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6699504305036969989, guid: afe649ec45921e34695a083d1360234d, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -3305,7 +3305,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6147318990756805896, guid: fb8896a75ee7fe649b82338fc0cd08f1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6358892882503037325, guid: fb8896a75ee7fe649b82338fc0cd08f1, type: 3}
       propertyPath: GlobalObjectIdHash
@@ -4761,19 +4761,59 @@ PrefabInstance:
       objectReference: {fileID: 8926484042661614526, guid: 84a4f31e14ef24438a2d0b6b8886eff5, type: 3}
     - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.size
-      value: 1
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Name
       value: speed
       objectReference: {fileID: 0}
     - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Name
+      value: alpha
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Name
+      value: arc
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Name
+      value: Radius
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Value
-      value: 0.5
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Value
+      value: 2.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Value
+      value: 7.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Value
+      value: 1.25
       objectReference: {fileID: 0}
     - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[0].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[1].m_Overridden
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[2].m_Overridden
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Float.m_Array.Array.data[3].m_Overridden
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390969371570488601, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
+      propertyPath: m_PropertySheet.m_Gradient.m_Array.Array.data[0].m_Overridden
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6410515238237606374, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
       propertyPath: m_LocalPosition.x
@@ -6987,6 +7027,8 @@ MonoBehaviour:
   portalRenderer: {fileID: 0}
   requireNetwork: 1
   switchDistance: 0.1
+  openingReference: {fileID: 0}
+  openingHalfSize: {x: 0.5, y: 0.5}
   OnCrossedToWorldB:
     m_PersistentCalls:
       m_Calls: []
