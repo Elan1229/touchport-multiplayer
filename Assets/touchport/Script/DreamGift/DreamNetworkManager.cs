@@ -206,10 +206,15 @@ namespace DreamTouch
 
             var pos = marker.transform.position;
             var rot = marker.transform.rotation;
+            var scale = marker.transform.lossyScale;   // world scale — marker's room-ancestors may also be scaled
             var giftDef = marker.gift;
             Destroy(marker.gameObject);
 
             var inst = Instantiate(marker.networkPrefab, pos, rot);
+            // Instantiate(prefab, pos, rot) only takes position/rotation — scale falls back to the
+            // prefab's own default unless set explicitly. inst has no parent at this point, so its
+            // lossyScale == localScale.
+            inst.transform.localScale = scale;
             var net = inst.GetComponent<NetworkObject>();
             if (net == null)
             {

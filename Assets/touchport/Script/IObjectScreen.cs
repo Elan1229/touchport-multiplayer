@@ -31,10 +31,14 @@ public class IObjectScreen : NetworkBehaviour
         _networkOwnerId.OnValueChanged += (_, newVal) =>
         {
             gameOwnerId = newVal;
-            string layerName = newVal == 0 ? "layer0" : "layer1";
-            ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
-            Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{newVal}");
+            ApplyOwnerLayer(newVal);
         };
+
+        // OnValueChanged 只在值真的变化时触发——spawn 这一刻同步过来的初始值不算"变化"，
+        // 不会走上面那个回调。这里用当前已同步好的值强制刷一次，保证刚 spawn 出来那一刻
+        // layer 就是对的，不用等到真的换属主（穿门）才第一次生效。
+        gameOwnerId = _networkOwnerId.Value;
+        ApplyOwnerLayer(gameOwnerId);
 
         // Make movement deterministic when held (network transform will sync position).
         if (_rb != null)
@@ -44,6 +48,13 @@ public class IObjectScreen : NetworkBehaviour
         TryEnsureNetworkTransform();
 
         StartCoroutine(BindSharedStateWhenReady());
+    }
+
+    void ApplyOwnerLayer(ulong ownerId)
+    {
+        string layerName = ownerId == 0 ? "layer0" : "layer1";
+        ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
+        Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{ownerId}");
     }
 
     public override void OnNetworkDespawn()
