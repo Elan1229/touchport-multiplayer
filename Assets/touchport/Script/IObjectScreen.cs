@@ -109,6 +109,10 @@ public class IObjectScreen : NetworkBehaviour
 
     private void HandleFInput()
     {
+        // 没有物理键盘（比如 Quest 上跑这份代码）直接退出——避免下面那些检查
+        // （尤其是 GetPlayerTransformByClientId 那个扫全场景 NetworkObject 的）每帧空跑。
+        if (Keyboard.current == null) return;
+
         if (SharedState.Instance == null) return;
 
         if (_heldByClientId.Value != ulong.MaxValue && _heldByClientId.Value != NetworkManager.LocalClientId)

@@ -105,6 +105,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -189,7 +193,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -211,6 +219,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego Red (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8523706322271371498, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 391605613761095668, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
     - target: {fileID: 8657114974400350567, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.266
@@ -251,7 +263,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1914254048701246296, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: 1056558047641430566, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: -6072066160071697581, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: 2314827890920014968, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -313,7 +329,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego yellow (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9001632514875003359, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 5820439608751850573, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    m_RemovedComponents:
+    - {fileID: -3616720792234423921, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -5359633367808445542, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -613968606614845333, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -8155663988778979708, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -375,7 +399,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego yellow
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 9001632514875003359, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 5820439608751850573, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    m_RemovedComponents:
+    - {fileID: -3616720792234423921, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -5359633367808445542, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -613968606614845333, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
+    - {fileID: -8155663988778979708, guid: 49f1f7ff65eb44cb89e5ba4451e22390, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -401,6 +433,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.681
@@ -473,7 +509,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -499,6 +539,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.681
@@ -571,7 +615,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -593,6 +641,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoldenFish (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 3079177966859806544, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     - target: {fileID: 7329050249201703831, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.15
@@ -649,7 +701,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -711,11 +767,19 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 6460329321726269597, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 7193925734960194147, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
     - target: {fileID: 7193925734960194147, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
       propertyPath: m_Name
       value: Balloon purple
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 74437526761774464, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
+    - {fileID: 304810465824092229, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
+    - {fileID: 4059917360663647901, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
+    - {fileID: 2078353304457961391, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -737,6 +801,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego Green
       objectReference: {fileID: 0}
+    - target: {fileID: 7194635107360219462, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1224257839119812184, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
     - target: {fileID: 7905632691786557643, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.023
@@ -777,7 +845,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4969806564935077840, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: 6982017457889200207, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: 6982773063271199146, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: -2688844363192416805, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -795,6 +867,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 300172918121656663}
     m_Modifications:
+    - target: {fileID: -6918677865141782459, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 4777827733647351066, guid: ac996d56b8c0240949c65508be49d025, type: 3}
     - target: {fileID: 2288395853462050697, guid: ac996d56b8c0240949c65508be49d025, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.128
@@ -839,7 +915,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Balloon Bouq
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8972485747872721839, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -307209108554515616, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -1583289737400745265, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -5890449756543260077, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -6918677865141782459, guid: ac996d56b8c0240949c65508be49d025, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -951,6 +1032,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoldenFish (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 3079177966859806544, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     - target: {fileID: 7329050249201703831, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -1007,7 +1092,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1029,6 +1118,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: -849951112119075928, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 2099069735475832033, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
     - target: {fileID: 2099069735475832033, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
       propertyPath: m_Name
       value: Animal_TeddyBear_bluetie
@@ -1093,7 +1186,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1626991744850028807, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
+    - {fileID: 862807756273882982, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
+    - {fileID: -8198443804894845873, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
+    - {fileID: -5869090578977611972, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -1120,6 +1217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gift: {fileID: 0}
   originDream: {fileID: 0}
+  currentDream: {fileID: 0}
+  networkPrefab: {fileID: 2099069735475832033, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
 --- !u!4 &6683028751818756730 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6994327170389665046, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
@@ -1137,6 +1236,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego blue (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2237889936472973696, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 303016243699059487, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
     - target: {fileID: 8348656398658132021, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.18
@@ -1177,7 +1280,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 129542434151477558, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: -1081425321954893522, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: -5014486680617073461, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: 6725496321216321112, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1199,6 +1306,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoldenFish (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 3079177966859806544, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     - target: {fileID: 7329050249201703831, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.12
@@ -1255,7 +1366,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1343,6 +1458,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1364,6 +1483,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego blue
       objectReference: {fileID: 0}
+    - target: {fileID: 2237889936472973696, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 303016243699059487, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
     - target: {fileID: 8348656398658132021, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.26
@@ -1404,7 +1527,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 129542434151477558, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: -1081425321954893522, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: -5014486680617073461, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
+    - {fileID: 6725496321216321112, guid: 55ebc6a0549ea44a3b5942d5be48290b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1430,6 +1557,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -1514,7 +1645,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1598,6 +1733,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1619,6 +1758,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GoldenFish (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 3556540337538839846, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 3079177966859806544, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     - target: {fileID: 7329050249201703831, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.14
@@ -1675,7 +1818,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4522307890453968456, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 6166890069900747515, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 623956262307807563, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
+    - {fileID: 3023987797134516098, guid: e2c44d02daaab442bbccdaece8400e7b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1697,6 +1844,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1489340088188669446, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 3375857996396705016, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
     - target: {fileID: 3375857996396705016, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
       propertyPath: m_Name
       value: Balloon teal
@@ -1741,7 +1892,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3358350847579508843, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
+    - {fileID: 457553792569807230, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
+    - {fileID: -2327826163699859384, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
+    - {fileID: -2903873108317359183, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1767,6 +1922,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.15
@@ -1851,7 +2010,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1869,6 +2032,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 300172918121656663}
     m_Modifications:
+    - target: {fileID: -6918677865141782459, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 4777827733647351066, guid: ac996d56b8c0240949c65508be49d025, type: 3}
     - target: {fileID: 2288395853462050697, guid: ac996d56b8c0240949c65508be49d025, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.298
@@ -1913,7 +2080,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Balloon Bouq (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8972485747872721839, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -307209108554515616, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -1583289737400745265, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -5890449756543260077, guid: ac996d56b8c0240949c65508be49d025, type: 3}
+    - {fileID: -6918677865141782459, guid: ac996d56b8c0240949c65508be49d025, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1935,6 +2107,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego Red
       objectReference: {fileID: 0}
+    - target: {fileID: 8523706322271371498, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 391605613761095668, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
     - target: {fileID: 8657114974400350567, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.0088
@@ -1975,7 +2151,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1914254048701246296, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: 1056558047641430566, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: -6072066160071697581, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
+    - {fileID: 2314827890920014968, guid: 2d73dafa5be024d4d81f629afde69c73, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1997,6 +2177,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Toy Lego Green (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7194635107360219462, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1224257839119812184, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
     - target: {fileID: 7905632691786557643, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.106
@@ -2037,7 +2221,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -4969806564935077840, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: 6982017457889200207, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: 6982773063271199146, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
+    - {fileID: -2688844363192416805, guid: 216d1866260c84b46aa4cd8c81c6c27c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -2063,6 +2251,10 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: networkPrefab
+      value: 
+      objectReference: {fileID: 1190267123745897648, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -2147,7 +2339,11 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1933110987088286619, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 8541018457591610789, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 2444331809057174992, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+    - {fileID: 4721540114330349197, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

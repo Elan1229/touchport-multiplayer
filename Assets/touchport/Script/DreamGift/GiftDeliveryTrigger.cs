@@ -48,25 +48,45 @@ namespace DreamTouch
                 DeliverSinglePlayer(obj);
         }
 
-        // 多人：算出目标 World（origin 没在显示的那边），调 DreamNetworkManager.DeliverGift。
-        // 不额外查 IsServer——client 调用是安全空操作，见上面类注释。
+        // 多人：先用 obj.currentDream（不是 gameOwnerId——那个跟 PortalDirectionTrigger 翻转
+        // owner 是同一次穿门触发的两个独立 OnTriggerEnter，谁先跑不该被这里依赖）找到这个礼物
+        // 现在实际在哪个 world，再判断这趟是"送出去"还是"拿回去"：
+        //   origin == currentDream（还在老家）  → 送出去 → 对面 world 的 bag 加权重
+        //   origin != currentDream（不在老家）  → 拿回去 → 现在这个 world 的 bag 减权重
+        // 不额外查 IsServer——DeliverGift/TakeBackGift 内部自己会查，client 调用是安全空操作。
         void DeliverMultiplayer(ObjectGift obj)
         {
             if (obj.gift == null) return;
             var mgr = DreamNetworkManager.Instance;
 
-            int target = mgr.ResolveTargetWorld(obj.originDream);
-            if (target < 0)
+            int sourceWorld = mgr.WorldShowing(obj.currentDream);
+            if (sourceWorld < 0)
             {
-                Debug.LogWarning($"[GiftDelivery] can't route {obj.name} — set its ObjectGift." +
-                                 $"originDream to the dream of the world it came from " +
-                                 $"(got '{(obj.originDream ? obj.originDream.dreamId : "null")}').", obj);
+                Debug.LogWarning($"[GiftDelivery] can't place {obj.name} — its currentDream ('" +
+                                 $"{(obj.currentDream ? obj.currentDream.dreamId : "null")}') doesn't match " +
+                                 "either world's current dream (dream probably changed underneath it).", obj);
                 return;
             }
+            int destWorld = 1 - sourceWorld;
 
-            mgr.DeliverGift(target, obj.gift, obj.originDream);
-            Debug.Log($"[GiftDelivery] {obj.name} ({obj.gift.giftName}) -> World{target} " +
-                      $"(dream changes in {mgr.ChangeDelay}s).", obj);
+            bool isReturning = obj.originDream != obj.currentDream;
+            if (isReturning)
+            {
+                mgr.TakeBackGift(sourceWorld, obj.gift);
+                Debug.Log($"[GiftDelivery] {obj.name} ({obj.gift.giftName}) taken back out of World{sourceWorld} " +
+                          $"(weight removed in {mgr.ChangeDelay}s).", obj);
+            }
+            else
+            {
+                mgr.DeliverGift(destWorld, obj.gift, obj.originDream);
+                Debug.Log($"[GiftDelivery] {obj.name} ({obj.gift.giftName}) -> World{destWorld} " +
+                          $"(dream changes in {mgr.ChangeDelay}s).", obj);
+            }
+
+            // 不管是送出去还是拿回去，穿门之后这个礼物物理上都进了对面那个 world。
+            obj.currentDream = mgr.bags != null && destWorld < mgr.bags.Length && mgr.bags[destWorld] != null
+                ? mgr.bags[destWorld].Current
+                : obj.currentDream;
         }
 
         void DeliverSinglePlayer(ObjectGift obj)

@@ -1,4 +1,7 @@
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace DreamTouch
 {
@@ -12,5 +15,26 @@ namespace DreamTouch
 
         [Tooltip("The dream this object came from. Used for the 'own item is inert' rule.")]
         [UnityEngine.Serialization.FormerlySerializedAs("originWorld")] public DefinitionDream originDream;
+
+        [Tooltip("Which dream this object is CURRENTLY sitting in, right now. Runtime-managed " +
+                 "(set on spawn + updated on every portal crossing by GiftDeliveryTrigger) — " +
+                 "don't author this by hand. originDream != currentDream means it's away from " +
+                 "home (was delivered here); crossing out again is a 'take back', not a delivery.")]
+        public DefinitionDream currentDream;
+
+        [Tooltip("The registered NetworkObject prefab DreamNetworkManager.SpawnGift() Instantiates+Spawns " +
+                 "in this marker's place (this marker itself, baked into a dream room prefab, is never " +
+                 "Spawn()'d directly — see SpawnGift for why). Auto-filled on save from this instance's " +
+                 "source prefab; leave empty and it fills itself.")]
+        public GameObject networkPrefab;
+
+#if UNITY_EDITOR
+        void OnValidate()
+        {
+            if (networkPrefab != null) return;
+            var source = PrefabUtility.GetCorrespondingObjectFromSource(gameObject);
+            if (source != null) networkPrefab = source;
+        }
+#endif
     }
 }

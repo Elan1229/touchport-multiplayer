@@ -118,7 +118,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (6)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -200,7 +204,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -282,7 +290,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -364,7 +376,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -446,7 +462,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -766,7 +786,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Telephone
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6105679433510123287, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -8790639532401962921, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -137873161650513897, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -721562162705531724, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -922,7 +946,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -5142296455155511697, guid: a41234cd95afd4687b35e4ef3631a887, type: 3}
+    - {fileID: -2365697295696479671, guid: a41234cd95afd4687b35e4ef3631a887, type: 3}
+    - {fileID: -4429474313186369385, guid: a41234cd95afd4687b35e4ef3631a887, type: 3}
+    - {fileID: -2476193717305435416, guid: a41234cd95afd4687b35e4ef3631a887, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1004,7 +1032,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (7)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1086,7 +1118,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1254,7 +1290,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Daisy_Single (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8356266610239175169, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 9124185356119835277, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: -1893849857295702582, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
+    - {fileID: 4024089035183426983, guid: 6ee7ff501548bbd48ac085a1c22904aa, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

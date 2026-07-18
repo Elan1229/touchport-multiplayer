@@ -3109,7 +3109,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1510152657}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -2.7991571, y: -2.6946492, z: -3.8114996}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3875,7 +3875,6 @@ GameObject:
   - component: {fileID: 1863532736}
   - component: {fileID: 1863532733}
   - component: {fileID: 1863532734}
-  - component: {fileID: 1863532735}
   - component: {fileID: 1863532738}
   - component: {fileID: 1863532739}
   m_Layer: 0
@@ -3953,25 +3952,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   portalPrefab: {fileID: 8600394780899167899, guid: 2a53bdcf11cbc4e5fb6d9a7a753d34af, type: 3}
---- !u!114 &1863532735
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863532724}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aed602b9f19c9a24789ad268c0bb301b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  stopSharedWhenAnyWordMatches: 1
-  uiText: {fileID: 0}
-  Player0Done:
-    m_InternalValue: 0
-  Player1Done:
-    m_InternalValue: 0
+  spawnAtOpponent: 0
 --- !u!114 &1863532736
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4015,6 +3996,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  portalDouble: {fileID: 0}
 --- !u!114 &1863532739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6041,8 +6023,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 797520439}
   - {fileID: 681378260}
-  - {fileID: 1863532727}
   - {fileID: 1510152659}
+  - {fileID: 1863532727}
   - {fileID: 1878572628}
   - {fileID: 1118114079}
   - {fileID: 1293428984}

@@ -76,6 +76,20 @@ namespace DreamTouch
             return jumped;
         }
 
+        // Called by the Manager when a gift that was previously delivered here gets carried
+        // back OUT — undoes exactly the weight ReceiveGift added. Mirrors ReceiveGift but
+        // subtracts; no "own item" guard needed here (the caller only invokes this when the
+        // gift is NOT at its own origin dream, i.e. it really was delivered-in earlier).
+        public bool TakeBackGift(DefinitionGift gift, DefinitionDream partnerDream)
+        {
+            if (gift == null) return false;
+            foreach (var k in gift.keywords)
+                if (k != null) bag[k] = Mathf.Max(0, (bag.TryGetValue(k, out var c) ? c : 0) - giftPush);
+            bool jumped = EvaluateJump(partnerDream);
+            RefreshDebug();
+            return jumped;
+        }
+
         // The rule: exclude self + partner.
         //  · Normal: jump when 1st beats 2nd by >= leadMargin.
         //  · Bumper: if 1st & 2nd are neck-and-neck (equal or differ by 1) but the top pair

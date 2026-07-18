@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
@@ -9,6 +10,12 @@ namespace DreamTouch
     // previous one, so only the CURRENT dream's assets stay in memory (Quest-friendly).
     public class ChangeDreamByGift : MonoBehaviour
     {
+        // Fired right after a new dream instance finishes loading + gets its layer set.
+        // Purely presentational event — this class knows nothing about networking.
+        // DreamNetworkManager listens to this to spawn/clean up the ObjectGift children
+        // baked into the dream prefab.
+        public event Action<GameObject, DefinitionDream> OnInstanceReady;
+
         [Tooltip("Where the dream is parented. Defaults to this object.")]
         [UnityEngine.Serialization.FormerlySerializedAs("worldRoot")] public Transform dreamRoot;
 
@@ -55,6 +62,7 @@ namespace DreamTouch
                     currentHandle = op;
                     hasHandle = true;
                     ApplyLayer(currentInstance);
+                    OnInstanceReady?.Invoke(currentInstance, to);
                 }
                 else
                 {

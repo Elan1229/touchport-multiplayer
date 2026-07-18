@@ -15,6 +15,9 @@ public class ScreenPlayerManager : NetworkBehaviour
     [SerializeField] private float holdSeconds = 2f;
     [SerializeField] private float cooldown = 1.5f;
 
+    [Tooltip("已共享时按这个键解除共享；未共享时按这个键切换 ShareUI 面板。")]
+    [SerializeField] private Key stopSharingKey = Key.U;
+
     public static float InterPlayerDistance { get; private set; } = -1f;
 
     public NetworkVariable<float> SyncedDistance = new(
@@ -28,9 +31,9 @@ public class ScreenPlayerManager : NetworkBehaviour
 
     private void Update()
     {
-        // U 键（所有客户端都响应，不限 Server）：
+        // stopSharingKey（所有客户端都响应，不限 Server）：
         // 已共享 → 解除共享；未共享 → 照常切换 ShareUI 面板
-        if (Keyboard.current != null && Keyboard.current[Key.U].wasPressedThisFrame)
+        if (Keyboard.current != null && Keyboard.current[stopSharingKey].wasPressedThisFrame)
         {
             if (SharedState.Instance != null && SharedState.Instance.IsShared)
                 GameManager.FireStopSharing();

@@ -104,7 +104,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: CloudSunset
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8627796305678983732, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -5832001502493657517, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2433459233593579308, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2688877743462650633, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -198,7 +202,11 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -9078896440035571861, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 3324063233503092599, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 6628075876486050325, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 912855488434517304, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -382,7 +390,11 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -9078896440035571861, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 3324063233503092599, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 6628075876486050325, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 912855488434517304, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -472,7 +484,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8627796305678983732, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -5832001502493657517, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2433459233593579308, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2688877743462650633, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -562,7 +578,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single (2)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -652,7 +672,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8627796305678983732, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -5832001502493657517, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2433459233593579308, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
+    - {fileID: -2688877743462650633, guid: 2b2bb8693f3be4ab9b990570a1a85dfb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -718,7 +742,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Telephone
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -6105679433510123287, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -8790639532401962921, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -137873161650513897, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+    - {fileID: -721562162705531724, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -808,7 +836,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single (4)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -898,7 +930,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single (1)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -992,7 +1028,11 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -9078896440035571861, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 3324063233503092599, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 6628075876486050325, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 912855488434517304, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1086,7 +1126,11 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -9078896440035571861, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 3324063233503092599, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 6628075876486050325, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 912855488434517304, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1176,7 +1220,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single (5)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1266,7 +1314,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single (3)
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1356,7 +1408,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SMDark_Daisy_Single
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5886035845939528045, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 2168071421511181865, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: 284234493639995534, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
+    - {fileID: -1224911302316336327, guid: 3039a7b0c5c364f109e0c7d4240da7b0, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1418,7 +1474,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -1019996976347183902, guid: 3257aab25c0344816968213aee60674c, type: 3}
+    - {fileID: 7872955917314847633, guid: 3257aab25c0344816968213aee60674c, type: 3}
+    - {fileID: 6002249377542499313, guid: 3257aab25c0344816968213aee60674c, type: 3}
+    - {fileID: 161354187664853522, guid: 3257aab25c0344816968213aee60674c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1512,7 +1572,11 @@ PrefabInstance:
       propertyPath: originDream
       value: 
       objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -9078896440035571861, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 3324063233503092599, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 6628075876486050325, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
+    - {fileID: 912855488434517304, guid: e31f795fb5e5a4e19b904740e475c56e, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
