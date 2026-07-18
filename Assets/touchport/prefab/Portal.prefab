@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3338309984979913735}
   - component: {fileID: 6065211115806520141}
   - component: {fileID: 2838772868883963846}
-  - component: {fileID: 5424126417482191269}
+  - component: {fileID: 7452910808644431579}
   m_Layer: 8
   m_Name: PortalTrigger
   m_TagString: Untagged
@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e294280cffa6abc4dbc7a754dcfb2395, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5424126417482191269
+--- !u!114 &7452910808644431579
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,11 +185,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1490951816923829187}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bfbde4e4569314f4fad083ce7cf9f522, type: 3}
+  m_Script: {fileID: 11500000, guid: 98cadcb3a9e61467e8c1fa2e73bfe579, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dreamRoot: {fileID: 0}
-  worldLayer: -1
+  manager: {fileID: 0}
+  reArmDelay: 1
 --- !u!1 &6459127067260702680
 GameObject:
   m_ObjectHideFlags: 0

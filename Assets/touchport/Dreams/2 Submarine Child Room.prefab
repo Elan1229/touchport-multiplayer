@@ -56,6 +56,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego Red 1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 8523706322271371498, guid: a308be353f018427889d93fd39bca637, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     - target: {fileID: 8657114974400350567, guid: a308be353f018427889d93fd39bca637, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0943
@@ -118,6 +122,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego blue 1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 2237889936472973696, guid: d71fedaae8f874e25acde52e1e70beb9, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     - target: {fileID: 8348656398658132021, guid: d71fedaae8f874e25acde52e1e70beb9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.325
@@ -180,6 +188,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego Green 1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 7194635107360219462, guid: 12b7958717d4547f78d70ef25bc3c1e0, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     - target: {fileID: 7905632691786557643, guid: 12b7958717d4547f78d70ef25bc3c1e0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.267
@@ -356,6 +368,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego yellow 1
       objectReference: {fileID: 0}
+    - target: {fileID: 9001632514875003359, guid: e49307fc671e44c4688cdbbe1b489ecd, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -418,6 +434,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego yellow 1 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 9001632514875003359, guid: e49307fc671e44c4688cdbbe1b489ecd, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -506,6 +526,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego blue 1
       objectReference: {fileID: 0}
+    - target: {fileID: 2237889936472973696, guid: d71fedaae8f874e25acde52e1e70beb9, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     - target: {fileID: 8348656398658132021, guid: d71fedaae8f874e25acde52e1e70beb9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.675
@@ -568,6 +592,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ToyDirt Lego Red 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8523706322271371498, guid: a308be353f018427889d93fd39bca637, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: 806a4ba83ca344283a47381d24b21723, type: 2}
     - target: {fileID: 8657114974400350567, guid: a308be353f018427889d93fd39bca637, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.013

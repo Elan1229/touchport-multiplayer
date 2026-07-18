@@ -710,6 +710,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -10.574
       objectReference: {fileID: 0}
+    - target: {fileID: 2937813084257464184, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c96c3876dcc3b4f5abbfe4db38ad0e21, type: 2}
     - target: {fileID: 5108848909347770843, guid: 73d203ad444c94968b45b0347d90dced, type: 3}
       propertyPath: m_Name
       value: Telephone

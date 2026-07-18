@@ -30,14 +30,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8747961113169540666}
-  - {fileID: 3684481908020740200}
-  - {fileID: 3226314836938838187}
   - {fileID: 524806183945472896}
   - {fileID: 6835330027935815025}
   - {fileID: 4781730148639676013}
   - {fileID: 2441110931637764726}
-  - {fileID: 3534190770290407232}
-  - {fileID: 8444236848967136680}
   - {fileID: 73288165919400508}
   - {fileID: 179976004873513801}
   - {fileID: 6683028751818756730}
@@ -55,7 +51,43 @@ Transform:
   - {fileID: 8934571970384747992}
   - {fileID: 5378309587246610046}
   - {fileID: 3537051914532084440}
+  - {fileID: 5556493731719330730}
+  - {fileID: 3684481908020740200}
+  - {fileID: 3226314836938838187}
+  - {fileID: 3534190770290407232}
+  - {fileID: 8444236848967136680}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3344645491923621514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5556493731719330730}
+  m_Layer: 0
+  m_Name: --fixed--
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5556493731719330730
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3344645491923621514}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.35739052, y: 0.31665277, z: -0.76109576}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 300172918121656663}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &143339709319566776
 PrefabInstance:
@@ -69,6 +101,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -361,6 +397,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.681
@@ -455,6 +495,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.681
@@ -663,6 +707,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6460329321726269597, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 7193925734960194147, guid: e9ec0ec914d304e39a7122db0d838d6a, type: 3}
       propertyPath: m_Name
       value: Balloon purple
@@ -977,6 +1025,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 300172918121656663}
     m_Modifications:
+    - target: {fileID: -849951112119075928, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 2099069735475832033, guid: 8461ae6c2202642c9bd1eb6394cd9a59, type: 3}
       propertyPath: m_Name
       value: Animal_TeddyBear_bluetie
@@ -1374,6 +1426,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
@@ -1637,6 +1693,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 300172918121656663}
     m_Modifications:
+    - target: {fileID: 1489340088188669446, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 3375857996396705016, guid: 71902a4da109a43bf8c2300489685b86, type: 3}
       propertyPath: m_Name
       value: Balloon teal
@@ -1703,6 +1763,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.15
@@ -1995,6 +2059,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TV yellow
       objectReference: {fileID: 0}
+    - target: {fileID: 1606425199718351776, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
+      propertyPath: originDream
+      value: 
+      objectReference: {fileID: 11400000, guid: c1f8273e2998b499dbe2921435795cc5, type: 2}
     - target: {fileID: 5225192870522412962, guid: b44b02168498541d2b9e0587e2d04d8a, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
