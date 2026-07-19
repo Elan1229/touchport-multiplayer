@@ -1,56 +1,41 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:installLocation="auto"
-    package="com.yourcompany.yourapp">
-
-	<!-- Required features for Meta Quest -->
-	<uses-feature android:name="android.hardware.vr.headtracking" android:required="true" />
-	<uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="true" />
-	<uses-feature android:name="com.oculus.feature.BOUNDARYLESS_APP" android:required="true" />
-
-	<!-- Permissions -->
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="horizonos.permission.HEADSET_CAMERA" />
-	<uses-permission android:name="com.oculus.permission.PASSTHROUGH_CAMERA" />
-	<uses-permission android:name="com.oculus.permission.USE_SCENE" />
-
-	<!-- Remove unnecessary permissions -->
-	<uses-permission android:name="android.permission.RECORD_AUDIO" tools:node="remove" />
-	<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" tools:node="remove" />
-	<uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
-
-	<application
-		android:label="@string/app_name"
-		android:icon="@mipmap/app_icon"
-		android:allowBackup="false"
-		android:extractNativeLibs="true"
-		android:networkSecurityConfig="@xml/network_sec_config">
-
-		<!-- Oculus-specific metadata -->
-		<meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="false" />
-		<meta-data android:name="com.samsung.android.vr.application.mode" android:value="vr_only" />
-		<meta-data android:name="com.oculus.ossplash.background" android:value="passthrough-contextual" />
-		<meta-data android:name="com.oculus.supportedDevices" android:value="quest2|questpro|quest3|eureka" />
-
-		<activity
-			android:name="com.unity3d.player.UnityPlayerGameActivity"
-			android:screenOrientation="landscape"
-			android:launchMode="singleTask"
-			android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode|density"
-			android:hardwareAccelerated="true"
-			android:resizeableActivity="false"
-			android:exported="true"
-			android:theme="@style/BaseUnityGameActivityTheme">
-
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-				<category android:name="com.oculus.intent.category.VR" />
-			</intent-filter>
-
-			<meta-data android:name="com.oculus.vr.focusaware" android:value="true" />
-		</activity>
-	</application>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" android:installLocation="auto" package="com.yourcompany.yourapp" xmlns:horizonos="http://schemas.horizonos/sdk">
+  <uses-feature android:name="android.hardware.vr.headtracking" android:required="true" android:version="1" />
+  <uses-feature android:name="com.oculus.feature.PASSTHROUGH" android:required="true" />
+  <uses-feature android:name="com.oculus.feature.BOUNDARYLESS_APP" android:required="true" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="com.oculus.permission.PASSTHROUGH_CAMERA" />
+  <uses-permission android:name="com.oculus.permission.USE_SCENE" />
+  <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" tools:node="remove" />
+  <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
+  <application android:label="@string/app_name" android:icon="@mipmap/app_icon" android:allowBackup="false" android:extractNativeLibs="true">
+    <!-- Oculus-specific metadata -->
+    <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="false" />
+    <meta-data android:name="com.samsung.android.vr.application.mode" android:value="vr_only" />
+    <meta-data android:name="com.oculus.ossplash.background" android:value="passthrough-contextual" />
+    <meta-data android:name="com.oculus.supportedDevices" android:value="quest2|questpro|quest3|quest3s" />
+    <activity android:name="com.unity3d.player.UnityPlayerGameActivity" android:screenOrientation="landscape" android:launchMode="singleTask" android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenLayout|screenSize|uiMode|density" android:hardwareAccelerated="true" android:resizeableActivity="false" android:exported="true" android:theme="@style/BaseUnityGameActivityTheme">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="com.oculus.intent.category.VR" />
+      </intent-filter>
+      <meta-data android:name="com.oculus.vr.focusaware" android:value="true" />
+    </activity>
+    <meta-data android:name="com.oculus.handtracking.frequency" android:value="LOW" />
+    <meta-data android:name="com.oculus.handtracking.version" android:value="V2.0" />
+    <meta-data android:name="com.oculus.trade_cpu_for_gpu_amount" android:value="1" />
+    <meta-data android:name="com.oculus.telemetry.project_guid" android:value="c938945a-a0e6-4167-a887-6d08ea5a452d" />
+  </application>
+  <uses-feature android:name="oculus.software.handtracking" android:required="false" />
+  <uses-permission android:name="com.oculus.permission.HAND_TRACKING" />
+  <uses-feature android:name="oculus.software.overlay_keyboard" android:required="false" />
+  <uses-permission android:name="com.oculus.permission.USE_ANCHOR_API" />
+  <uses-permission android:name="com.oculus.permission.IMPORT_EXPORT_IOT_MAP_DATA" />
+  <uses-permission android:name="com.oculus.permission.USE_COLOCATION_DISCOVERY_API" />
+  <uses-feature android:name="com.oculus.software.body_tracking" android:required="false" />
+  <uses-permission android:name="com.oculus.permission.BODY_TRACKING" />
+  <uses-permission android:name="com.oculus.permission.BOUNDARY_VISIBILITY" />
+  <horizonos:uses-horizonos-sdk horizonos:minSdkVersion="68" horizonos:targetSdkVersion="74" />
 </manifest>

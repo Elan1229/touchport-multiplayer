@@ -11,7 +11,9 @@
       "Bash(perl -pi -e 's/gameOwnerId/ownerPlayerId/g' \"Assets/touchport/Script/IObjectXR.cs\")",
       "Bash(echo \"exit=$?\")",
       "Skill(fewer-permission-prompts)",
-      "Skill(fewer-permission-prompts:*)"
+      "Skill(fewer-permission-prompts:*)",
+      "mcp__unityMCP__execute_menu_item",
+      "mcp__UnityMCP__execute_menu_item"
     ],
     "deny": [
       "Bash(git*)",
