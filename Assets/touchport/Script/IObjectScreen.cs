@@ -54,7 +54,8 @@ public class IObjectScreen : NetworkBehaviour
     {
         string layerName = ownerId == 0 ? "layer0" : "layer1";
         ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
-        Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{ownerId}");
+        // spawn/换属主时每台机器都打一条，礼物一多就刷屏——需要查 layer 问题时再打开。
+        // Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{ownerId}");
     }
 
     public override void OnNetworkDespawn()

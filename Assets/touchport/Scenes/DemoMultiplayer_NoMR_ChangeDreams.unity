@@ -2067,6 +2067,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dreamRoot: {fileID: 0}
   worldLayer: -1
+  dissolveOutDuration: 3
+  dissolveInDuration: 3
+  dissolveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  releaseDelay: 2
 --- !u!1 &1332770345
 GameObject:
   m_ObjectHideFlags: 0
@@ -3388,8 +3415,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   playerPrefab: {fileID: 4568577422928717485, guid: 1d265df7673267b42a704352b0108fa6, type: 3}
   spawnPoints:
-  - {x: -3, y: 0.5, z: 0}
-  - {x: 3, y: 0.5, z: 0}
+  - {x: -3, y: 1, z: 0}
+  - {x: 3, y: 1, z: 0}
 --- !u!114 &1863532738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3443,11 +3470,15 @@ MonoBehaviour:
   - {fileID: 1878572631}
   - {fileID: 1118114082}
   allDreams: []
-  changeDelay: 2
+  changeDelay: 15
   spawnGifts: 1
   Dream0Index:
     m_InternalValue: -1
   Dream1Index:
+    m_InternalValue: -1
+  Pending0Index:
+    m_InternalValue: -1
+  Pending1Index:
     m_InternalValue: -1
 --- !u!1 &1878572627
 GameObject:
@@ -3529,6 +3560,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dreamRoot: {fileID: 0}
   worldLayer: -1
+  dissolveOutDuration: 3
+  dissolveInDuration: 3
+  dissolveCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  releaseDelay: 2
 --- !u!1 &1983633292
 GameObject:
   m_ObjectHideFlags: 0

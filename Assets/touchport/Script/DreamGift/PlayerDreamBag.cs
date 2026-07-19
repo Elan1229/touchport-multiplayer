@@ -68,10 +68,17 @@ namespace DreamTouch
         public bool ReceiveGift(DefinitionGift gift, DefinitionDream giftOrigin, DefinitionDream partnerDream)
         {
             if (gift == null) return false;
-            if (giftOrigin == Current) return false;            // own item -> inert
+            if (giftOrigin == Current)                          // own item -> inert
+            {
+                Debug.Log($"[DreamBag] '{name}' ignored '{gift.giftName}' — origin '{giftOrigin?.dreamId}' " +
+                          "is the current dream (own item, inert).", this);
+                return false;
+            }
             foreach (var k in gift.keywords)
                 if (k != null) bag[k] = (bag.TryGetValue(k, out var c) ? c : 0) + giftPush;
             bool jumped = EvaluateJump(partnerDream);
+            Debug.Log($"[DreamBag] '{name}' received '{gift.giftName}' (+{giftPush} weight on " +
+                      $"[{KeywordList(gift)}]) -> jumped={jumped}, current='{Current?.dreamId}'.", this);
             RefreshDebug();
             return jumped;
         }
@@ -86,8 +93,18 @@ namespace DreamTouch
             foreach (var k in gift.keywords)
                 if (k != null) bag[k] = Mathf.Max(0, (bag.TryGetValue(k, out var c) ? c : 0) - giftPush);
             bool jumped = EvaluateJump(partnerDream);
+            Debug.Log($"[DreamBag] '{name}' took back '{gift.giftName}' (-{giftPush} weight on " +
+                      $"[{KeywordList(gift)}]) -> jumped={jumped}, current='{Current?.dreamId}'.", this);
             RefreshDebug();
             return jumped;
+        }
+
+        static string KeywordList(DefinitionGift gift)
+        {
+            var sb = new System.Text.StringBuilder();
+            foreach (var k in gift.keywords)
+                if (k != null) { if (sb.Length > 0) sb.Append(", "); sb.Append(k.Id); }
+            return sb.ToString();
         }
 
         // The rule: exclude self + partner.

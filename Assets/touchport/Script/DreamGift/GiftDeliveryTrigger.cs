@@ -21,7 +21,16 @@ namespace DreamTouch
                  "crossing counts as one delivery.")]
         public float reArmDelay = 1f;
 
+        [Tooltip("开门宽限期（秒）：trigger 启用后这么久之内碰到的礼物视为\"portal 开到了它头上\"，" +
+                 "不算穿门，进忽略名单；先离开 trigger 再回来才会正常结算。" +
+                 "要盖过 PortalSpawnAnim 的放大时长（默认 2s）。")]
+        public float armDelay = 2.5f;
+
         readonly Dictionary<ObjectGift, float> _cooldown = new Dictionary<ObjectGift, float>();
+
+        // 开门时就在门里被"吞"进来的礼物——OnTriggerExit 才把它们移出名单。
+        readonly HashSet<ObjectGift> _swallowedAtSpawn = new HashSet<ObjectGift>();
+        float _enabledAt;
 
         void Reset()
         {
@@ -34,10 +43,27 @@ namespace DreamTouch
             if (manager == null) ResolveManager();
         }
 
+        void OnEnable()
+        {
+            _enabledAt = Time.time;
+            _swallowedAtSpawn.Clear();
+        }
+
         void OnTriggerEnter(Collider other)
         {
             var obj = other.GetComponentInParent<ObjectGift>();
             if (obj == null) return;
+
+            // 开门宽限期内碰到的礼物：是 portal 开在了它所在的位置（含放大动画期间长进去的），
+            // 不是有人拿着它穿门——忽略，等它先出去一次。
+            if (Time.time - _enabledAt < armDelay)
+            {
+                if (_swallowedAtSpawn.Add(obj))
+                    Debug.Log($"[GiftDelivery] {obj.name} was inside the portal when it opened — " +
+                              "ignored until it leaves the trigger once.", obj);
+                return;
+            }
+            if (_swallowedAtSpawn.Contains(obj)) return;   // 开门吞进来的，还没出去过
 
             if (_cooldown.TryGetValue(obj, out var readyAt) && Time.time < readyAt) return;
             _cooldown[obj] = Time.time + reArmDelay;
@@ -46,6 +72,13 @@ namespace DreamTouch
                 DeliverMultiplayer(obj);
             else
                 DeliverSinglePlayer(obj);
+        }
+
+        void OnTriggerExit(Collider other)
+        {
+            var obj = other.GetComponentInParent<ObjectGift>();
+            if (obj != null && _swallowedAtSpawn.Remove(obj))
+                Debug.Log($"[GiftDelivery] {obj.name} left the portal — armed for normal delivery.", obj);
         }
 
         // 多人：先用 obj.currentDream（不是 gameOwnerId——那个跟 PortalDirectionTrigger 翻转

@@ -113,6 +113,7 @@
 
 
 
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -138,6 +139,11 @@ public class PortalDirectionTrigger : MonoBehaviour
     [Tooltip("开口范围：相对上面参照物(PortalRender)网格的本地半尺寸。0.5=正好等于可见开口" +
              "（InverseTransformPoint 已自动含它的缩放/非等比 + 父级缩放）。调大=更宽松。")]
     [SerializeField] private Vector2 openingHalfSize = new Vector2(0.5f, 0.5f);
+
+    [Tooltip("开门宽限期（秒）：trigger 启用后这么久之内碰到的可传递物体视为\"portal 开到了它头上\"，" +
+             "不翻转 gameOwnerId/layer，进忽略名单；先离开 trigger 再回来才正常传递。" +
+             "与 GiftDeliveryTrigger.armDelay 同一套语义，要盖过 PortalSpawnAnim 的放大时长（默认 2s）。")]
+    [SerializeField] private float armDelay = 2.5f;
 
     [Header("Events")]
     public UnityEvent OnCrossedToWorldB;
@@ -231,13 +237,43 @@ public class PortalDirectionTrigger : MonoBehaviour
     // 双线状态机，进了 PortalTrigger 的碰撞体就算数，直接调对应接口的 TransferToOther() 翻转
     // gameOwnerId（该方法内部会顺带切 layer，见 IObjectXR.cs / IObjectScreen.cs）。
     // DreamGift 的礼物物体（ObjectGift）不走这里，是 GiftPortalDelivery.cs 单独处理的同类逻辑。
+    // 开门时就在门体积里被"吞"进来的物体——OnTriggerExit 才把它们移出名单。
+    private readonly HashSet<Component> swallowedAtSpawn = new HashSet<Component>();
+    private float enabledAt;
+
+    private void OnEnable()
+    {
+        enabledAt = Time.time;
+        swallowedAtSpawn.Clear();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        var objXR = other.GetComponentInParent<IObjectXR>();
-        if (objXR != null) { objXR.TransferToOther(); return; }
+        Component transferable = other.GetComponentInParent<IObjectXR>();
+        if (transferable == null) transferable = other.GetComponentInParent<IObjectScreen>();
+        if (transferable == null) return;
 
-        var objScreen = other.GetComponentInParent<IObjectScreen>();
-        if (objScreen != null) { objScreen.TransferToOther(); return; }
+        // 开门宽限期内碰到的物体：是 portal 开在了它所在的位置（含放大动画期间长进去的），
+        // 不是有人拿着它穿门——不翻转 owner/layer，等它先出去一次。
+        if (Time.time - enabledAt < armDelay)
+        {
+            if (swallowedAtSpawn.Add(transferable))
+                Debug.Log($"[Portal] {transferable.name} was inside the portal when it opened — " +
+                          "transfer skipped until it leaves the trigger once.", transferable);
+            return;
+        }
+        if (swallowedAtSpawn.Contains(transferable)) return;   // 开门吞进来的，还没出去过
+
+        if (transferable is IObjectXR xr) { xr.TransferToOther(); return; }
+        if (transferable is IObjectScreen screen) screen.TransferToOther();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        Component transferable = other.GetComponentInParent<IObjectXR>();
+        if (transferable == null) transferable = other.GetComponentInParent<IObjectScreen>();
+        if (transferable != null && swallowedAtSpawn.Remove(transferable))
+            Debug.Log($"[Portal] {transferable.name} left the portal — transfer armed.", transferable);
     }
 
     // 优先用 Inspector 手动指定的 headCamera（XR 场景就是这么配的，不受影响）。

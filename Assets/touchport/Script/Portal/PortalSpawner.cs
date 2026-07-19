@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -65,8 +66,8 @@ public class PortalSpawner : NetworkBehaviour
             _spawnPending = false; // 握手把 sharing 关掉了，不生成
         }
 
-        // 不再共享 且 还有 portal → 收门
-        if (hasPortal && !isShared)
+        // 不再共享 且 还有 portal → 收门（优雅关门进行中就别抢跑，让动画放完）
+        if (hasPortal && !isShared && !_closing)
             DespawnPortal();
     }
 
@@ -125,6 +126,35 @@ public class PortalSpawner : NetworkBehaviour
             return true;
         }
         return false;
+    }
+
+    private bool _closing = false;
+
+    // 优雅关门（换梦时用）：所有端一起播反向缩回动画，缩完 despawn + 各端 stencil 回家。
+    // server-only；没有 portal 或已在关门中则 no-op，重复调用安全。
+    public void ClosePortal()
+    {
+        if (!IsServer || _closing) return;
+        if (_spawnedPortal == null || !_spawnedPortal.IsSpawned) return;
+        StartCoroutine(CloseRoutine());
+    }
+
+    private IEnumerator CloseRoutine()
+    {
+        _closing = true;
+        var anim = _spawnedPortal.GetComponent<PortalSpawnAnim>();
+        float wait = 0f;
+        if (anim != null)
+        {
+            anim.CloseClientRpc();          // 大家一起缩
+            wait = anim.CloseDuration;
+        }
+        if (wait > 0f) yield return new WaitForSeconds(wait + 0.1f);   // 留 0.1s 让 client 端动画收尾
+        // 终态和按 U 关 share 完全一致：share 结束（广播 OnSharedChanged）+ despawn +
+        // ResetStencilClientRpc（串门玩家视角回家）。动画期间 share 保持 true，避免 Update 抢跑。
+        SharedState.Instance?.StopShare();
+        DespawnPortal();
+        _closing = false;
     }
 
     // 收掉 portal，供外部调用（比如 share 结束时）
