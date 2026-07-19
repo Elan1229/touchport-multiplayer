@@ -59,15 +59,11 @@ public class PlayerMoveNetwork : NetworkBehaviour
         if (IsOwner)
             StartCoroutine(ApplyAudioListenersNextFrame());
 
-        // Stencil 双世界：与 stencil multiplayer 场景一致，P1 本机初始 URP mask 与 P0 相反（物体 layer / Owner 不变）。
-        if (IsOwner && OwnerClientId == 1)
+        // Stencil 双世界：出生时视角设为自己的老家世界（P0 与场景默认一致，P1 等价于旧的"反转"）。
+        if (IsOwner)
         {
-            var change = FindFirstObjectByType<ChangeLayer>();
-            if (change != null)
-            {
-                change.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-                change.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
-            }
+            var change = ChangeLayer.Instance != null ? ChangeLayer.Instance : FindFirstObjectByType<ChangeLayer>();
+            change?.ViewHomeWorld();
         }
     }
 

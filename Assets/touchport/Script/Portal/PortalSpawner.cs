@@ -26,12 +26,8 @@ public class PortalSpawner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Player1（guest）出生时 stencil 初始化为反的，和 Player0 的世界互换
-        if (NetworkManager.LocalClientId == 1 && ChangeLayer.Instance != null)
-        {
-            ChangeLayer.Instance.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-            ChangeLayer.Instance.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
-        }
+        // 出生时视角初始化为自己的老家世界（P0 与场景默认一致；P1 等价于旧逻辑里的"反转"）
+        ChangeLayer.Instance?.ViewHomeWorld();
         GameManager.OnHandshake += OnHandshakeTriggered;
     }
 
@@ -151,7 +147,7 @@ public class PortalSpawner : NetworkBehaviour
         }
         if (wait > 0f) yield return new WaitForSeconds(wait + 0.1f);   // 留 0.1s 让 client 端动画收尾
         // 终态和按 U 关 share 完全一致：share 结束（广播 OnSharedChanged）+ despawn +
-        // ResetStencilClientRpc（串门玩家视角回家）。动画期间 share 保持 true，避免 Update 抢跑。
+        // ViewHomeClientRpc（串门玩家视角回家）。动画期间 share 保持 true，避免 Update 抢跑。
         SharedState.Instance?.StopShare();
         DespawnPortal();
         _closing = false;
@@ -169,13 +165,13 @@ public class PortalSpawner : NetworkBehaviour
             _spawnedPortal = null;
         }
 
-        // portal 消失时把 stencil 恢复到出生时的状态
-        ResetStencilClientRpc();
+        // portal 消失时把视角恢复到出生时的状态（各端回自己老家）
+        ViewHomeClientRpc();
     }
 
     [ClientRpc]
-    private void ResetStencilClientRpc()
+    private void ViewHomeClientRpc()
     {
-        ChangeLayer.Instance?.ResetStencilLocal();
+        ChangeLayer.Instance?.ViewHomeWorld();
     }
 }

@@ -4,7 +4,9 @@ using UnityEngine.InputSystem;
 
 public class IObjectScreen : NetworkBehaviour
 {
-    public ulong gameOwnerId;
+    // 游戏归属（≠ NGO 的网络 OwnerClientId），语义同 IObjectXR.ownerPlayerId
+    [UnityEngine.Serialization.FormerlySerializedAs("gameOwnerId")]
+    public ulong ownerPlayerId;
 
     private NetworkVariable<ulong> _networkOwnerId = new(
         0,
@@ -27,18 +29,18 @@ public class IObjectScreen : NetworkBehaviour
     public override void OnNetworkSpawn()
     {
         _rb = GetComponent<Rigidbody>();
-        if (IsServer) _networkOwnerId.Value = gameOwnerId;
+        if (IsServer) _networkOwnerId.Value = ownerPlayerId;
         _networkOwnerId.OnValueChanged += (_, newVal) =>
         {
-            gameOwnerId = newVal;
-            ApplyOwnerLayer(newVal);
+            ownerPlayerId = newVal;
+            PlayerWorld.ApplyOwnerLayer(gameObject, newVal);
         };
 
         // OnValueChanged 只在值真的变化时触发——spawn 这一刻同步过来的初始值不算"变化"，
         // 不会走上面那个回调。这里用当前已同步好的值强制刷一次，保证刚 spawn 出来那一刻
         // layer 就是对的，不用等到真的换属主（穿门）才第一次生效。
-        gameOwnerId = _networkOwnerId.Value;
-        ApplyOwnerLayer(gameOwnerId);
+        ownerPlayerId = _networkOwnerId.Value;
+        PlayerWorld.ApplyOwnerLayer(gameObject, ownerPlayerId);
 
         // Make movement deterministic when held (network transform will sync position).
         if (_rb != null)
@@ -48,14 +50,6 @@ public class IObjectScreen : NetworkBehaviour
         TryEnsureNetworkTransform();
 
         StartCoroutine(BindSharedStateWhenReady());
-    }
-
-    void ApplyOwnerLayer(ulong ownerId)
-    {
-        string layerName = ownerId == 0 ? "layer0" : "layer1";
-        ChangeLayer.Instance?.ChangeObjectLayer(gameObject, LayerMask.GetMask(layerName));
-        // spawn/换属主时每台机器都打一条，礼物一多就刷屏——需要查 layer 问题时再打开。
-        // Debug.Log($"[touchport] {gameObject.name} layer→{layerName} gameOwnerId→{ownerId}");
     }
 
     public override void OnNetworkDespawn()
@@ -74,11 +68,11 @@ public class IObjectScreen : NetworkBehaviour
         ApplyVisibility(isShared);
 
         // isShared 关掉时：
-        // - 如果当前是非主人正在握持（heldBy != gameOwnerId），要同时清掉 held 状态，
+        // - 如果当前是非主人正在握持（heldBy != ownerPlayerId），要同时清掉 held 状态，
         //   否则会出现“跟随已断开但 heldBy 仍然占用，导致对方无法正常 Drop”的状态不一致。
         if (IsServer && !isShared)
         {
-            if (_heldByClientId.Value != ulong.MaxValue && _heldByClientId.Value != gameOwnerId)
+            if (_heldByClientId.Value != ulong.MaxValue && _heldByClientId.Value != ownerPlayerId)
             {
                 _heldByClientId.Value = ulong.MaxValue;
                 _followTarget = null;
@@ -101,7 +95,7 @@ public class IObjectScreen : NetworkBehaviour
 
     void ApplyVisibility(bool isShared)
     {
-        bool iAmNonOwner = NetworkManager.LocalClientId != gameOwnerId;
+        bool iAmNonOwner = NetworkManager.LocalClientId != ownerPlayerId;
         bool show = !iAmNonOwner || isShared;
         foreach (var r in GetComponentsInChildren<Renderer>())
             r.enabled = show;
@@ -131,7 +125,7 @@ public class IObjectScreen : NetworkBehaviour
             return;
 
         var localClientId = NetworkManager.LocalClientId;
-        bool canGrab = SharedState.Instance.IsShared || localClientId == gameOwnerId;
+        bool canGrab = SharedState.Instance.IsShared || localClientId == ownerPlayerId;
         if (!canGrab) return;
 
         var localPlayer = GetPlayerTransformByClientId(localClientId);
@@ -141,7 +135,7 @@ public class IObjectScreen : NetworkBehaviour
         if (!inRange) return;
 
         if (Keyboard.current != null && Keyboard.current[grabKey].wasPressedThisFrame)
-            Debug.Log($"[IObjectScreen] {name} F pressed inRange={inRange} canGrab={canGrab} clientId={localClientId} gameOwnerId={gameOwnerId}");
+            Debug.Log($"[IObjectScreen] {name} F pressed inRange={inRange} canGrab={canGrab} clientId={localClientId} ownerPlayerId={ownerPlayerId}");
         if (Keyboard.current != null && Keyboard.current[grabKey].wasPressedThisFrame)
         {
             // Not held yet -> grab
@@ -184,8 +178,8 @@ public class IObjectScreen : NetworkBehaviour
 
     private bool CanServerClientGrab(ulong clientId)
     {
-        if (SharedState.Instance == null) return clientId == gameOwnerId;
-        return SharedState.Instance.IsShared || clientId == gameOwnerId;
+        if (SharedState.Instance == null) return clientId == ownerPlayerId;
+        return SharedState.Instance.IsShared || clientId == ownerPlayerId;
     }
 
     private Transform GetPlayerTransformByClientId(ulong clientId)
@@ -199,13 +193,13 @@ public class IObjectScreen : NetworkBehaviour
     }
 
     // 由 PortalDirectionTrigger.OnTriggerEnter 在物体的 Collider 进了 PortalTrigger 时调用
-    // （普通 Trigger 碰撞，不是距离判断）：翻转 gameOwnerId，下面 _networkOwnerId.OnValueChanged
+    // （普通 Trigger 碰撞，不是距离判断）：翻转 ownerPlayerId，_networkOwnerId.OnValueChanged
     // 会顺带把 layer 切过去。
     public void TransferToOther()
     {
         if (!IsServer) return;
-        ulong newOwner = gameOwnerId == 0 ? 1UL : 0UL;
-        Debug.Log($"[touchport] IObject Collided! {gameObject.name} owner {gameOwnerId}→{newOwner}");
+        ulong newOwner = PlayerWorld.OtherPlayer(ownerPlayerId);
+        Debug.Log($"[touchport] IObject Collided! {gameObject.name} owner {ownerPlayerId}->{newOwner}");
         _networkOwnerId.Value = newOwner;
     }
 

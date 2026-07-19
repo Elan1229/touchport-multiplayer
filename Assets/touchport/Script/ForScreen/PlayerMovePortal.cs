@@ -32,16 +32,9 @@ public class PlayerMovePortal : NetworkBehaviour
         cam.enabled = true;
         Cursor.lockState = CursorLockMode.Locked;
 
-        // Player1 出生在 WorldB，初始 renderer 状态与 Player0 相反
-        if (OwnerClientId == 1)
-        {
-            var changeLayer = FindObjectOfType<ChangeLayer>();
-            if (changeLayer != null)
-            {
-                changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-                changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
-            }
-        }
+        // 出生时视角设为自己的老家世界（P0 与场景默认一致，P1 等价于旧的"反转"）
+        var changeLayer = ChangeLayer.Instance != null ? ChangeLayer.Instance : FindFirstObjectByType<ChangeLayer>();
+        changeLayer?.ViewHomeWorld();
     }
 
     IEnumerator ReapplyLocalAudioNextFrame()

@@ -23,12 +23,15 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/touchport/Scenes/DemoSinglePlayer_MR_3worldswDepthClips.unity
     guid: fc4ea84d708cde142a53d2485d1cf1e9
-  - enabled: 1
+  - enabled: 0
     path: Assets/touchport/Scenes/DemoSinglePlayer_MR_vfx.unity
     guid: 5d0a4dee69743460abfe26447e54311f
   - enabled: 0
     path: Assets/touchport/Scenes/DemoMultiplayer_NoMR_ChangeDreams.unity
     guid: 69c4cf23329a24a64bebd21e7720c20c
+  - enabled: 1
+    path: Assets/touchport/Scenes/DemoSinglePlayer_MR_occ test.unity
+    guid: 253dbf2d0b99d4d58b06680d80200d6f
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4c41dd6ad791e2a4b8898d0ea8b277ec, type: 2}
     com.unity.addressableassets: {fileID: 11400000, guid: f1b2282835c9f4f41b6824885c4c1d68, type: 2}

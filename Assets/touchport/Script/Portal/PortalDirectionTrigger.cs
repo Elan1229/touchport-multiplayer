@@ -1,118 +1,3 @@
-// using Unity.Netcode;
-// using UnityEngine;
-// using UnityEngine.Events;
-
-// public class PortalDirectionTrigger : MonoBehaviour
-// {
-//     private ChangeLayer changeLayer;
-
-
-//     [Header("Network or Local")]
-//     [Tooltip(
-//         "【正式用 / 打包】勾选：只处理本机玩家（沿父级找 NetworkObject + IsOwner）。\n" +
-//         "【本地测试】取消：任意 Rigidbody+Collider 撞进来也会触发。")]
-//     [SerializeField] private bool requireNetwork = true;
-
-
-//     [Header("Events")]
-//     public UnityEvent OnCrossedToWorldB;   // 原 OnEnterFront
-//     public UnityEvent OnCrossedToWorldA;   // 原 OnEnterBack
-
-
-//     // 当前世界状态：false = 在A世界（portal显示B），true = 在B世界（portal显示A）
-//     private bool inOtherWorld = false;
-
-
-//     // 记录本次触发的进入方向和来源 Collider
-//     private float entryDot = 0f;
-//     private Collider trackedHead = null;
-
-//     void Start()
-//     {
-//         if (changeLayer == null)
-//             changeLayer = ChangeLayer.Instance;
-
-       
-//     }
-
-//     private void OnTriggerEnter(Collider other)
-//     {
-//         // 可传递物品（XR / Screen），不影响世界状态
-//         var objXR = other.GetComponentInParent<IObjectXR>();
-//         if (objXR != null) { objXR.TransferToOther(); return; }
-
-//         var objScreen = other.GetComponentInParent<IObjectScreen>();
-//         if (objScreen != null) { objScreen.TransferToOther(); return; }
-
-//         if (!other.CompareTag("Head")) return;
-
-//         if (requireNetwork)
-//         {
-//             var netObj = other.GetComponentInParent<NetworkObject>();
-//             if (netObj == null || !netObj.IsOwner) return;
-//         }
-
-//         // 记录进入时的方向（head在portal哪一侧）
-//         entryDot = GetDot(other.transform.position);
-//         trackedHead = other;
-
-//         // 脑袋碰到portal → 立刻切世界
-//         inOtherWorld = !inOtherWorld;
-//         ApplyLayers();
-//         (inOtherWorld ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
-
-//         Debug.Log($"[Portal] Enter dot={entryDot:F3} → 现在在 {(inOtherWorld ? "B" : "A")} 世界");
-//     }
-
-//     private void OnTriggerExit(Collider other)
-//     {
-//         if (other != trackedHead) return;
-//         trackedHead = null;
-
-//         float exitDot = GetDot(other.transform.position);
-
-//         // 出去方向和进来方向同侧 → 退回来了，撤销切换
-//         bool retreated = Mathf.Sign(exitDot) == Mathf.Sign(entryDot);
-
-//         if (retreated)
-//         {
-//             inOtherWorld = !inOtherWorld;
-//             ApplyLayers();
-//             (inOtherWorld ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
-//             Debug.Log($"[Portal] 退回来了 → 恢复到 {(inOtherWorld ? "B" : "A")} 世界");
-//         }
-//         else
-//         {
-//             Debug.Log($"[Portal] 穿过去了 → 保持 {(inOtherWorld ? "B" : "A")} 世界");
-//         }
-//     }
-
-//     // portal中心到head的方向，与portal正面做点积
-//     private float GetDot(Vector3 otherPos)
-//         => Vector3.Dot((otherPos - transform.position).normalized, transform.forward);
-
-//     private void ApplyLayers()
-//     {
-//         if (changeLayer == null) changeLayer = ChangeLayer.Instance;
-//         if (changeLayer == null) { Debug.LogWarning("[Portal] ChangeLayer.Instance is null"); return; }
-
-//         if (inOtherWorld)
-//         {
-//             // 身在B世界，portal窗口显示A
-//             changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-//             changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
-//         }
-//         else
-//         {
-//             // 身在A世界，portal窗口显示B
-//             changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer0");
-//             changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer1");
-//         }
-//     }
-// }
-
-
-
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -141,7 +26,7 @@ public class PortalDirectionTrigger : MonoBehaviour
     [SerializeField] private Vector2 openingHalfSize = new Vector2(0.5f, 0.5f);
 
     [Tooltip("开门宽限期（秒）：trigger 启用后这么久之内碰到的可传递物体视为\"portal 开到了它头上\"，" +
-             "不翻转 gameOwnerId/layer，进忽略名单；先离开 trigger 再回来才正常传递。" +
+             "不翻转 ownerPlayerId/layer，进忽略名单；先离开 trigger 再回来才正常传递。" +
              "与 GiftDeliveryTrigger.armDelay 同一套语义，要盖过 PortalSpawnAnim 的放大时长（默认 2s）。")]
     [SerializeField] private float armDelay = 2.5f;
 
@@ -163,8 +48,8 @@ public class PortalDirectionTrigger : MonoBehaviour
         changeLayer = ChangeLayer.Instance;
         ResolveHeadCamera();
 
-        // Do NOT set stencil here — respect each player's spawn-time config (PortalSpawner sets
-        // Player1 reversed). Crossing flips it per-player via ChangeLayer.SwitchStencilLocal/Reset.
+        // Do NOT set the view here — respect each player's spawn-time state (PortalSpawner calls
+        // ViewHomeWorld on spawn). Crossing flips it per-player via ChangeLayer.ViewOppositeWorld/ViewHomeWorld.
     }
 
     // 每帧的"人头"穿门判断：0.1 平面双线状态机 + 开口范围。只影响本机玩家视角的 stencil 世界切换，
@@ -235,7 +120,7 @@ public class PortalDirectionTrigger : MonoBehaviour
     // 物体（IObjectXR/IObjectScreen 挂的花、球等可抓取道具）穿门传递：走普通 Unity Trigger 碰撞回调，
     // 不走上面 Update() 那套 0.1 平面/开口范围判断——物体没有近裁剪面视觉穿帮的问题，不需要那么精细的
     // 双线状态机，进了 PortalTrigger 的碰撞体就算数，直接调对应接口的 TransferToOther() 翻转
-    // gameOwnerId（该方法内部会顺带切 layer，见 IObjectXR.cs / IObjectScreen.cs）。
+    // ownerPlayerId（该方法内部会顺带切 layer，见 IObjectXR.cs / IObjectScreen.cs）。
     // DreamGift 的礼物物体（ObjectGift）不走这里，是 GiftPortalDelivery.cs 单独处理的同类逻辑。
     // 开门时就在门体积里被"吞"进来的物体——OnTriggerExit 才把它们移出名单。
     private readonly HashSet<Component> swallowedAtSpawn = new HashSet<Component>();
@@ -333,24 +218,9 @@ public class PortalDirectionTrigger : MonoBehaviour
     private void FlipWorld()
     {
         inWorldB = !inWorldB;
-        if (inWorldB) changeLayer?.SwitchStencilLocal();   // 穿到对方世界（按 LocalClientId 翻转）
-        else          changeLayer?.ResetStencilLocal();     // 退回自己世界
+        if (inWorldB) changeLayer?.ViewOppositeWorld();   // 穿到对方世界
+        else          changeLayer?.ViewHomeWorld();       // 退回自己世界
         (inWorldB ? OnCrossedToWorldB : OnCrossedToWorldA)?.Invoke();
-        Debug.Log($"[Portal] 切换到 {(inWorldB ? "B" : "A")} 世界");
-    }
-
-    private void ApplyLayers()
-    {
-        if (changeLayer == null) return;
-        if (inWorldB)
-        {
-            changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer1");
-            changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer0");
-        }
-        else
-        {
-            changeLayer.ChangeRendererLayerMask("StencilThisWorld", "layer0");
-            changeLayer.ChangeRendererLayerMask("StencilPortalWorld", "layer1");
-        }
+        Debug.Log($"[Portal] view -> {(inWorldB ? "opposite" : "home")} world");
     }
 }

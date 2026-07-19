@@ -81,7 +81,7 @@ namespace DreamTouch
                 Debug.Log($"[GiftDelivery] {obj.name} left the portal — armed for normal delivery.", obj);
         }
 
-        // 多人：先用 obj.currentDream（不是 gameOwnerId——那个跟 PortalDirectionTrigger 翻转
+        // 多人：先用 obj.currentDream（不是 ownerPlayerId——那个跟 PortalDirectionTrigger 翻转
         // owner 是同一次穿门触发的两个独立 OnTriggerEnter，谁先跑不该被这里依赖）找到这个礼物
         // 现在实际在哪个 world，再判断这趟是"送出去"还是"拿回去"：
         //   origin == currentDream（还在老家）  → 送出去 → 对面 world 的 bag 加权重
@@ -100,7 +100,7 @@ namespace DreamTouch
                                  "either world's current dream (dream probably changed underneath it).", obj);
                 return;
             }
-            int destWorld = 1 - sourceWorld;
+            int destWorld = PlayerWorld.OtherWorld(sourceWorld);
 
             bool isReturning = obj.originDream != obj.currentDream;
             if (isReturning)

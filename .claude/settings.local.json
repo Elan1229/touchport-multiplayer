@@ -7,7 +7,11 @@
       "mcp__UnityMCP__refresh_unity",
       "Read(//Users/yilantao/Library/Logs/Unity/**)",
       "mcp__unityMCP__read_console",
-      "Bash(python3 -)"
+      "Bash(python3 -)",
+      "Bash(perl -pi -e 's/gameOwnerId/ownerPlayerId/g' \"Assets/touchport/Script/IObjectXR.cs\")",
+      "Bash(echo \"exit=$?\")",
+      "Skill(fewer-permission-prompts)",
+      "Skill(fewer-permission-prompts:*)"
     ],
     "deny": [
       "Bash(git*)",

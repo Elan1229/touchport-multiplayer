@@ -56,12 +56,12 @@ namespace DreamTouch
             NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
 
         // server：per-world 缓冲期锁。bag 结算跳梦后上锁，presenter 过渡完成解锁；锁定期间
-        // Deliver/TakeBack 直接跳过 bag 结算（礼物的 currentDream/ownerId 更新在
+        // Deliver/TakeBack 直接跳过 bag 结算（礼物的 currentDream/ownerPlayerId 更新在
         // GiftDeliveryTrigger / PortalDirectionTrigger，照常发生，礼物会随旧梦一起消失）。
         readonly bool[] worldLocked = new bool[2];
 
         // server：账本——所有经本类 Spawn 出去的礼物，替代原先 FindObjectsByType 的全场景
-        // 扫描。despawn 时按"当时的" gameOwnerId 过滤（礼物穿门会翻转 owner，所以不能按
+        // 扫描。despawn 时按"当时的" ownerPlayerId 过滤（礼物穿门会翻转 owner，所以不能按
         // spawn 时的 world 分两本账）。
         readonly List<NetworkObject> spawnedGifts = new List<NetworkObject>();
 
@@ -143,7 +143,7 @@ namespace DreamTouch
             Debug.Log($"[DreamNet] DeliverGift '{gift.giftName}' -> world{targetPlayer} " +
                       $"origin='{(origin ? origin.dreamId : "null")}', settling bag now.");
             var bag = bags[targetPlayer];
-            var other = bags[1 - targetPlayer];
+            var other = bags[PlayerWorld.OtherWorld(targetPlayer)];
             var partner = other != null ? other.Current : origin;
             bag.ReceiveGift(gift, origin, partner);   // jump -> OnDreamChanged -> HandleBagJump
         }
@@ -162,7 +162,7 @@ namespace DreamTouch
             }
             Debug.Log($"[DreamNet] TakeBackGift '{gift.giftName}' out of world{sourceWorld}, settling bag now.");
             var bag = bags[sourceWorld];
-            var other = bags[1 - sourceWorld];
+            var other = bags[PlayerWorld.OtherWorld(sourceWorld)];
             bag.TakeBackGift(gift, other != null ? other.Current : null);
         }
 
@@ -319,9 +319,9 @@ namespace DreamTouch
             }
 
             var xr = inst.GetComponent<IObjectXR>();
-            if (xr != null) xr.gameOwnerId = (ulong)world;
+            if (xr != null) xr.ownerPlayerId = PlayerWorld.PlayerOf(world);
             var screen = inst.GetComponent<IObjectScreen>();
-            if (screen != null) screen.gameOwnerId = (ulong)world;
+            if (screen != null) screen.ownerPlayerId = PlayerWorld.PlayerOf(world);
 
             pendingSpawn[world].Add(inst);
         }
@@ -369,7 +369,7 @@ namespace DreamTouch
         IEnumerator DespawnGiftsOwnedBy(int world)
         {
             const int perFrame = 3;
-            ulong ownerId = (ulong)world;
+            ulong ownerId = PlayerWorld.PlayerOf(world);
             int n = 0;
             for (int i = spawnedGifts.Count - 1; i >= 0; i--)
             {
@@ -378,8 +378,8 @@ namespace DreamTouch
                 if (no == null || !no.IsSpawned) { spawnedGifts.RemoveAt(i); continue; }
                 var xr = no.GetComponent<IObjectXR>();
                 var screen = no.GetComponent<IObjectScreen>();
-                bool owned = (xr != null && xr.gameOwnerId == ownerId) ||
-                             (screen != null && screen.gameOwnerId == ownerId);
+                bool owned = (xr != null && xr.ownerPlayerId == ownerId) ||
+                             (screen != null && screen.ownerPlayerId == ownerId);
                 if (!owned) continue;
                 spawnedGifts.RemoveAt(i);
                 no.Despawn(true);

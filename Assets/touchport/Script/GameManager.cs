@@ -116,13 +116,13 @@ public class GameManager : NetworkBehaviour
     private IEnumerator DelayedSwitchStencil(ulong targetClientId)
     {
         yield return new WaitForSeconds(2f);
-        SwitchStencilClientRpc(new ClientRpcParams
+        ViewOppositeWorldClientRpc(new ClientRpcParams
             { Send = new ClientRpcSendParams { TargetClientIds = new[] { targetClientId } } });
     }
 
     [ClientRpc]
-    private void SwitchStencilClientRpc(ClientRpcParams _ = default)
-        => ChangeLayer.Instance?.SwitchStencilLocal();
+    private void ViewOppositeWorldClientRpc(ClientRpcParams _ = default)
+        => ChangeLayer.Instance?.ViewOppositeWorld();
 
     [ClientRpc]
     private void NotifyAcceptShareClientRpc()
@@ -147,7 +147,7 @@ public class GameManager : NetworkBehaviour
     private void NotifyStopSharingClientRpc()
     {
         OnStopSharing?.Invoke();
-        ChangeLayer.Instance?.ResetStencilLocal();
+        ChangeLayer.Instance?.ViewHomeWorld();
     }
 
     // ─── Portal Double Toggle ────────────────────────────────────
