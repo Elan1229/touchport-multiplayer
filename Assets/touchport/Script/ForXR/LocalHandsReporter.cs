@@ -49,6 +49,8 @@ public class LocalHandsReporter : MonoBehaviour
     private bool _prevAButton = false;       // 上一帧 A 键状态，用来检测按下瞬间
     private bool _prevTriggerButton = false; // 上一帧 trigger 状态
     private float _debugTimer = 0f;   // debug log 计时器，防止每帧刷屏
+    private float _nextInstanceNullWarn = 0f; // [HandsDiag] Instance-null 警告节流
+    private int _instanceNullCount = 0;       // [HandsDiag] 累计次数，恢复后也能看出断了多久
 
     private void Start()
     {
@@ -67,7 +69,13 @@ public class LocalHandsReporter : MonoBehaviour
 
         if (HandsManager.Instance == null)
         {
-            Debug.LogWarning("[LocalHandsReporter] HandsManager.Instance is null, skipping");
+            // 30Hz 刷屏会在 90 秒内把 logcat 环形缓冲整个冲掉（2026-07-19 实测），必须节流
+            _instanceNullCount++;
+            if (Time.time >= _nextInstanceNullWarn)
+            {
+                _nextInstanceNullWarn = Time.time + 3f;
+                Debug.LogWarning($"[HandsDiag][Reporter] HandsManager.Instance is null, skipping (x{_instanceNullCount} since start, connected={NetworkManager.Singleton?.IsConnectedClient})");
+            }
             return;
         }
 

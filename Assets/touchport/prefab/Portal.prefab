@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 0}
-  reArmDelay: 1
+  reArmDelay: 5
   armDelay: 2.5
 --- !u!1 &6459127067260702680
 GameObject:
