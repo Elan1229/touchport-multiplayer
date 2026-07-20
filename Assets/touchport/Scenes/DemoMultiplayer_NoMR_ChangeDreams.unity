@@ -291,7 +291,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &187635796
@@ -532,7 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &384453853
@@ -743,7 +743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 1
+  ownerPlayerId: 1
   grabDistance: 2
   grabKey: 102
 --- !u!114 &448046238
@@ -969,7 +969,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &481295174
@@ -1195,7 +1195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &587213835
@@ -1633,7 +1633,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 1
+  ownerPlayerId: 1
   grabDistance: 2
   grabKey: 102
 --- !u!114 &797199927
@@ -2145,7 +2145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 1
+  ownerPlayerId: 1
   grabDistance: 2
   grabKey: 102
 --- !u!114 &1332770348
@@ -2372,7 +2372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &1447845847
@@ -2627,7 +2627,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 1
+  ownerPlayerId: 1
   grabDistance: 2
   grabKey: 102
 --- !u!114 &1525136787
@@ -3104,7 +3104,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &1860015271
@@ -3623,7 +3623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 1
+  ownerPlayerId: 1
   grabDistance: 2
   grabKey: 102
 --- !u!114 &1983633294
@@ -3849,7 +3849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameOwnerId: 0
+  ownerPlayerId: 0
   grabDistance: 2
   grabKey: 102
 --- !u!114 &2076428954

@@ -32,9 +32,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/touchport/Scenes/DemoSinglePlayer_MR_occ test.unity
     guid: 253dbf2d0b99d4d58b06680d80200d6f
-  - enabled: 1
+  - enabled: 0
     path: Assets/touchport/Scenes/DemoSinglePlayer_MR_room test.unity
     guid: aa705786781574dca9a120430bf29b3e
+  - enabled: 1
+    path: Assets/touchport/Scenes/DemoMultiplayer_MR_ChangeDreams.unity
+    guid: 17d549a9c057541c19df94debc1a145b
   m_configObjects:
     Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 4c41dd6ad791e2a4b8898d0ea8b277ec, type: 2}
     com.unity.addressableassets: {fileID: 11400000, guid: f1b2282835c9f4f41b6824885c4c1d68, type: 2}

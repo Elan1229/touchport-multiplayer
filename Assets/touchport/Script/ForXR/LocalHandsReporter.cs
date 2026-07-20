@@ -148,12 +148,14 @@ public class LocalHandsReporter : MonoBehaviour
             HandsManager.Instance.ReportHeadServerRpc(headWorld);
         }
 
-        _debugTimer -= Time.deltaTime;
+        // [HandsDiag] 发送端打点：本机模式/位置/KP 是否有效，每 3 秒一条
+        _debugTimer -= reportInterval;
         if (_debugTimer <= 0f)
         {
-            _debugTimer = 2f;
-           // Debug.Log($"[LocalHandsReporter] clientId={NetworkManager.Singleton.LocalClientId} " +
-               //       $"L={leftHandTracker.position:F2}[{LeftMode}] R={rightHandTracker.position:F2}[{RightMode}]");
+            _debugTimer = 3f;
+            Debug.Log($"[HandsDiag][Reporter] clientId={netManager.LocalClientId} " +
+                      $"L={LeftMode}@{leftHandTracker.position:F2} kpL={(leftKP.wrist != Vector3.zero ? "ok" : "EMPTY")} " +
+                      $"R={RightMode}@{rightHandTracker.position:F2} kpR={(rightKP.wrist != Vector3.zero ? "ok" : "EMPTY")}");
         }
 
         // 右手是手追踪模式时显示 wristPanel，手柄或无追踪时隐藏
@@ -164,6 +166,10 @@ public class LocalHandsReporter : MonoBehaviour
                 wristPanel.SetActive(show);
         }
     }
+
+    // [HandsDiag] app 睡眠/失焦事件——排查"另一台设备停报"用
+    private void OnApplicationPause(bool paused)  => Debug.Log($"[HandsDiag][Reporter] OnApplicationPause({paused})");
+    private void OnApplicationFocus(bool focused) => Debug.Log($"[HandsDiag][Reporter] OnApplicationFocus({focused})");
 
     // OVR 手追踪：从 OVRPlugin 拿手的世界坐标和朝向，失败返回 false
     private bool TryGetOVRHandPos(OVRPlugin.Hand hand, out Vector3 worldPos, out Quaternion worldRot)

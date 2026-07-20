@@ -52,6 +52,7 @@ public class HandsManager : NetworkBehaviour
     private bool  _aPressedThisFrame = false; // 本帧是否收到A键上报
     private float _toggleCooldown = 0f;       // 触发冷却，防止反复 fire
     private const float ToggleCooldownDuration = 1.5f;
+    private float _nextDiagTime = 0f;         // [HandsDiag] 服务端打点节流
 
     // ─── Inspector 参数 ──────────────────────────────────────────
 
@@ -135,11 +136,23 @@ public class HandsManager : NetworkBehaviour
         else if (clientId == 1 &&  isLeft) { Debug1Left.Value  = position; Debug1LeftMode.Value  = (int)mode; KP1L.Value = keyPoints; }
         else if (clientId == 1 && !isLeft) { Debug1Right.Value = position; Debug1RightMode.Value = (int)mode; KP1R.Value = keyPoints; }
 
+        // [HandsDiag] 服务端打点：完整倾倒 _hands 字典 + 头部字典的 key，每 3 秒一条。
+        // 一行同时回答"谁的手到了 server / 模式位置对不对 / portal 生成的前置(两个头)满足没有"。
+        if (Time.time >= _nextDiagTime)
+        {
+            _nextDiagTime = Time.time + 3f;
+            var sb = new System.Text.StringBuilder("[HandsDiag][Server] hands:");
+            foreach (var kv in _hands)
+                sb.Append($" c{kv.Key.Item1}{(kv.Key.Item2 ? "L" : "R")}={kv.Value.mode}@{kv.Value.position:F2}{(kv.Value.isTracked ? "" : "(untracked)")}");
+            sb.Append($" | heads:[{string.Join(",", _headPositions.Keys)}]");
+            Debug.Log(sb.ToString());
+        }
+
         // A键状态暂存，Update 里和 proximity 一起统一处理
         if (aButtonPressed && !isLeft)
         {
             _aPressedThisFrame = true;
-            Debug.Log($"[touchport] 服务端收到A键 来自clientId={clientId}");
+            Debug.Log("[HandsDiag][Server] A button received from clientId=" + clientId);
         }
 
         if (triggerPressed && !isLeft)

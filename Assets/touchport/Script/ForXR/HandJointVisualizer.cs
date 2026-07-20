@@ -73,14 +73,14 @@ public class HandJointVisualizer : MonoBehaviour
         bool leftIsHand  = reporter != null && reporter.LeftMode  == InputMode.Hand;
         bool rightIsHand = reporter != null && reporter.RightMode == InputMode.Hand;
 
+        // [HandsDiag] 本机骨骼状态打点（蓝块条件），每 3 秒一条
         _dbgTimer -= Time.deltaTime;
-        if (_dbgTimer <= 0f)
+        bool dbgTick = _dbgTimer <= 0f;
+        if (dbgTick)
         {
             _dbgTimer = 3f;
-            string lb = leftSkeleton?.Bones?.Count  > 0 ? leftSkeleton.Bones[0].Transform.position.ToString("F2")  : "NO";
-            string rb = rightSkeleton?.Bones?.Count > 0 ? rightSkeleton.Bones[0].Transform.position.ToString("F2") : "NO";
-           // Debug.Log($"[touchport] VIZ L: modeHand={leftIsHand} valid={leftSkeleton?.IsDataValid} bones={leftSkeleton?.Bones?.Count} b0={lb}");
-           // Debug.Log($"[touchport] VIZ R: modeHand={rightIsHand} valid={rightSkeleton?.IsDataValid} bones={rightSkeleton?.Bones?.Count} b0={rb}");
+            Debug.Log($"[HandsDiag][Viz] local L: modeHand={leftIsHand} skelValid={leftSkeleton?.IsDataValid} bones={leftSkeleton?.Bones?.Count} | " +
+                      $"R: modeHand={rightIsHand} skelValid={rightSkeleton?.IsDataValid} bones={rightSkeleton?.Bones?.Count}");
         }
 
         UpdateLocalHand(leftSkeleton,  _localL, _fallbackL, leftIsHand,  reporter?.LeftHandPosition  ?? Vector3.zero);
@@ -96,11 +96,36 @@ public class HandJointVisualizer : MonoBehaviour
             return;
         }
 
+        // [HandsDiag] KP NetworkVariable 复制心跳：只在非 server 端有意义（server 本地写不算复制），
+        // 前 5 次变化各打一条——guest 的 logcat 里出现它 = server→client 复制链路活着
+        if (!_kpSubscribed)
+        {
+            _kpSubscribed = true;
+            hm.KP0L.OnValueChanged += (_, _) => LogKpEvent("KP0L");
+            hm.KP1L.OnValueChanged += (_, _) => LogKpEvent("KP1L");
+        }
+
         ulong localId = nm.LocalClientId;
         var kpL = localId == 0 ? hm.KP1L.Value : hm.KP0L.Value;
         var kpR = localId == 0 ? hm.KP1R.Value : hm.KP0R.Value;
+
+        // [HandsDiag] 接收端读到的远端 KP 值，每 3 秒一条（与上面共用 dbgTick 节流）
+        if (dbgTick)
+            Debug.Log($"[HandsDiag][Viz] localId={localId} remoteKPL={(kpL.wrist != Vector3.zero ? kpL.wrist.ToString("F2") : "EMPTY")} " +
+                      $"remoteKPR={(kpR.wrist != Vector3.zero ? kpR.wrist.ToString("F2") : "EMPTY")}");
+
         UpdateKeyPointCubes(_remoteL, _linesL, kpL);
         UpdateKeyPointCubes(_remoteR, _linesR, kpR);
+    }
+
+    private bool _kpSubscribed;
+    private int _kpEvents;
+
+    private void LogKpEvent(string varName)
+    {
+        if (_kpEvents >= 5) return;
+        _kpEvents++;
+        Debug.Log($"[HandsDiag][Viz] {varName} OnValueChanged #{_kpEvents} — replication alive on clientId={NetworkManager.Singleton?.LocalClientId}");
     }
 
     private void UpdateLocalHand(OVRSkeleton sk, GameObject[] cubes, GameObject fallback, bool modeIsHand, Vector3 handPos)

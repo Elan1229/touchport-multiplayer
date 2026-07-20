@@ -70,7 +70,12 @@ public class PortalSpawner : NetworkBehaviour
     // 生成 portal：中点模式或对方位置模式
     private void SpawnPortalServer()
     {
-        if (!TryGetBothPlayerPositions(out Vector3 p0, out Vector3 p1)) return;
+        if (!TryGetBothPlayerPositions(out Vector3 p0, out Vector3 p1))
+        {
+            // [HandsDiag] 静默失败改为显式打点——portal 没出来时第一个看这里
+            Debug.LogWarning("[HandsDiag][Portal] spawn SKIPPED — missing player positions (need both heads/players)");
+            return;
+        }
 
         Vector3 line = p1 - p0;
         line.y = 0f;
@@ -102,6 +107,7 @@ public class PortalSpawner : NetworkBehaviour
 
         net.Spawn();
         _spawnedPortal = net;
+        Debug.Log($"[HandsDiag][Portal] portal SPAWNED at {spawnPos:F2} (p0={p0:F2} p1={p1:F2})");
     }
 
     // 优先用 HandsManager 头部数据（XR），没有则 fallback 到玩家 NetworkObject 位置（桌面）

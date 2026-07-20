@@ -13,7 +13,11 @@
       "Skill(fewer-permission-prompts)",
       "Skill(fewer-permission-prompts:*)",
       "mcp__unityMCP__execute_menu_item",
-      "mcp__UnityMCP__execute_menu_item"
+      "mcp__UnityMCP__execute_menu_item",
+      "mcp__UnityMCP__manage_scene",
+      "mcp__UnityMCP__manage_components",
+      "mcp__UnityMCP__manage_gameobject",
+      "Bash(adb devices *)"
     ],
     "deny": [
       "Bash(git*)",
