@@ -36,9 +36,10 @@ public class PortalSpawner : NetworkBehaviour
         GameManager.OnHandshake -= OnHandshakeTriggered;
     }
 
-    private void OnHandshakeTriggered()
+    private void OnHandshakeTriggered(bool open)
     {
         if (!IsServer) return;
+        if (!open) return;   // 关门不走这里：SharedState 变 false 后由 Update 里的收门分支处理
         _spawnPending = true;
     }
 
@@ -132,13 +133,17 @@ public class PortalSpawner : NetworkBehaviour
 
     private bool _closing = false;
 
-    // 优雅关门（换梦时用）：所有端一起播反向缩回动画，缩完 despawn + 各端 stencil 回家。
-    // server-only；没有 portal 或已在关门中则 no-op，重复调用安全。
-    public void ClosePortal()
+    // 优雅关门（换梦、长按握手关门都用）：所有端一起播反向缩回动画，缩完 despawn +
+    // 各端 stencil 回家。server-only；没有 portal 或已在关门中则 no-op，重复调用安全。
+    // 返回 true = 已经接手关门（调用方就别再自己 StopShare 了，缩回动画期间 share 必须
+    // 保持 true，否则 Update 里的收门分支会抢跑、动画直接被切掉）。
+    public bool ClosePortal()
     {
-        if (!IsServer || _closing) return;
-        if (_spawnedPortal == null || !_spawnedPortal.IsSpawned) return;
+        if (!IsServer) return false;
+        if (_closing) return true;   // 已经在关了，也算接手了
+        if (_spawnedPortal == null || !_spawnedPortal.IsSpawned) return false;
         StartCoroutine(CloseRoutine());
+        return true;
     }
 
     private IEnumerator CloseRoutine()

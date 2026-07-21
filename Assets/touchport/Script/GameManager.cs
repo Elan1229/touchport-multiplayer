@@ -5,7 +5,7 @@ using UnityEngine;
 
 /// <summary>
 /// 业务逻辑层兼网络中转。所有触发 Share 的入口都在这里。
-/// XR触发路径：HandsManager检测到握手/A键 → FireHandshake() → OnHandshake事件 → Handshaked() → SharedState.ToggleShare()
+/// XR触发路径：HandsManager检测到握手/A键并【判定开还是关】→ FireHandshake(open) → OnHandshake事件 → Handshaked(open) → SharedState.StartShare()/StopShare()
 /// UI触发路径：本机点Share按钮 → FireUIRequestShare() → 对方弹Accept → FireUIAcceptShare() → SharedState.StartShare()
 /// 两条路最终都写 SharedState.IsShared，由 SharedState 广播给下游（PortalSpawner等）
 /// </summary>
@@ -14,10 +14,13 @@ public class GameManager : NetworkBehaviour
     public static GameManager Instance { get; private set; }
 
     // ─── 触发事件（XR + 桌面通用）────────────────────────────────
-    // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireHandshake()
-    // Handshaked 订阅此事件，收到后调 SharedState.ToggleShare()
-    public static event Action OnHandshake;
-    public static void FireHandshake() => OnHandshake?.Invoke();
+    // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireHandshake(open)。
+    // 参数 open：true = 要开始共享，false = 要结束共享。
+    // 以前这是个无参事件、终点是 ToggleShare()，意图由「当前状态取反」推出来——演出中一次
+    // 误触就能把开好的 portal 关掉。现在意图由上游判定（见 HandsManager.CheckHandshakeInputs），
+    // 这里只负责执行。
+    public static event Action<bool> OnHandshake;
+    public static void FireHandshake(bool open) => OnHandshake?.Invoke(open);
 
     // ─── UI 流程事件（ShareUIManager 订阅这些来驱动 UI 显示）────
     public static event Action OnUIWaiting;       // 发起方进入等待状态（显示"等待对方..."）
@@ -50,13 +53,20 @@ public class GameManager : NetworkBehaviour
         base.OnDestroy();
     }
 
-    // XR握手/A键 触发路径的终点：收到事件后切换共享状态
+    // XR握手/A键 触发路径的终点：按上游给的明确意图开/关共享
     // 只有服务端（IsServer）才能写 SharedState.IsShared
-    private void Handshaked()
+    private void Handshaked(bool open)
     {
         var session = SharedState.Instance;
         if (session == null || !session.IsServer) return;
-        session.ToggleShare(); // False→True 开始共享，True→False 停止共享
+
+        if (open) { session.StartShare(); return; }
+
+        // 关门优先走 PortalSpawner 的优雅收门（缩回动画放完后它自己会 StopShare）。
+        // 直接 StopShare 会让 PortalSpawner.Update 当帧硬 despawn，portal 啪一下没了。
+        // 没有 portal 可关时（返回 false）才自己停共享。
+        var spawner = PortalSpawner.Instance;
+        if (spawner == null || !spawner.ClosePortal()) session.StopShare();
     }
 
     // ─── UI Share流程（本机点按钮 → RPC → 对方UI → Accept → StartShare）

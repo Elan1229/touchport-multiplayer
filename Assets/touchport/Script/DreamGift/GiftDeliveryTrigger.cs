@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace DreamTouch
@@ -111,7 +112,11 @@ namespace DreamTouch
             }
             else
             {
-                mgr.DeliverGift(destWorld, obj.gift, obj.originDream);
+                // 带上礼物自己的 NetworkObjectId：如果这一送触发了换梦，DreamNetworkManager
+                // 会在缓冲窗口里让【这个】礼物发光+响，把因果关系演出来。
+                var net = obj.GetComponentInParent<NetworkObject>();
+                ulong netId = net != null && net.IsSpawned ? net.NetworkObjectId : 0UL;
+                mgr.DeliverGift(destWorld, obj.gift, obj.originDream, netId);
                 Debug.Log($"[GiftDelivery] {obj.name} ({obj.gift.giftName}) -> World{destWorld} " +
                           $"(dream changes in {mgr.ChangeDelay}s).", obj);
             }

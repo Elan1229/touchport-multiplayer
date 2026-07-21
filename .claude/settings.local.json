@@ -25,7 +25,8 @@
       "Bash(echo \"--- VrApi/FPS lines:\")",
       "Bash(grep -iE 'VrApi|FPS=' /private/tmp/claude-501/-Users-yilantao-Projects-Unity-Unity-Projects-touchport-multiplayer/23f81b6a-88b0-40b7-b928-ddab0d37aa02/scratchpad/quest_log.txt)",
       "Bash(adb shell *)",
-      "Bash(adb -s 2G0YC1ZG450BNY logcat -g)"
+      "Bash(adb -s 2G0YC1ZG450BNY logcat -g)",
+      "WebSearch"
     ],
     "deny": [
       "Bash(git*)",

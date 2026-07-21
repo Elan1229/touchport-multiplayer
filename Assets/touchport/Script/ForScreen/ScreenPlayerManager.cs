@@ -66,7 +66,7 @@ public class ScreenPlayerManager : NetworkBehaviour
                 {
                     _cooldownTimer = cooldown;
                     _closeTimer = 0f;
-                    GameManager.FireHandshake();
+                    GameManager.FireHandshake(true);
                 }
             }
         }

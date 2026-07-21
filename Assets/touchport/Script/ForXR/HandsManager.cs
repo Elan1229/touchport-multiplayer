@@ -53,12 +53,22 @@ public class HandsManager : NetworkBehaviour
     private float _toggleCooldown = 0f;       // 触发冷却，防止反复 fire
     private const float ToggleCooldownDuration = 1.5f;
     private float _nextDiagTime = 0f;         // [HandsDiag] 服务端打点节流
+    private float _closeHold = 0f;            // 共享中已累计保持接触的秒数（关门用）
+    private float _nextHoldLogTime = 0f;      // 长按进度打点节流
 
     // ─── Inspector 参数 ──────────────────────────────────────────
 
     // 接触判定的距离范围：手在 min~max 之间才算接触（太近可能是穿模）
     [SerializeField] private float proximityThreshold    = 0.13f;
     [SerializeField] private float proximityMinThreshold = 0.03f;
+
+    [Tooltip("已经在共享中时，要累计握满这么多秒才关掉 portal。开门是一碰即开，不走这个——" +
+             "不对称是故意的：误触把开好的 portal 关掉的代价，远大于开门容易一点。")]
+    [SerializeField] private float closeHoldSeconds = 8f;
+
+    [Tooltip("关门计时在手分开时的回退倍速。1 = 分开多久就退多久，2 = 退得比涨快一倍。" +
+             "设 0 就是「分开也不退」（只要累计够就关），设很大就接近「必须全程不中断」。")]
+    [SerializeField] private float holdDecayRate = 1f;
     public float ProximityThreshold    => proximityThreshold;
     public float ProximityMinThreshold => proximityMinThreshold;
 
@@ -170,30 +180,67 @@ public class HandsManager : NetworkBehaviour
         CheckHandshakeInputs();
     }
 
-    // 检测所有触发条件，满足任一条件就 fire OnHandsTouched
+    // 检测所有触发条件，判定「开门」还是「关门」并 fire 出去。
+    // 以前这里不分方向，一律 fire 让 GameManager 去 ToggleShare()——结果演出中手不小心
+    // 碰一下就把开好的 portal 关了。现在开关不对称：
+    //   开门 = 接触上升沿，一碰即开（跟最早的行为一样，好触发最重要）
+    //   关门 = 必须累计握满 closeHoldSeconds 秒（挡误触，关错的代价大得多）
     private void CheckHandshakeInputs()
     {
         bool proximityTriggered = CheckProximity();
         HandsAreClose.Value = proximityTriggered; // 仅用于 debug 显示
 
-        bool shouldFire = false;
+        bool isShared = SharedState.Instance != null && SharedState.Instance.IsShared;
+
+        // 关门计时。注意这里是「累计」不是「连续」：proximity 判定是个距离区间
+        // （proximityMinThreshold ~ proximityThreshold），真握着手的时候距离会在区间
+        // 边缘反复进出，要求全程不中断的话 8 秒根本凑不满、门就永远关不掉。
+        // 所以断开时按 holdDecayRate 倍速往回退而不是清零：真握着就能稳步涨满，
+        // 蹭一下就走的会自己退回去。
+        if (isShared)
+        {
+            if (proximityTriggered)
+                _closeHold = Mathf.Min(_closeHold + Time.deltaTime, closeHoldSeconds);
+            else
+                _closeHold = Mathf.Max(_closeHold - Time.deltaTime * holdDecayRate, 0f);
+
+            if (_closeHold > 0f && Time.time >= _nextHoldLogTime)
+            {
+                _nextHoldLogTime = Time.time + 1f;
+                Debug.Log($"[touchport] handshake {_closeHold:F1}s / {closeHoldSeconds}s to CLOSE portal");
+            }
+        }
+        else
+        {
+            _closeHold = 0f;
+        }
 
         if (proximityTriggered && !_wasClose)
-        {
             NotifyCloseClientRpc();
-            shouldFire = true;
-        }
 
-        if (_aPressedThisFrame)
-        {
-            shouldFire = true;
-            Debug.Log("[touchport] A button detected");
-        }
-
-        if (shouldFire && _toggleCooldown <= 0f)
+        // 开门：没共享 + 接触上升沿，立即开
+        if (!isShared && proximityTriggered && !_wasClose && _toggleCooldown <= 0f)
         {
             _toggleCooldown = ToggleCooldownDuration;
-            GameManager.FireHandshake();
+            GameManager.FireHandshake(true);
+        }
+
+        // 关门：共享中 + 握满 closeHoldSeconds
+        if (isShared && _closeHold >= closeHoldSeconds && _toggleCooldown <= 0f)
+        {
+            _toggleCooldown = ToggleCooldownDuration;
+            _closeHold = 0f;
+            Debug.Log($"[touchport] handshake held {closeHoldSeconds}s while sharing -> closing portal");
+            GameManager.FireHandshake(false);
+        }
+
+        // A 键：调试快捷键，保留原来的 toggle 语义，方便不戴手时两个方向都能测
+        if (_aPressedThisFrame && _toggleCooldown <= 0f)
+        {
+            _toggleCooldown = ToggleCooldownDuration;
+            _closeHold = 0f;
+            Debug.Log($"[touchport] A button detected -> {(isShared ? "close" : "open")}");
+            GameManager.FireHandshake(!isShared);
         }
 
         _wasClose = proximityTriggered;
