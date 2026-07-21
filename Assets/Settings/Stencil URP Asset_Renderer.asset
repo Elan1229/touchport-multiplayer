@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
   m_Name: StencilThisSideTransparent
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     passTag: StencilThisSideTransparent
     Event: 500
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
   m_Name: StencilPortalSideTransparent
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     passTag: StencilPortalSideTransparent
     Event: 500
@@ -180,7 +180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b3d386ba5cd94485973aee1479b272e, type: 3}
   m_Name: StencilPortalWorld2
   m_EditorClassIdentifier: 
-  m_Active: 1
+  m_Active: 0
   settings:
     passTag: StencilPortalWorld2
     Event: 300
