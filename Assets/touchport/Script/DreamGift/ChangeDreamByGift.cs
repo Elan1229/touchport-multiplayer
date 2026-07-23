@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Rendering;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace DreamTouch
@@ -12,10 +13,10 @@ namespace DreamTouch
     // only the CURRENT dream's assets stay in memory (Quest-friendly) — plus, at most, ONE
     // preloaded dream waiting inactive during the buffer window before a switch.
     //
-    // 过渡时序（Switch 状态机，交叉溶解）：
-    //   等新梦就绪（已预载则立即；兜底路径先加载，期间旧梦原样保留——portal 里不能出现空档）
-    //   → 新梦激活（progress=1 不可见）→ 旧梦溶出与新梦凝入同时跑（溶出的洞里透出新梦）
-    //   → 旧梦全溶后 SetActive(false)，Release 延迟 releaseDelay 秒错开卸载尖峰。
+    // 过渡时序（Switch 状态机，顺序溶解）：
+    //   等新梦就绪（已预载则立即；兜底路径先加载，期间旧梦原样保留）
+    //   → 先让旧梦溶出并停用，再激活新梦溶入
+    //   → Release 延迟 releaseDelay 秒错开卸载尖峰。
     // 房间/装饰材质需用 DreamTouch/DissolveOcclusion* shader；_DissolveProgress=0 时视觉等同
     // 普通 occlusion 材质，平时不换材质不换 shader。礼物材质不带该属性，自动不参与溶解。
     public class ChangeDreamByGift : MonoBehaviour
@@ -49,6 +50,20 @@ namespace DreamTouch
         public float releaseDelay = 2f;
 
         static readonly int DissolveProgressId = Shader.PropertyToID("_DissolveProgress");
+        static readonly int CullId = Shader.PropertyToID("_Cull");
+        static readonly int UseEmissionId = Shader.PropertyToID("_UseEmission");
+        const string EmissionKeyword = "_DREAM_EMISSION";
+
+        public static bool ShaderOptimizationEnabled { get; private set; } = true;
+        public static string ShaderABModeName => ShaderOptimizationEnabled ? "Optimized" : "Baseline";
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        static void ResetRuntimeState()
+        {
+            ShaderOptimizationEnabled = true;
+            dissolveRenderingCount = 0;
+            Shader.DisableKeyword(DissolveKeyword);
+        }
 
         // 全局 dissolve keyword 引用计数：只有过渡期间 shader 才编译 clip 分支。
         // discard 指令的存在（哪怕永不触发）会让 GPU 关掉 early-Z/隐面剔除，全屏大 mesh
@@ -89,6 +104,22 @@ namespace DreamTouch
                                        // 正常流程被 server 的缓冲锁挡住，这是兜底。
 
         MaterialPropertyBlock mpb;
+
+        public static void SetShaderOptimizationEnabled(bool enabled)
+        {
+            ShaderOptimizationEnabled = enabled;
+
+            foreach (var presenter in FindObjectsByType<ChangeDreamByGift>(
+                         FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                ApplyShaderABMode(presenter.currentRenderers);
+                ApplyShaderABMode(presenter.preloadedRenderers);
+            }
+
+            Debug.LogWarning(
+                $"[ShaderAB] ACTIVE={ShaderABModeName} " +
+                $"cull={(enabled ? "Back" : "Off")} emissionSample={(enabled ? "Off" : "On")}");
+        }
 
         // 预载目标梦：异步加载 + Instantiate 后保持 inactive、_DissolveProgress=1，等 Switch 消费。
         // 幂等：同一个梦重复调用 no-op；换了目标则丢弃旧预载（在途的靠 preloadingId 过期自弃）。
@@ -182,30 +213,67 @@ namespace DreamTouch
             preloadedDream = null;
             preloadedRenderers = new List<Renderer>();
 
-            // 交叉溶解：新梦激活（progress=1，激活这帧不可见），旧梦溶出与新梦凝入同时跑。
-            // clip 是逐像素的，旧梦溶出的洞里透出来的就是新梦——portal 里全程有梦境内容。
             // keyword 必须先开再激活：progress=1 的"隐身"就是靠 clip 变体实现的。
             BeginDissolveRendering();
             holdsDissolveKeyword = true;
-            currentInstance.SetActive(true);
-            float outDur = oldInstance != null ? dissolveOutDuration : 0f;
-            float total = Mathf.Max(outDur, dissolveInDuration);
-            for (float t = 0f; t < total; t += Time.deltaTime)
+
+            bool oldAlreadyHidden = false;
+            if (oldInstance != null)
             {
-                if (oldInstance != null && outDur > 0f)
-                    SetDissolveProgress(oldRenderers, dissolveCurve.Evaluate(Mathf.Clamp01(t / outDur)));
-                if (dissolveInDuration > 0f)
+                // Keep the old crossfade's total duration: two 5 s phases become 2.5 s + 2.5 s.
+                float originalTotal = Mathf.Max(dissolveOutDuration, dissolveInDuration);
+                float requestedTotal = Mathf.Max(0f, dissolveOutDuration) + Mathf.Max(0f, dissolveInDuration);
+                float outDur = requestedTotal > 0f
+                    ? originalTotal * Mathf.Max(0f, dissolveOutDuration) / requestedTotal
+                    : 0f;
+                float inDur = Mathf.Max(0f, originalTotal - outDur);
+
+                for (float t = 0f; t < outDur; t += Time.deltaTime)
+                {
+                    SetDissolveProgress(oldRenderers,
+                        dissolveCurve.Evaluate(Mathf.Clamp01(t / outDur)));
+                    yield return null;
+                }
+
+                SetDissolveProgress(oldRenderers, 1f);
+                oldInstance.SetActive(false);
+                oldAlreadyHidden = true;
+
+                currentInstance.SetActive(true);
+                for (float t = 0f; t < inDur; t += Time.deltaTime)
+                {
                     SetDissolveProgress(currentRenderers,
-                        1f - dissolveCurve.Evaluate(Mathf.Clamp01(t / dissolveInDuration)));
-                yield return null;
+                        1f - dissolveCurve.Evaluate(Mathf.Clamp01(t / inDur)));
+                    yield return null;
+                }
+            }
+            else
+            {
+                // Initial load has no old dream, so only fade the new dream in.
+                currentInstance.SetActive(true);
+                float outDur = oldInstance != null ? dissolveOutDuration : 0f;
+                float total = Mathf.Max(outDur, dissolveInDuration);
+                for (float t = 0f; t < total; t += Time.deltaTime)
+                {
+                    if (oldInstance != null && outDur > 0f)
+                        SetDissolveProgress(oldRenderers,
+                            dissolveCurve.Evaluate(Mathf.Clamp01(t / outDur)));
+                    if (dissolveInDuration > 0f)
+                        SetDissolveProgress(currentRenderers,
+                            1f - dissolveCurve.Evaluate(Mathf.Clamp01(t / dissolveInDuration)));
+                    yield return null;
+                }
             }
             SetDissolveProgress(currentRenderers, 0f);
 
             // 旧梦已全溶（全被 clip），立即关掉；真正的 Release 延后错开，藏起卸载尖峰。
             if (oldInstance != null)
             {
-                SetDissolveProgress(oldRenderers, 1f);
-                oldInstance.SetActive(false);
+                if (!oldAlreadyHidden)
+                {
+                    SetDissolveProgress(oldRenderers, 1f);
+                    oldInstance.SetActive(false);
+                }
                 ScheduleRelease(oldHandle, oldHasHandle, oldInstance);
             }
 
@@ -274,6 +342,33 @@ namespace DreamTouch
             {
                 var m = r.sharedMaterial;
                 if (m != null && m.HasProperty(DissolveProgressId)) into.Add(r);
+            }
+
+            ApplyShaderABMode(into);
+        }
+
+        static void ApplyShaderABMode(List<Renderer> renderers)
+        {
+            var visited = new HashSet<Material>();
+            foreach (var renderer in renderers)
+            {
+                if (renderer == null) continue;
+
+                foreach (var material in renderer.sharedMaterials)
+                {
+                    if (material == null || !material.HasProperty(DissolveProgressId) ||
+                        !visited.Add(material)) continue;
+
+                    if (material.HasProperty(CullId))
+                        material.SetFloat(CullId, ShaderOptimizationEnabled
+                            ? (float)CullMode.Back
+                            : (float)CullMode.Off);
+
+                    if (!material.HasProperty(UseEmissionId)) continue;
+                    material.SetFloat(UseEmissionId, ShaderOptimizationEnabled ? 0f : 1f);
+                    if (ShaderOptimizationEnabled) material.DisableKeyword(EmissionKeyword);
+                    else material.EnableKeyword(EmissionKeyword);
+                }
             }
         }
 

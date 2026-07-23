@@ -12,6 +12,7 @@ Shader "DreamTouch/DissolveOcclusionUnlit"
 
         _EmissionMap ("Emission Map", 2D) = "white" {}
         [HDR] _EmissionColor ("Emission Color", Color) = (0,0,0,1)
+        [Toggle(_DREAM_EMISSION)] _UseEmission ("Use Emission", Float) = 0
 
         [Header(Dissolve)]
         _DissolveNoise ("Dissolve Noise (R)", 2D) = "white" {}
@@ -22,8 +23,8 @@ Shader "DreamTouch/DissolveOcclusionUnlit"
         [Header(Meta Depth Occlusion)]
         _EnvironmentDepthBias ("Environment Depth Bias", Float) = 0.0
 
-        // World Labs 房间从外面也要能看到墙面 → 默认双面（Off）。
-        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull Mode", Float) = 0
+        // 旧 Meta occlusion 材质使用 Back；双面会让 Quest 对房间背面重复做片元和深度遮挡计算。
+        [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Cull Mode", Float) = 2
     }
 
     SubShader
@@ -51,6 +52,9 @@ Shader "DreamTouch/DissolveOcclusionUnlit"
             //    平时走无 clip 的变体:shader 里只要存在 discard,GPU 就得关 early-Z/隐面剔除,
             //    全屏大 mesh 会把每个像素的 fragment 全跑一遍——这是性能命门。──
             #pragma multi_compile _ _DREAM_DISSOLVING
+
+            // 当前 dream 材质 emission 全为黑。保留诊断变体，但优化档不做这次无效纹理采样。
+            #pragma multi_compile_local_fragment _ _DREAM_EMISSION
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
             #include "Packages/com.meta.xr.sdk.core/Shaders/EnvironmentDepth/URP/EnvironmentOcclusionURP.hlsl"
@@ -114,7 +118,9 @@ Shader "DreamTouch/DissolveOcclusionUnlit"
             #endif
 
                 half4 color = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv) * _BaseColor;
+            #if defined(_DREAM_EMISSION)
                 color.rgb += SAMPLE_TEXTURE2D(_EmissionMap, sampler_EmissionMap, i.uv).rgb * _EmissionColor.rgb;
+            #endif
 
             #if defined(_DREAM_DISSOLVING)
                 // 溶解边缘亮边(progress=0 时关死)

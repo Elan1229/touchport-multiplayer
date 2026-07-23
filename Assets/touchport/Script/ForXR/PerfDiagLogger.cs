@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DreamTouch;
 using UnityEngine;
 using UnityEngine.XR;
 
@@ -18,6 +19,8 @@ public class PerfDiagLogger : MonoBehaviour
     private float _elapsed;
     private float _worstFrame;
     private XRDisplaySubsystem _display;
+    private InputDevice _rightController;
+    private bool _thumbstickWasPressed;
 
     private void Start()
     {
@@ -28,6 +31,8 @@ public class PerfDiagLogger : MonoBehaviour
 
     private void Update()
     {
+        HandleShaderABInput();
+
         float dt = Time.unscaledDeltaTime;
         _frames++;
         _elapsed += dt;
@@ -41,10 +46,37 @@ public class PerfDiagLogger : MonoBehaviour
             gpuMs = gpuSec * 1000f;
         float refresh = OVRPlugin.systemDisplayFrequency;
 
-        Debug.Log($"[PerfDiag] avg={avgFps:F1}fps worst={_worstFrame * 1000f:F0}ms gpu={gpuMs:F1}ms target={refresh:F0}Hz");
+        Debug.Log(
+            $"[PerfDiag] shaderAB={ChangeDreamByGift.ShaderABModeName} " +
+            $"avg={avgFps:F1}fps worst={_worstFrame * 1000f:F0}ms " +
+            $"gpu={gpuMs:F1}ms target={refresh:F0}Hz");
 
         _frames = 0;
         _elapsed = 0f;
         _worstFrame = 0f;
+    }
+
+    private void HandleShaderABInput()
+    {
+        if (!_rightController.isValid)
+            _rightController = InputDevices.GetDeviceAtXRNode(XRNode.RightHand);
+
+        bool pressed = _rightController.isValid &&
+                       _rightController.TryGetFeatureValue(
+                           CommonUsages.primary2DAxisClick, out bool value) && value;
+
+        if (pressed && !_thumbstickWasPressed)
+        {
+            bool optimized = !ChangeDreamByGift.ShaderOptimizationEnabled;
+            ChangeDreamByGift.SetShaderOptimizationEnabled(optimized);
+
+            // Long buzz = baseline, short buzz = optimized.
+            _rightController.SendHapticImpulse(0, 0.5f, optimized ? 0.08f : 0.25f);
+            _frames = 0;
+            _elapsed = 0f;
+            _worstFrame = 0f;
+        }
+
+        _thumbstickWasPressed = pressed;
     }
 }
