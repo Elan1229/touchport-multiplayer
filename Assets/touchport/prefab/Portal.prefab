@@ -500,4 +500,4 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   animDuration: 2
   closeDuration: 4
-  targetScale: {x: 0.7, y: 0.7, z: 0.7}
+  targetScale: {x: 0.6, y: 0.6, z: 0.6}

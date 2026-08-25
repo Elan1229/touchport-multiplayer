@@ -26,7 +26,15 @@
       "Bash(grep -iE 'VrApi|FPS=' /private/tmp/claude-501/-Users-yilantao-Projects-Unity-Unity-Projects-touchport-multiplayer/23f81b6a-88b0-40b7-b928-ddab0d37aa02/scratchpad/quest_log.txt)",
       "Bash(adb shell *)",
       "Bash(adb -s 2G0YC1ZG450BNY logcat -g)",
-      "WebSearch"
+      "WebSearch",
+      "mcp__caf37a17-02dd-4906-a61a-aa41321f80f5__notion-search",
+      "mcp__caf37a17-02dd-4906-a61a-aa41321f80f5__notion-fetch",
+      "mcp__caf37a17-02dd-4906-a61a-aa41321f80f5__notion-update-page",
+      "Bash(\"/Users/yilantao/Projects/SFU iSpace/IAT884 speculative design/.codex-pdf-venv/bin/python\" -c \"import pdfplumber; print\\('pdfplumber ok'\\)\")",
+      "Bash(\"/Users/yilantao/Projects/SFU iSpace/IAT884 speculative design/.codex-pdf-venv/bin/python\" -c \"import pypdf; print\\('pypdf ok'\\)\")",
+      "Bash(\"/Users/yilantao/Projects/SFU iSpace/IAT884 speculative design/.codex-pdf-venv/bin/python\" -c \"import fitz; print\\('pymupdf ok'\\)\")",
+      "Bash(python3 -c \"import fitz; print\\('sys pymupdf ok'\\)\")",
+      "mcp__caf37a17-02dd-4906-a61a-aa41321f80f5__notion-create-pages"
     ],
     "deny": [
       "Bash(git*)",

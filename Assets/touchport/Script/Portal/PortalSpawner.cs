@@ -87,12 +87,12 @@ public class PortalSpawner : NetworkBehaviour
         Vector3 spawnPos;
         if (spawnAtOpponent)
         {
-            spawnPos = p1 + Vector3.up * 0.2f;
+            spawnPos = p1 - Vector3.up * 0.05f;
             line = -line; // 朝向从对方指向自己
         }
         else
         {
-            spawnPos = (p0 + p1) * 0.5f + Vector3.up * 0.2f;
+            spawnPos = (p0 + p1) * 0.5f - Vector3.up * 0.05f;
         }
 
         Quaternion rot = Quaternion.LookRotation(line, Vector3.up);
