@@ -17,7 +17,37 @@ public class GameManager : NetworkBehaviour
     // HandsManager（XR握手/A键）和 ScreenPlayerManager（桌面）都调 FireHandshake()
     // Handshaked 订阅此事件，收到后调 SharedState.ToggleShare()
     public static event Action OnHandshake;
-    public static void FireHandshake() => OnHandshake?.Invoke();
+
+    // 握手总开关。关掉后 XR 握手 / 桌面靠近检测都不再触发 share，只剩 UI 路（Share?→Accept）可用。
+    // 由右手 A 键切换：HandsManager 收到 A 键上报 → ToggleHandshakeEnabledServer()
+    public static event Action<bool> OnHandshakeEnabledChanged; // HUD 订阅它显示 "Handshake ON/OFF"
+
+    private NetworkVariable<bool> _handshakeEnabled = new(
+        true,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server);
+
+    /// <summary>握手功能当前是否启用。GameManager 还没 spawn 时按启用算。</summary>
+    public static bool IsHandshakeEnabled
+        => Instance == null || Instance._handshakeEnabled.Value;
+
+    public static void FireHandshake()
+    {
+        if (!IsHandshakeEnabled)
+        {
+            Debug.Log("[GM] 握手已关闭，忽略本次触发");
+            return;
+        }
+        OnHandshake?.Invoke();
+    }
+
+    /// <summary>切换握手总开关（仅 Server 调用；A 键经 HandsManager 上报后走到这）。</summary>
+    public void ToggleHandshakeEnabledServer()
+    {
+        if (!IsServer) return;
+        _handshakeEnabled.Value = !_handshakeEnabled.Value;
+        Debug.Log($"[GM] 握手开关 →{_handshakeEnabled.Value}");
+    }
 
     // ─── UI 流程事件（ShareUIManager 订阅这些来驱动 UI 显示）────
     public static event Action OnUIWaiting;       // 发起方进入等待状态（显示"等待对方..."）
@@ -34,12 +64,20 @@ public class GameManager : NetworkBehaviour
         if (Instance != null && Instance != this) { Destroy(this); return; }
         Instance = this;
         Debug.Log($"[GM] spawned IsServer={IsServer} clientId={NetworkManager.LocalClientId}");
+
+        // 开关状态变化 → 广播给 HUD。spawn 时也推一次当前值，后进来的客户端才能显示对。
+        _handshakeEnabled.OnValueChanged += OnHandshakeEnabledValueChanged;
+        OnHandshakeEnabledChanged?.Invoke(_handshakeEnabled.Value);
     }
 
     public override void OnNetworkDespawn()
     {
+        _handshakeEnabled.OnValueChanged -= OnHandshakeEnabledValueChanged;
         if (Instance == this) Instance = null;
     }
+
+    private void OnHandshakeEnabledValueChanged(bool _, bool next)
+        => OnHandshakeEnabledChanged?.Invoke(next);
 
     // OnEnable/OnDisable 订阅 OnHandshake，确保 GameManager 激活时才处理事件
     private void OnEnable()  => OnHandshake += Handshaked;

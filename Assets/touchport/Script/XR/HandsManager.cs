@@ -50,6 +50,8 @@ public class HandsManager : NetworkBehaviour
 
     private bool  _wasClose = false;          // 上一帧是否接触，用来检测上升沿
     private bool  _aPressedThisFrame = false; // 本帧是否收到A键上报
+    private float _closeTimer = 0f;           // 本次接触已持续的秒数，断开即清零
+    private bool  _firedThisContact = false;  // 本次接触是否已 fire 过，防止握住不放反复触发
     private float _toggleCooldown = 0f;       // 触发冷却，防止反复 fire
     private const float ToggleCooldownDuration = 1.5f;
 
@@ -58,6 +60,11 @@ public class HandsManager : NetworkBehaviour
     // 接触判定的距离范围：手在 min~max 之间才算接触（太近可能是穿模）
     [SerializeField] private float proximityThreshold    = 0.13f;
     [SerializeField] private float proximityMinThreshold = 0.03f;
+
+    // 握手需要持续接触多久才算数（秒）。中途断开则计时清零，需重新握满。
+    [Tooltip("握手需连续保持接触这么多秒才触发 share；中途松开会清零重来。A 键不受此限制。")]
+    [SerializeField] private float handshakeHoldSeconds = 2f;
+    public float HandshakeHoldSeconds => handshakeHoldSeconds;
     public float ProximityThreshold    => proximityThreshold;
     public float ProximityMinThreshold => proximityMinThreshold;
 
@@ -162,21 +169,44 @@ public class HandsManager : NetworkBehaviour
 
         bool shouldFire = false;
 
-        if (proximityTriggered && !_wasClose)
+        if (proximityTriggered && GameManager.IsHandshakeEnabled)
         {
-            NotifyCloseClientRpc();
-            shouldFire = true;
+            if (!_wasClose)
+                NotifyCloseClientRpc();
+
+            // 持续接触计时，满 handshakeHoldSeconds 才 fire，且本次接触只 fire 一次
+            _closeTimer += Time.deltaTime;
+            if (_closeTimer >= handshakeHoldSeconds && !_firedThisContact)
+            {
+                shouldFire = true;
+                Debug.Log($"[touchport] 握手保持 {_closeTimer:F2}s ≥ {handshakeHoldSeconds}s，触发");
+            }
+        }
+        else
+        {
+            // 松开就清零，下次要重新握满
+            _closeTimer = 0f;
+            _firedThisContact = false;
         }
 
+        // A 键：切换握手总开关（原来是"按 A 直接触发一次 share"，已改为开关，见下方注释）
         if (_aPressedThisFrame)
         {
-            shouldFire = true;
-            Debug.Log("[touchport] A button detected");
+            Debug.Log("[touchport] A button detected → 切换握手开关");
+            GameManager.Instance?.ToggleHandshakeEnabledServer();
+
+            // ↓ 原 A 键功能（调试后门：按一下立刻 toggle share），保留备查
+            // shouldFire = true;
+
+            // 关掉握手时清掉正在进行的接触计时，避免重新打开后残留的时间直接满格
+            _closeTimer = 0f;
+            _firedThisContact = false;
         }
 
         if (shouldFire && _toggleCooldown <= 0f)
         {
             _toggleCooldown = ToggleCooldownDuration;
+            if (proximityTriggered) _firedThisContact = true;
             GameManager.FireHandshake();
         }
 
