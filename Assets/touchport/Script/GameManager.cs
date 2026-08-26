@@ -111,13 +111,22 @@ public class GameManager : NetworkBehaviour
     private IEnumerator DelayedSwitchStencil(ulong targetClientId)
     {
         yield return new WaitForSeconds(2f);
+
+        // 这 2 秒里对方可能已经点了 Stop Sharing。真切下去会盖掉刚做完的恢复，
+        // 把 accepter 永久留在对方世界里，所以先确认共享还在。
+        if (SharedState.Instance == null || !SharedState.Instance.IsShared) yield break;
+
         SwitchStencilClientRpc(new ClientRpcParams
             { Send = new ClientRpcSendParams { TargetClientIds = new[] { targetClientId } } });
     }
 
     [ClientRpc]
     private void SwitchStencilClientRpc(ClientRpcParams _ = default)
-        => ChangeLayer.Instance?.SwitchStencilLocal();
+    {
+        // RPC 在路上时共享也可能结束，落地前再确认一次
+        if (SharedState.Instance == null || !SharedState.Instance.IsShared) return;
+        ChangeLayer.Instance?.SwitchStencilLocal();
+    }
 
     [ClientRpc]
     private void NotifyAcceptShareClientRpc()

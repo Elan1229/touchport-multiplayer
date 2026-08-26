@@ -124,13 +124,7 @@ public class PortalSpawner : NetworkBehaviour
             _spawnedPortal = null;
         }
 
-        // portal 消失时把 stencil 恢复到出生时的状态
-        ResetStencilClientRpc();
-    }
-
-    [ClientRpc]
-    private void ResetStencilClientRpc()
-    {
-        ChangeLayer.Instance?.ResetStencilLocal();
+        // stencil 的恢复不在这里做：ChangeLayer 订阅了 SharedState.OnSharedChanged，
+        // 共享一结束就统一恢复，三条结束路径都覆盖得到。
     }
 }

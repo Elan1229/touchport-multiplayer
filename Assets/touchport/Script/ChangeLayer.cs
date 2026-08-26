@@ -9,6 +9,17 @@ public class ChangeLayer : MonoBehaviour
 
     void Awake() => Instance = this;
 
+    // 共享结束 → 恢复各自世界。
+    // 握手再次握手、UI 的 Stop Sharing、拼词任务自动结束——三条路最终都会把
+    // IsShared 广播成 false，所以统一在这里响应一次，下游不必各自重置。
+    void OnEnable()  => SharedState.OnSharedChanged += OnSharedChanged;
+    void OnDisable() => SharedState.OnSharedChanged -= OnSharedChanged;
+
+    private void OnSharedChanged(bool isShared)
+    {
+        if (!isShared) ResetStencilLocal();
+    }
+
     [SerializeField] private UniversalRendererData rendererData; // 拖入你的 Renderer Data
     //[SerializeField] private LayerMask newLayerMask; // 在 Inspector 中选择新 Layer
     //[SerializeField] private string featureName = "StencilThisWorld";
