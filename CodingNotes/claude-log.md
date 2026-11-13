@@ -434,3 +434,43 @@ glow.Deactivate();                                  // 手动退出
 - Shader Graph block 后面的 block 有效（可加 Multiply Color、Multiply Alpha 等）
 - Multiply Color 加轻微亮度变化
 
+
+---
+
+## 2026-11-11
+
+### 待办 7 条的分诊与估时
+
+**用户**：1 speculative view；2 礼物改变世界的时间留久一点 + 礼物加极省的发光；3 世界之间跳不过去；4 礼物不随世界消失；5 手部识别不利落、用过 controller 后手消失；6 手部 vfx 不出现；7 帧率低。
+
+**Claude（估时）**：2 约 1–1.5h；3 约 2–3h（做模拟器调参）；4 约 0.5 天（已有 [GiftDiag] 日志，复现一次就能定位）；6 约 0.5 天（疑 VFX bounds 裁剪 / 层 / handshakeDistance，先看 [HsDiag]）；5 约 0.5–1 天（OVRManager 手+手柄设置；pinch 无迟滞、30Hz、用手腕根位置抓取）；7 约 1 天（先看 [PerfDiag]；已知 `IObjectXR.ApplyVisibility` 每帧 `GetComponentsInChildren<Renderer>()`）；speculative view（第三人观众）约 1.5–2 天，"两人"假设散在 PlayerWorld / HandshakeEffectInputNetwork / IObjectXR 可见性 / 礼物 spawn 等 ack 等处。
+
+### 换梦模拟器 Unity 复刻版
+
+新文件：`_DreamTouchForAI/Worlds/simulator-unity.html`（旧 simulator.html 未动）。逐行照搬 PlayerDreamBag（含 bumper、take back）、DreamNetworkManager（T0 结算、changeDelay 缓冲锁、commit 时按 owner 清场 + 收 portal）、GiftDeliveryTrigger（WorldShowing 按 bag.Current）。数据取自工程 .asset 和房间 prefab 的实际礼物实例数；带批量随机模拟。
+
+**结论**：push=4 / lead=2 下纯 bag 逻辑 98% 一件礼物就跳——"跳不过去"不是权重问题，是时序：NoMR 随机玩家（6s 一件）37% 的送礼落在缓冲锁里被跳过，29% 因 stale currentDream（bag 已在 T0 换了，旧房间礼物的 currentDream 对不上任何一边，WorldShowing=-1）结算丢失，而 PortalDirectionTrigger 仍翻转 owner——这也可能是"礼物不随世界消失"的成因。
+
+**数据问题**：6 Asian Alley 里 `Game` ×1、`Game Mario` ×2 的 gift 填的是 FlowerInterior，不是 GameCartridges（未改）。
+
+### 关于重做底座
+
+**Claude 建议**：新开 Unity 项目重做底座（N 人 + spectator 从第一天起、玩家与世界解耦、Shared Spatial Anchors + Colocation Discovery、Meta Interaction SDK 手部 + 抓取时转移网络所有权），限时约一周原型验证流畅度和帧率基线；PlayerDreamBag / Definition* / 房间 prefab / dissolve / ChangeDreamByGift / 模拟器搬过去。若近期有演示截止，截止前不动底座。
+
+### 第 2 条：changeDelay 10s + 礼物闪光点
+
+- `DemoMultiplayer_MR_ChangeDreams`：changeDelay 4 → 10；两个 ChangeDreams 场景的 `giftHeraldPrefab` 都指向新 prefab。
+- 新增 `Prefab/GiftHerald.prefab`：一个 Quad + `Material/Particles/HeraldGlow.mat`（新 shader `DreamTouch/HeraldGlow`：Additive unlit、透明队列、支持 stereo instancing，贴 glow_psf_core_halo）+ `GiftHeraldBlink.cs`。零粒子。
+- `GiftHeraldBlink`：定位到礼物包围盒顶上方、朝向相机、固定世界尺寸、尖峰式闪烁。闪烁用缩放不用 renderer.enabled——`IObjectXR.ApplyVisibility` 每帧覆盖子 Renderer 的 enabled。
+- 销毁：fx 是礼物子物体，换梦 commit 时随礼物 despawn 一起没；兜底计时器改为 changeDelay + `heraldExtraLifetime`(2s)，因为 despawn 是摊帧的。
+- Unity 当时没开，这些资产是直接写 YAML 的，打开工程后需确认编译和 prefab 显示正常。
+
+## 2026-11-12 新房间 GLB 压缩（Gradle Java heap space）
+
+- Build 失败：`:launcher:compressReleaseAssets` Java heap space。Addressables 产出单个 1.8GB bundle（Pack Together），主因 `Dreams/Models/202611` 10 个 GLB 各 ~145MB：约 60 万三角面、178 万顶点（逐面法线导致零共享）、内嵌 8192² PNG。
+- glTFast 导入器无贴图 Max Size，定制材质（DreamsMaterial/202611）直接引用 GLB 内嵌贴图 → 选择原地覆盖 GLB（GUID、名字不变 → prefab 摆放与材质引用保留）。
+- 处理（gltf-transform 4.1.1 + meshoptimizer，脚本在会话 scratchpad）：去逐面法线 → weld → simplify(ratio 0.25, error 0.005) → 面积加权平滑法线（仅 ShadowCaster bias 用）→ 贴图 2048 PNG → 恢复原 JSON 名字。
+- 结果：1.4GB → 181MB；每个约 15–18 万面、17–27 万顶点、2K 贴图；10 个文件 names_same=True，.meta 未动。
+- 原文件备份：项目根 `_glb_backup/202611/`（未加 .gitignore）。
+- 使用情况：6 个被房间 prefab 引用；curtain / asianroom-game / asianroom-moon / booth-cloud 及其材质未被引用。
+- 待 Unity 验证：重新导入后 prefab 无 Missing、材质贴图仍在、外观可接受；再 Clear Build Cache → build。

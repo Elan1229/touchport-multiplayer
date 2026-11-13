@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
   m_Name: 0Greenhouse
   m_EditorClassIdentifier: 
-  worldId: Greenhouse
+  dreamId: Greenhouse
   signature:
   - keyword: {fileID: 11400000, guid: 7ea96d44136f54cbf82b6ce7278c5d56, type: 2}
     weight: 3
@@ -22,13 +22,16 @@ MonoBehaviour:
     weight: 2
   - keyword: {fileID: 11400000, guid: 3f84541eab9474885a6f1f8de6a29cc0, type: 2}
     weight: 3
+  - keyword: {fileID: 11400000, guid: a4938036880c7423380cf0b9e3ffe98e, type: 2}
+    weight: 10
+  - keyword: {fileID: 11400000, guid: 3f84541eab9474885a6f1f8de6a29cc0, type: 2}
+    weight: 5
   gifts:
   - {fileID: 11400000, guid: 2a9bcc0eb961c494eb204e0df5e7a15c, type: 2}
   - {fileID: 11400000, guid: e056317ad96d54367ba9d7574476f0ae, type: 2}
-  worldAsset:
+  dreamAsset:
     m_AssetGUID: ef72ac2667f1646ac89a3ffddd4d1ee2
     m_SubObjectName: 
     m_SubObjectType: 
     m_SubObjectGUID: 
     m_EditorAssetChanged: 1
-  worldPrefab: {fileID: 5095468086544972139, guid: ef72ac2667f1646ac89a3ffddd4d1ee2, type: 3}

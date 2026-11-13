@@ -3471,6 +3471,7 @@ MonoBehaviour:
   - {fileID: 1118114082}
   allDreams: []
   changeDelay: 15
+  giftHeraldPrefab: {fileID: 7310000000000000001, guid: 4f18847fbdf945c0bcb0b899f3154aa2, type: 3}
   spawnGifts: 1
   Dream0Index:
     m_InternalValue: -1

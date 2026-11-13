@@ -47,6 +47,10 @@ namespace DreamTouch
                  "注意它会被自动设到礼物所在的世界层，材质得是透明队列才会被 stencil 管线画出来。")]
         public GameObject giftHeraldPrefab;
 
+        [Tooltip("发光的兜底寿命 = changeDelay + 这个值（秒）。正常情况发光随礼物 despawn 一起销毁，" +
+                 "用不到这个计时器；它只防止礼物没被清场时一直闪。")]
+        public float heraldExtraLifetime = 2f;
+
         [Tooltip("和发光同时播的那一声「咚」。留空 = 不发声。")]
         public AudioClip giftHeraldSound;
 
@@ -244,7 +248,10 @@ namespace DreamTouch
                 // 礼物在某个世界层上，发光也必须跟到同一层——否则 portal 的 stencil 管线
                 // 根本不会画它（base renderer 的 layer mask 不含世界层）。
                 SetLayerRecursively(fx.transform, no.gameObject.layer);
-                Destroy(fx, duration);
+                // 正常情况：fx 是礼物的子物体，换梦 commit 时礼物随旧梦 despawn，fx 跟着一起没。
+                // despawn 是摊帧做的（每帧 3 个），计时器比 commit 晚一点，免得提前熄。
+                // 计时器只是兜底：礼物在缓冲期被带回原世界、没被这次清场带走时，别让它一直闪。
+                Destroy(fx, duration + heraldExtraLifetime);
             }
 
             if (giftHeraldSound != null)

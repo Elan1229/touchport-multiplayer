@@ -2974,9 +2974,9 @@ MonoBehaviour:
   - {fileID: 351038298}
   - {fileID: 1878295153}
   allDreams: []
-  changeDelay: 4
+  changeDelay: 10
   giftSpawnAckTimeout: 10
-  giftHeraldPrefab: {fileID: 0}
+  giftHeraldPrefab: {fileID: 7310000000000000001, guid: 4f18847fbdf945c0bcb0b899f3154aa2, type: 3}
   giftHeraldSound: {fileID: 8300000, guid: 7ec7f749421e7476392574b867fefde8, type: 3}
   spawnGifts: 1
   Dream0Index:
