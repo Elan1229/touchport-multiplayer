@@ -622,3 +622,14 @@ glow.Deactivate();                                  // 手动退出
 - 随机送礼 500 局：World0 儿童房三间 31/28/30%，夜神社 6%、游戏房 4%、月兔 1%；World1 电话亭三间 24/24/25%，游戏房 22%、夜神社 3%、月兔 2%。
 - 多类礼物优先级改成 Animal → Dark → 游戏（原来游戏在 Dark 前，两个 DirtToy 永远进游戏房、电话亭玩家去不了夜神社）。
 - simulator：加 RULEB_SIG / RULEB_ROOM_ADD / SCHEMES，权重方案下拉多一项「规则 B 方案」并设为默认；applyGiftSet(key) 通用化。备份 scratchpad dreams/simulator-unity.before-ruleBset.html。结果存 scratchpad dreams/ruleB_min.json
+
+## 2026-11-15 方案 A（v3 自由跳）写入 Unity
+- 用户要求先把 v3 写进 Unity 再 git，留一个存档点，之后再改规则 B。
+- 新建 Keywords/Playroom.asset、Keywords/Asian.asset（复制 Booth 的结构，新 GUID）。
+- 9 个 dream asset 的 signature 换成 v3 权重（来源 Worlds/saved-schemes/v3-free-roam.json，回读校验一致）。
+- Gifts/DirtToy.asset 加 Playroom 关键词。
+- GiftPrefab/Game.prefab、Game Mario.prefab 的 gift：FlowerInterior → GameCartridges（三个亚洲房各 3 个游戏机随之变化）。
+- 代码没动（方案 A 用的就是现有 PlayerDreamBag 规则）。改动前的文件备份在 scratchpad dreams/backup4。
+- v3 里另外两处礼物改动要用户在房间 prefab 里摆：BoothCloud 加 2 个 TelephoneHandset、3 个 Balloon；BoothGreenhouse 再加 2 个 Raccoon。
+
+- simulator 同步：UNITY_SIG 改成 v3、DirtToy 加 Playroom、亚洲房礼物改成 FlowerInterior 3 + GameCartridges 3、删除「修正 Game」勾选。备份 scratchpad dreams/simulator-unity.before-unityv3.html

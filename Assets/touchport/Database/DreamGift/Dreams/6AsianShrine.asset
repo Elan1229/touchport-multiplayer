@@ -15,13 +15,15 @@ MonoBehaviour:
   dreamId: AsianShrine
   signature:
   - keyword: {fileID: 11400000, guid: 4e8ec7b50f0144f1c8fd99ec182ef250, type: 2}
-    weight: 2
+    weight: 6
   - keyword: {fileID: 11400000, guid: 7ea96d44136f54cbf82b6ce7278c5d56, type: 2}
-    weight: 3
+    weight: 2
   - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
     weight: 3
   - keyword: {fileID: 11400000, guid: 8b441e9e85cf947f4b59b85327dfc776, type: 2}
-    weight: 1
+    weight: 3
+  - keyword: {fileID: 11400000, guid: 03c2b65c5fdf4633800e73127c4379a7, type: 2}
+    weight: 10
   gifts:
   - {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
   - {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}

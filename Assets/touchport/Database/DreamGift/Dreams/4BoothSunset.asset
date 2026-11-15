@@ -15,17 +15,17 @@ MonoBehaviour:
   dreamId: BoothSunset
   signature:
   - keyword: {fileID: 11400000, guid: a4938036880c7423380cf0b9e3ffe98e, type: 2}
-    weight: 4
+    weight: 9
   - keyword: {fileID: 11400000, guid: 3f84541eab9474885a6f1f8de6a29cc0, type: 2}
-    weight: 3
+    weight: 6
   - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
     weight: 3
   - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
-    weight: 4
+    weight: 2
   - keyword: {fileID: 11400000, guid: 55722a65ae9ed43e186c10666d96f0fc, type: 2}
-    weight: 3
+    weight: 5
   - keyword: {fileID: 11400000, guid: 4e8ec7b50f0144f1c8fd99ec182ef250, type: 2}
-    weight: 1
+    weight: 5
   gifts:
   - {fileID: 11400000, guid: be08d2cc4365243f48d9bc6fe0e47e6a, type: 2}
   - {fileID: 11400000, guid: 8984ec5163749443c94a158edcada060, type: 2}

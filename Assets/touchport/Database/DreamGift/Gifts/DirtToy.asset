@@ -16,4 +16,5 @@ MonoBehaviour:
   keywords:
   - {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
   - {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
+  - {fileID: 11400000, guid: eab229c2d0374011b3c001bd7cb073be, type: 2}
   giftPrefab: {fileID: 0}

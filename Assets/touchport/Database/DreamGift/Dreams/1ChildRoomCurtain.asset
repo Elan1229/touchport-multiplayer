@@ -17,11 +17,13 @@ MonoBehaviour:
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
     weight: 3
   - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
-    weight: 2
+    weight: 5
   - keyword: {fileID: 11400000, guid: 8b441e9e85cf947f4b59b85327dfc776, type: 2}
-    weight: 3
+    weight: 7
   - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
-    weight: 2
+    weight: 3
+  - keyword: {fileID: 11400000, guid: eab229c2d0374011b3c001bd7cb073be, type: 2}
+    weight: 6
   gifts:
   - {fileID: 11400000, guid: 141a7c475deff43348c170d662fddefb, type: 2}
   - {fileID: 11400000, guid: 250211fc7b6c24cb3adbadb3e82031f0, type: 2}

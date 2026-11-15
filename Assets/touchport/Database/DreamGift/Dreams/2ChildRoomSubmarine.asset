@@ -15,13 +15,15 @@ MonoBehaviour:
   dreamId: ChildRoomSubmarine
   signature:
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
-    weight: 3
+    weight: 8
   - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
     weight: 2
   - keyword: {fileID: 11400000, guid: ff65272aa31ca48f280ff2af90262325, type: 2}
-    weight: 3
+    weight: 1
   - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
-    weight: 2
+    weight: 1
+  - keyword: {fileID: 11400000, guid: eab229c2d0374011b3c001bd7cb073be, type: 2}
+    weight: 6
   gifts:
   - {fileID: 11400000, guid: e056317ad96d54367ba9d7574476f0ae, type: 2}
   - {fileID: 11400000, guid: 8f5e306caa15d4e7d84d79b98e4cbb9d, type: 2}

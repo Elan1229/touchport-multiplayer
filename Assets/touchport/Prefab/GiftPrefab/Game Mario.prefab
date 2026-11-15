@@ -145,7 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a9fe195b58a540528313a74db989152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gift: {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
+  gift: {fileID: 11400000, guid: 9508d5690bd6d4343bc889b963d8cb5b, type: 2}
   originDream: {fileID: 11400000, guid: 105f2d0707ee8471ea6fa3e943841938, type: 2}
   currentDream: {fileID: 0}
 --- !u!114 &-8821957587795092313
