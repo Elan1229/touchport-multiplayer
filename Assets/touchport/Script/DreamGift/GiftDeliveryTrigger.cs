@@ -44,11 +44,21 @@ namespace DreamTouch
             if (manager == null) ResolveManager();
         }
 
+        // 多人防御：跟 PortalDirectionTrigger 同一套「真正穿过才算」——进门记侧，出门侧变了才结算。
+        // 两边必须一致：只要一边是「碰到就算」，伸进去再抽回来就会出现 owner 和 currentDream 不一致。
+        // 单人场景（DreamSingleManager，可能是个小盒子区域）保持原来的「进入就算」。
+        readonly Dictionary<ObjectGift, float> _enterSide = new Dictionary<ObjectGift, float>();
+
+        float SideOf(Collider c) => Vector3.Dot(c.bounds.center - transform.position, transform.forward);
+
         void OnEnable()
         {
             _enabledAt = Time.time;
             _swallowedAtSpawn.Clear();
+            _enterSide.Clear();
         }
+
+        void OnDisable() => _enterSide.Clear();
 
         void OnTriggerEnter(Collider other)
         {
@@ -66,20 +76,41 @@ namespace DreamTouch
             }
             if (_swallowedAtSpawn.Contains(obj)) return;   // 开门吞进来的，还没出去过
 
+            if (DreamNetworkManager.Instance != null)
+            {
+                // 多人：先只记进门侧，结算留到 OnTriggerExit
+                if (!_enterSide.ContainsKey(obj)) _enterSide[obj] = SideOf(other);
+                return;
+            }
+
             if (_cooldown.TryGetValue(obj, out var readyAt) && Time.time < readyAt) return;
             _cooldown[obj] = Time.time + reArmDelay;
-
-            if (DreamNetworkManager.Instance != null)
-                DeliverMultiplayer(obj);
-            else
-                DeliverSinglePlayer(obj);
+            DeliverSinglePlayer(obj);
         }
 
         void OnTriggerExit(Collider other)
         {
             var obj = other.GetComponentInParent<ObjectGift>();
-            if (obj != null && _swallowedAtSpawn.Remove(obj))
+            if (obj == null) return;
+            if (_swallowedAtSpawn.Remove(obj))
+            {
                 Debug.Log($"[GiftDelivery] {obj.name} left the portal — armed for normal delivery.", obj);
+                _enterSide.Remove(obj);
+                return;
+            }
+
+            if (DreamNetworkManager.Instance == null) return;
+            if (!_enterSide.TryGetValue(obj, out float before)) return;
+            _enterSide.Remove(obj);
+            if (before * SideOf(other) >= 0f)
+            {
+                Debug.Log($"[GiftDelivery] {obj.name} poked in and came back out the same side — not delivered.", obj);
+                return;
+            }
+
+            if (_cooldown.TryGetValue(obj, out var readyAt) && Time.time < readyAt) return;
+            _cooldown[obj] = Time.time + reArmDelay;
+            DeliverMultiplayer(obj);
         }
 
         // 多人：先用 obj.currentDream（不是 ownerPlayerId——那个跟 PortalDirectionTrigger 翻转

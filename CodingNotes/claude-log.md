@@ -474,3 +474,151 @@ glow.Deactivate();                                  // 手动退出
 - 原文件备份：项目根 `_glb_backup/202611/`（未加 .gitignore）。
 - 使用情况：6 个被房间 prefab 引用；curtain / asianroom-game / asianroom-moon / booth-cloud 及其材质未被引用。
 - 待 Unity 验证：重新导入后 prefab 无 Missing、材质贴图仍在、外观可接受；再 Clear Build Cache → build。
+
+## 2026-11-14 梦境重整（3 儿童房 / 3 电话亭 / 3 亚洲房）——只做文件管理 + 权重，模型由 Elan 自己换
+
+- 原地改名（GUID 不变 → 下标、场景注册、Addressables 引用都不变）：
+  - `0 Bear Greenhouse` → `0 Cloud Phone Booth`，dream `0Greenhouse` → `0CloudPhoneBooth`（dreamId CloudPhoneBooth）
+  - `1 Child Room` → `1 Child Room Cloud`，dream `1ChildRoomCloud`（权重加 Cloud 3）
+  - `5 Cloud Room` 弃用 → 文件内容换成 1 的拷贝，改名 `5 Child Room Curtain` / `5ChildRoomCurtain`（沿用原 5 的 GUID）
+  - `6 Asian Alley` → `6 Asian Shrine` / `6AsianShrine`
+- 新建（拷贝 6，新 GUID）：`7 Asian Game Room` / `7AsianGameRoom`，`8 Asian Moon Bunny` / `8AsianMoonBunny`；两个 prefab 已加进 Default Local Group。
+- allDreams 实际顺序（联网按下标）：0 AsianShrine, 1 ChildRoomCloud, 2 ChildRoomCurtain, 3 CloudPhoneBooth, 4 PhoneBooth, 5 Submarine, 6 SunsetBooth, **7 AsianGameRoom, 8 AsianMoonBunny**（追加在末尾）。MR / NoMR 各 World0、World1 共 4 处 + DemoSinglePlayer 1 处已加。
+- 权重：CloudPhoneBooth{Booth10,Glass5,Cloud3,Sunlight2,Computer1}，ChildRoomCloud{Toy3,Cloud3,Computer2,Animal1,Balloon1}，ChildRoomCurtain{Toy3,Computer2,Animal2,Balloon1,Dark1}，AsianShrine{Halo3,Dark3,Flower2,Animal1}，AsianGameRoom{Computer3,Toy2,Flower2,Halo2,Dark1}，AsianMoonBunny{Halo3,Animal3,Dark2,Toy1}。原 Greenhouse 重复的 Glass 条目随之消失。
+- 5、7、8 的礼物摆放是拷贝来的（5=1 的，7/8=6 的），需要在 Unity 里手摆；礼物 originDream 运行时由 DreamNetworkManager 重写，不用管。
+- simulator-unity.html 数据同步为 9 个 dream；MR 预设 delay 改 10；fixGame 开关改作用于 AsianGameRoom。
+- 单件礼物跳转表观察：push 4 / lead 2 下几乎每件礼物都能触发跳转；SunnyCloud 总是去 CloudPhoneBooth，ChildRoomCloud 很难被跳到；AsianGameRoom 只在平局时出现 → 待在 simulator 里调。
+- 文件备份：会话 scratchpad `dreams/backup/`。
+
+## 2026-11-14 调权重：让 ChildRoomCloud / AsianGameRoom 可达
+
+- 方法：纯 bag 逻辑穷举（当前梦 × 伙伴梦 × 单件礼物，push 4 / lead 2），统计每个梦被跳到的比例。脚本在会话 scratchpad `dreams/tune.js`。
+- 改动：CloudPhoneBooth {Booth10,Glass5,Cloud3,Sunlight2,Computer2}；ChildRoomCloud {Cloud4,Balloon3,Toy2,Sunlight2,Computer1,Animal1}；AsianGameRoom {Computer4,Toy3,Halo2,Flower1,Dark1}。
+- 结果：被跳到比例从 2.3%–16.7% 收敛到 7.9%–14.1%（儿童房·云 2.3→8.7%，游戏房 3.5→14.1%，云端电话亭 8.8→10.0%）；不跳的组合约 6%。
+- SunnyCloud：从儿童房送 → 儿童房·云；从电话亭送 → 云端电话亭（电话亭种子带 Booth/Glass）。TV/电话听筒/游戏卡带从非电话亭送 → 游戏房。
+- simulator-unity.html 已同步。礼物摆放改完后要重新统计 ROOM_GIFTS_RAW 再验证。
+
+## 2026-11-14 编号 = 下标：统一命名 + 重排 allDreams
+
+| 下标 | prefab | dream 资产 / dreamId | 原名 |
+|---|---|---|---|
+| 0 | 0 ChildRoom-Cloud | 0ChildRoomCloud | 1 Child Room Cloud |
+| 1 | 1 ChildRoom-Curtain | 1ChildRoomCurtain | 5 Child Room Curtain |
+| 2 | 2 ChildRoom-Submarine | 2ChildRoomSubmarine | 2 Submarine Child Room |
+| 3 | 3 Booth-Greenhouse | 3BoothGreenhouse | 3 Phone Booth |
+| 4 | 4 Booth-Sunset | 4BoothSunset | 4 Phone Booth at Sunset |
+| 5 | 5 Booth-Cloud | 5BoothCloud | 0 Cloud Phone Booth |
+| 6 | 6 Asian-Shrine | 6AsianShrine | 6 Asian Shrine |
+| 7 | 7 Asian-GameRoom | 7AsianGameRoom | 7 Asian Game Room |
+| 8 | 8 Asian-MoonBunny | 8AsianMoonBunny | 8 Asian Moon Bunny |
+
+- GUID 全部不变；prefab 根名、m_Name、dreamId、Addressables 地址同步。
+- allDreams 在 MR(2) / NoMR(2) / DemoSinglePlayer(1) 共 5 份列表按 0..8 重排（脚本校验每份恰好这 9 个）。startDream 是引用不是下标，不受影响：MR W0=0ChildRoomCloud W1=4BoothSunset；NoMR W0=1ChildRoomCurtain W1=0ChildRoomCloud；SinglePlayer=0ChildRoomCloud。
+- **联网下标变了 → 两台头显必须装同一个新 build。**
+- simulator-unity.html 键名与顺序同步；跳转比例不变（7.9%–14.1%，不跳 6.4%）。
+- 备份：会话 scratchpad `dreams/backup2/`。
+
+## 2026-11-14 分组权重（012 儿童房 / 345 电话亭 / 678 亚洲）
+
+- 设计：每组共享一个“底”（组内相似），再各加 1–2 个特色 keyword（组内区分）。
+  - 儿童房：底 Toy3 + Balloon2~3；Cloud {Cloud4,Sunlight2,Balloon3}，Curtain {Animal3,Computer2}，Submarine {Dark3,Computer2}
+  - 电话亭：底 Booth4 + Glass3 + Computer3；Greenhouse {Flower3,Sunlight2,Animal1}，Sunset {Dark4,Cloud3,Halo1}，Cloud {Cloud3,Sunlight3,Balloon1}
+  - 亚洲：底 Halo2 + Flower；Shrine {Flower3,Dark3,Animal1}，GameRoom {Computer4,Toy2,Flower1}，MoonBunny {Animal3,Sunlight2,Flower1}
+- Booth/Glass 没有礼物带，只来自初始包（种子）→ 只在“已经在电话亭”时给同组加分，所以电话亭组内跳转偏多（52%），另两组组内约 1/3。
+- 纯 bag 穷举结果：每个梦 7.5%–13.5%，不跳 5.2%。脚本 scratchpad `dreams/group.js`。
+- 9 个 dream 资产 + simulator-unity.html 已同步；改前备份 scratchpad `dreams/backup3/`。
+
+## 2026-11-14 Bug：旧梦礼物不随梦消失 + 新梦里抓不动
+
+- 读完整条 生成→穿门→清场 路径：纸面逻辑正确，问题在它覆盖不到的情况。头显未连，拿不到日志，先上诊断 + 防御。
+- 嫌疑（按吻合度）：① 客户端本地「幽灵」ObjectGift（没上网 → 清场管不到、server 上不存在 → 抓不动）；② portal「一碰就翻 owner」，伸进去抽回来 owner 就错了 → 按 owner 清场漏掉；③ 没进账本的礼物。
+- 诊断：`DreamNetworkManager.LogGiftSnapshotLater`——每台机器在换梦凝入后 ~8s 打 `[GiftGhost]` 快照（live/GHOST、owner、layer、origin/current、root、pos）。
+- 防御 1：PortalDirectionTrigger 与 GiftDeliveryTrigger（多人路径）都改成「真正穿过才算」：进 trigger 记 bounds 中心在门面哪侧，出 trigger 侧变了才翻 owner / 结算；同侧出来只打日志。单人 DreamSingleManager 仍是进入即结算。
+- 防御 2：换梦清场除了 owner 匹配，再清 `currentDream == 该 world 旧梦` 的礼物（ApplyVisual 现在拿到 oldIndex）。已知边角：缓冲期里带过门且走了 stale 分支的礼物也会被当旧梦清掉。
+- 防御 3：快照之后删除本机「可见的」幽灵（activeInHierarchy 且未 Spawn；跳过 server 的 pendingSpawn）。只删礼物本身不删上级。
+- 未编译验证（Unity MCP 未连接）。查日志：`adb logcat -s Unity | grep -E "GiftGhost|GiftDiag|Portal\]|GiftDelivery"`。
+
+## 2026-11-15 simulator 礼物数量同步
+- 核对：simulator-unity.html 的 UNITY_SIG / GIFT_KW 与 9 个 dream asset、16 个 gift asset 完全一致。
+- 按房间 prefab 重新统计 ObjectGift（含嵌套 prefab），更新 ROOM_GIFTS_RAW：
+  - ChildRoomCloud：去掉 GoldenFish 5（实际是 SunnyCloud 5 = Cloud prefab）
+  - ChildRoomCurtain：去掉 SunnyCloud 5（实际是 GoldenFish 5）
+  - BoothSunset：FlowerAtNight 11 → 9
+  - BoothCloud 的 SunnyCloud 3 = CloudPink（gift 指向 SunnyCloud）
+- 7/8 Asian 礼物仍与 6 相同，改完后需再统计。备份：scratchpad dreams/simulator-unity.before-counts.html
+- 发现：0、1 号房间的 Animal_TeddyBear_bluetie 实例上多加了一个 ObjectGift（gift 为空、networkPrefab=TeddyBear），与 prefab 自带的重复；可能产生无 gift 的幽灵礼物，待用户在 prefab 里 Remove。
+- CloudPink 已加入 Assets/Settings/DefaultNetworkPrefabs.asset（场景实际使用的那份）；DefaultNetworkPrefabs2.asset 无任何引用，是 7/17 的副本。
+
+## 2026-11-15 simulator：portal 常开
+- simulator-unity.html 交互区加「portal 常开」勾选（默认勾上）：render() 里直接把 S.portal 设为 open，换梦后也立刻重开，「带过门」随时可点。批量模拟仍走握手逻辑。
+- 备份：scratchpad dreams/simulator-unity.before-alwaysopen.html
+
+## 2026-11-15 simulator：礼物数量标签
+- 礼物行「Name ×N」改成「Name（这里还有 N 个）」，避免误读成「要送 N 个」。备份 scratchpad dreams/simulator-unity.before-countlabel.html
+
+## 2026-11-15 保真度核对 + 电话亭陷阱
+- 核对：PlayerDreamBag（seed=1、score、lead/bumper、排除自己+对方）与 simulator-unity.html 逐行一致；MR 场景两个 bag 都是 push 4 / lead 2 / 9 个梦 0..8；今天 11:02 的 build 晚于权重修改（11-14 10:02），所以 build 里是新权重。
+- 「两边落到同一个梦」的保护还在：DeliverGift 传 partner = 对方 bag.Current，EvaluateJump 排除。模拟器里看起来一样是因为 BoothCloud 和 ChildRoomCloud 共用同一张图（3 个亚洲房也共用一张）。
+- 用户实测：都跳去 BoothCloud、在电话亭组里绕圈。新写 scratchpad dreams/markov.js（MR 初始 + 房间实际礼物数的连续游玩模拟）复现：电话亭 54%，GameRoom / Submarine 各 2.7%。原因：上次调权重的指标是「所有 当前×对方×礼物种类」均匀平均，没按实际起点、礼物数量和连续跳转来算。
+- retune.js 以连续游玩为目标重新搜权重（结果在 scratchpad dreams/retuned.json，尚未写入 Unity / HTML，等用户确认）：三组 30~36%，每个梦 9~13%，93% 的送礼会触发换梦。
+- 注意：若把 Game / Game Mario 改成 GameCartridges，同一组权重会变成 儿童房 42% / 电话亭 24%，两件事要一起定。
+- MR 里「FlowerAtNight BoothSunset→ChildRoomCloud 跳去 BoothCloud」模拟器预测是 AsianShrine，没有 Quest 日志无法解释（adb 无设备）。SunsetCloud / TelephoneHandset 才会把 ChildRoomCloud 推去 BoothCloud。
+- simulator：「会触发换梦」改成「会触发对方换梦」。
+- 旧礼物不消失的 bug：今天的 build 已含 [GiftGhost] 诊断和三处防御，用户反馈仍然严重 → 防御没解决，需要 Quest logcat。
+
+## 2026-11-15 simulator：权重方案切换
+- 顶部加「权重方案」下拉：工程现状 / 新方案（PROPOSED_SIG = retuned.json，未写入 Unity）。切换后编辑器、跳转表、批量模拟都跟着变。备份 scratchpad dreams/simulator-unity.before-proposed.html
+
+## 2026-11-15 simulator：换成 9 张新房间图
+- IMG 映射改为每个梦各一张（0playroomcloud / 1 playroomcurtain / 2 playroomsubmarine / 3 Phone booth / 4 Phone Booth at Sunset / 5 Phone Booth In Clouds / 6 Asianshrine / 7 Asian Game Room / 8 Asian MoonBunny），文件都存在。
+
+## 2026-11-15 黏性版权重（模拟器预览，未写入 Unity）
+- 用户要求 playroom 留在 playroom 系列。扫了一遍：只靠种子里的组名关键词，权重 4 时留组约 67%，但会抢电话亭的时间；需要整体重调。
+- retune3.js：每组一个组名关键词（Playroom 8 / Booth 10 / Asian 9），礼物按 Game 已修成 GameCartridges 计算。结果 retuned3.json：留在本组 儿童房 66% / 电话亭 69% / 亚洲 58%，时间占比 32/37/30，每个梦 9~13%，触发率 99%。
+- simulator：PROPOSED_SIG 换成这一版；KEYWORDS 加 Playroom、Asian；「修正 Game」勾选改为对 3 个亚洲房都生效，选新方案时自动勾上。备份 scratchpad dreams/simulator-unity.before-sticky.html
+- Unity 里 Game.prefab / Game Mario.prefab 的 gift 仍是 FlowerInterior（未改，等用户确认）。写入 Unity 还需要新建 Playroom、Asian 两个 Keyword asset。
+
+## 2026-11-15 simulator：纯权重模式
+- 「portal 常开」勾选改名为「纯权重模式」（默认勾上）：portal 常开 + doCarry 后把排队事件（缓冲/过渡/spawn）一次跑完，送礼立即换梦。取消勾选回到真实时序。备份 scratchpad dreams/simulator-unity.before-instant.html
+
+## 2026-11-15 simulator：点击丢失
+- 原因：loop 每 0.2s 整页 innerHTML 重画，按钮 DOM 被替换，mousedown / mouseup 落在不同元素上，click 不触发。改成只有状态变化才重画，平时只更新时钟。
+
+## 2026-11-15 simulator：默认值
+- 打开即 mr 预设（World0 ChildRoomCloud / World1 BoothSunset）+ 新方案权重（自动勾 Game 修正）。
+
+## 2026-11-15 simulator：隐藏时序控件
+- 时钟/流速/握手/纯权重开关整块 display:none，固定纯权重模式。
+
+## 2026-11-15 simulator：删除时序控件
+- 时钟/流速/跳事件/握手/纯权重开关整块删除，render 固定 portal 常开，doCarry 送礼后立即跑完事件，去掉 requestAnimationFrame 循环。
+
+## 2026-11-15 留组 vs 能去别的系列：结构性矛盾
+- 用户截图：亚洲玩家收到电话亭的礼物（SunnyCloud/Flower/TeddyBear）全部跳出亚洲。原因：外组礼物 push 4 × 权重（Cloud 7 等）≈ 28 分，远大于种子里组名关键词的 1 × 9。
+- seedtest.js：把种子里的组名数量从 1 提高到 2/3/4 → 玩家困死在起始组，MR 开局（儿童房 + 电话亭）下亚洲变 0%。权重无法同时做到「很黏」和「三组都去得了」。
+- famrule.js：试「本组优先」规则（组外第 1 名要比组内第 1 名多 M 分才跳出组）。M 是平滑旋钮：M=8 时留组 73/69/54%，M=12 时 84/79/67%（温室 1%，需配合调权重），M=20 时亚洲 0%。需要改 PlayerDreamBag.EvaluateJump，未动。
+
+## 2026-11-15 方案 v3：权重 + 礼物改动联合搜索（模拟器预览，未写入 Unity）
+- 用户要求：同系列留组 ≥ 40%，不能锁死在起始两个系列；可以加礼物 / 改礼物 keyword。
+- pairs.js：逐对（收礼房间 × 对方房间）看留组率。上一版 retuned3 有 3 对 0%、16 对 100%，这就是「亚洲房一收礼就全跑了」的来源——整体留组率达标，但具体某一对是死角。
+- opt.js / opt2.js：目标 = 每一对留组率落在 30%~85% + 连续游玩三系列均匀 + 每系列留组 ≥ 50%；变量 = dream 权重、组名关键词、21 个候选礼物改动（每个改动有惩罚，尽量少改）。
+- 结果 opt_result.json（800 局复核）：留组 儿童房 49% / 电话亭 62% / 亚洲 62%；时间 37/31/32；每个梦 9~13%；触发率 98%；72 对里 0% 和 100% 的都是 0 对。
+- 礼物改动 4 处：DirtToy 礼物加 Playroom；BoothCloud 加 2 个 TelephoneHandset、3 个 Balloon；BoothGreenhouse 再加 2 个 Raccoon。另含 Game / Game Mario → GameCartridges。
+- 权重：ChildRoomCloud Toy4 Balloon7 Cloud8 Sunlight1 Playroom6｜ChildRoomCurtain Toy3 Balloon5 Animal7 Computer3 Playroom6｜ChildRoomSubmarine Toy8 Balloon2 Dark1 Computer1 Playroom6｜BoothGreenhouse Booth9 Glass4 Computer3 Flower4 Sunlight1 Animal4｜BoothSunset Booth9 Glass6 Computer3 Dark2 Cloud5 Halo5｜BoothCloud Booth9 Glass5 Computer3 Cloud8 Sunlight4 Balloon2｜AsianShrine Halo6 Flower2 Dark3 Animal3 Asian10｜AsianGameRoom Halo5 Flower1 Computer5 Toy1 Asian10｜AsianMoonBunny Halo5 Flower2 Animal1 Sunlight2 Asian10
+- simulator：PROPOSED_SIG 换成 v3，加 PROPOSED_GIFT_KW / PROPOSED_ROOM_ADD / applyGiftSet()，选新方案时礼物改动一起生效。headless.js 用假 DOM 跑通了初始化和连续送礼。备份 scratchpad dreams/simulator-unity.before-opt.html
+
+## 2026-11-15 v3 存档 + 规则 B（固定系列 + 隐藏亚洲房）原型
+- 用户反馈 v3「随机乱跳，我的变你的」，不要。v3 存档：Worlds/saved-schemes/v3-free-roam.json（权重、礼物改动、结果）+ Worlds/simulator-unity.v3-free-roam.html（当时的模拟器整页）。
+- 用户的新方案：玩家 0 固定在儿童房系列、玩家 1 固定在电话亭系列；连续两件礼物带 Animal → 月兔，带 Computer/Toy → 游戏房，带 Dark → 夜神社（计数不随换梦清零）；到了亚洲房，下一件礼物一定回自家系列，但这件算进计数。
+- simulator：加「跳转规则」下拉（B 固定系列 + 隐藏亚洲房 / A 自由跳），默认 B。evaluateFixed()、HIDDEN、SERIES，state 加 last:[[],[]]。备份 scratchpad dreams/simulator-unity.before-fixedrule.html
+- 我补的三条默认规则（待用户确认）：① 一件礼物同时中多类时按 Animal → Game → Dark 取第一个；② 对方已经在那个亚洲房时不去，照常在自家系列里换；③ 触发去亚洲房后计数清零。
+- headless2.js 跑 6000 次随机送礼（v3 权重 + 现有礼物）：World0（儿童房玩家）夜神社 10%、游戏房 0.5%、月兔 0.2%；World1（电话亭玩家）游戏房 25%、月兔 0.9%、夜神社 0.2%，温室只有 9%。原因是礼物构成：儿童房里 TV 13 + Toy 8 占大多数 → 电话亭玩家不停进游戏房；Animal 礼物太少 → 月兔几乎去不了。需要调礼物数量或触发条件。
+
+## 2026-11-15 规则 B 方案（模拟器预览，未写入 Unity）
+- 用户同意方向：电话亭多放电话；每个房间至少 2 个 Animal（多加金鱼和熊），否则没法连续送两个。
+- ruleB.js：规则 B 的快速模拟 + 搜索。让优化器随便加礼物时要加 47 个才勉强均匀——「连续两件」的概率是占比的平方，随机送礼下隐藏房间天生稀少；真实玩家是有意去凑的，所以改成保证「凑得出来」而不是追随机频率。
+- ruleB_min.js（最小加法）：ChildRoomCloud +1 TeddyBear；ChildRoomSubmarine +2 TeddyBear；BoothGreenhouse +1 Raccoon、+2 TelephoneHandset；BoothSunset +2 Raccoon、+2 TelephoneHandset；BoothCloud +1 TeddyBear、+3 TelephoneHandset。共 14 个。
+- 权重（只有自家系列 6 间参与计分）：ChildRoomCloud Toy5 Balloon8 Cloud8 Sunlight1 Playroom6｜ChildRoomCurtain Toy3 Balloon5 Animal7 Computer6 Playroom6｜ChildRoomSubmarine Toy8 Balloon1 Dark1 Computer2 Playroom6｜BoothGreenhouse Booth9 Glass5 Computer3 Flower4 Sunlight2 Animal2｜BoothSunset Booth9 Glass6 Computer2 Dark3 Cloud5 Halo7｜BoothCloud Booth9 Glass4 Computer2 Cloud8 Sunlight6 Balloon2
+- 随机送礼 500 局：World0 儿童房三间 31/28/30%，夜神社 6%、游戏房 4%、月兔 1%；World1 电话亭三间 24/24/25%，游戏房 22%、夜神社 3%、月兔 2%。
+- 多类礼物优先级改成 Animal → Dark → 游戏（原来游戏在 Dark 前，两个 DirtToy 永远进游戏房、电话亭玩家去不了夜神社）。
+- simulator：加 RULEB_SIG / RULEB_ROOM_ADD / SCHEMES，权重方案下拉多一项「规则 B 方案」并设为默认；applyGiftSet(key) 通用化。备份 scratchpad dreams/simulator-unity.before-ruleBset.html。结果存 scratchpad dreams/ruleB_min.json

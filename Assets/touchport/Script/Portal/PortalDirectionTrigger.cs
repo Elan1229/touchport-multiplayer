@@ -126,11 +126,21 @@ public class PortalDirectionTrigger : MonoBehaviour
     private readonly HashSet<Component> swallowedAtSpawn = new HashSet<Component>();
     private float enabledAt;
 
+    // 防御：真正「穿过」才翻转。进 trigger 时记下物体在门面哪一侧，出 trigger 时侧边变了才算穿门；
+    // 伸进去又抽回来（同侧出来）不翻。以前一碰就翻，导致礼物物理上还在旧梦、owner 却已经是对面，
+    // 换梦清场按 owner 认领就漏掉它。
+    private readonly Dictionary<Component, float> enterSide = new Dictionary<Component, float>();
+
+    private float SideOf(Collider c) => Vector3.Dot(c.bounds.center - transform.position, transform.forward);
+
     private void OnEnable()
     {
         enabledAt = Time.time;
         swallowedAtSpawn.Clear();
+        enterSide.Clear();
     }
+
+    private void OnDisable() => enterSide.Clear();
 
     private void OnTriggerEnter(Collider other)
     {
@@ -149,16 +159,33 @@ public class PortalDirectionTrigger : MonoBehaviour
         }
         if (swallowedAtSpawn.Contains(transferable)) return;   // 开门吞进来的，还没出去过
 
-        if (transferable is IObjectXR xr) { xr.TransferToOther(); return; }
-        if (transferable is IObjectScreen screen) screen.TransferToOther();
+        // 只记进门侧，翻转留到 OnTriggerExit 确认真的穿过去了再做
+        if (!enterSide.ContainsKey(transferable)) enterSide[transferable] = SideOf(other);
     }
 
     private void OnTriggerExit(Collider other)
     {
         Component transferable = other.GetComponentInParent<IObjectXR>();
         if (transferable == null) transferable = other.GetComponentInParent<IObjectScreen>();
-        if (transferable != null && swallowedAtSpawn.Remove(transferable))
+        if (transferable == null) return;
+        if (swallowedAtSpawn.Remove(transferable))
+        {
             Debug.Log($"[Portal] {transferable.name} left the portal — transfer armed.", transferable);
+            enterSide.Remove(transferable);
+            return;
+        }
+
+        if (!enterSide.TryGetValue(transferable, out float before)) return;
+        enterSide.Remove(transferable);
+        float after = SideOf(other);
+        if (before * after >= 0f)
+        {
+            Debug.Log($"[Portal] {transferable.name} poked in and came back out the same side — no transfer.", transferable);
+            return;
+        }
+
+        if (transferable is IObjectXR xr) { xr.TransferToOther(); return; }
+        if (transferable is IObjectScreen screen) screen.TransferToOther();
     }
 
     // 优先用 Inspector 手动指定的 headCamera（XR 场景就是这么配的，不受影响）。

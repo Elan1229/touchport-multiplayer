@@ -114,8 +114,8 @@ namespace DreamTouch
                 bags != null && bags.Length > 0 && bags[0] != null)
                 allDreams = bags[0].allDreams;
 
-            Dream0Index.OnValueChanged += (_, v) => ApplyVisual(0, v);
-            Dream1Index.OnValueChanged += (_, v) => ApplyVisual(1, v);
+            Dream0Index.OnValueChanged += (o, v) => ApplyVisual(0, v, o);
+            Dream1Index.OnValueChanged += (o, v) => ApplyVisual(1, v, o);
             Pending0Index.OnValueChanged += (_, v) => ApplyPreload(0, v);
             Pending1Index.OnValueChanged += (_, v) => ApplyPreload(1, v);
 
@@ -297,11 +297,17 @@ namespace DreamTouch
             presenters[world].Preload(dream);
         }
 
-        void ApplyVisual(int world, int index)
+        void ApplyVisual(int world, int index, int oldIndex = -1)
         {
             // 这个 world 要换梦了（Switch 里紧接着开始 DissolveOut）：把这个 owner 名下现存的
             // 礼物摊帧清掉——不管是这个梦自己带的，还是穿门从对面拿过来的，跟旧梦一起消失。
-            if (IsServer && spawnGifts) StartCoroutine(DespawnGiftsOwnedBy(world));
+            // 防御：再加一条「currentDream 还是旧梦」的也清（owner 被翻错时 owner 规则会漏掉它）。
+            if (IsServer && spawnGifts)
+            {
+                var oldDream = (allDreams != null && oldIndex >= 0 && oldIndex < allDreams.Length)
+                    ? allDreams[oldIndex] : null;
+                StartCoroutine(DespawnGiftsOwnedBy(world, oldDream));
+            }
 
             // 新一轮过渡开始：代次 +1（让上一轮还在摊帧 Spawn 的协程立刻自弃），
             // 上一轮的「凝入完成」报到也一并作废。
@@ -433,6 +439,9 @@ namespace DreamTouch
             // 本端房间已经凝入完成，可以承接礼物了。host 上这个 ServerRpc 是本地直接调用。
             ReportTransitionCompleteServerRpc(world);
 
+            // [GiftGhost] 每台机器各自拍一次礼物快照（等新梦礼物 Spawn 落地之后）。
+            StartCoroutine(LogGiftSnapshotLater(world, dream));
+
             if (!IsServer) return;
 
             // 没有礼物要落地（加载失败 / 关了 spawnGifts）：当场解锁。
@@ -522,7 +531,7 @@ namespace DreamTouch
         // 只要有第二个协程动了同一个 List（另一个世界也在清场、或者 SpawnPendingGifts 在追加），
         // 索引就会失配、静默跳过元素——而且跳过谁取决于列表顺序，所以表现成「每次都是固定
         // 那几个清不掉」。快照遍历 + 按引用 Remove 则完全不受并发增删影响。
-        IEnumerator DespawnGiftsOwnedBy(int world)
+        IEnumerator DespawnGiftsOwnedBy(int world, DefinitionDream oldDream = null)
         {
             const int perFrame = 3;
             ulong ownerId = PlayerWorld.PlayerOf(world);
@@ -539,6 +548,19 @@ namespace DreamTouch
                 var screen = no.GetComponentInChildren<IObjectScreen>(true);
                 bool owned = (xr != null && xr.ownerPlayerId == ownerId) ||
                              (screen != null && screen.ownerPlayerId == ownerId);
+
+                // 防御：owner 对不上，但礼物记录的 currentDream 仍是这个 world 正在消失的旧梦
+                // ——说明它其实还待在旧梦里（owner 被 portal 误翻过），一样随旧梦清掉。
+                if (!owned && oldDream != null)
+                {
+                    var og = no.GetComponentInChildren<ObjectGift>(true);
+                    if (og != null && og.currentDream == oldDream)
+                    {
+                        owned = true;
+                        Debug.LogWarning($"[GiftDiag] '{no.name}' owner mismatch but currentDream='{oldDream.dreamId}' " +
+                                         $"(world{world}'s old dream) — despawning with it.", no);
+                    }
+                }
 
                 if (!owned)
                 {
@@ -570,6 +592,59 @@ namespace DreamTouch
                           $"inLedger={tracked} dream={(g.currentDream ? g.currentDream.dreamId : "null")}");
             }
             Debug.Log(sb.ToString());
+        }
+
+        // [GiftGhost] 诊断（每台机器都跑，不只 server）：换梦凝入完成后过几秒，列出本机场景里
+        // 所有 ObjectGift。重点是 GHOST——有 ObjectGift 却没在网络上 Spawn 的物体：server 账本
+        // 管不到它（换梦清不掉），server 上也没有它（抓不起来），正是「旧梦礼物留下来还死掉」
+        // 的嫌疑。server 端的 [GiftDiag] 只看得到 server 自己，client 上的幽灵只能靠这里。
+        // 用 adb logcat -s Unity 过滤 "[GiftGhost]" 查看。
+        IEnumerator LogGiftSnapshotLater(int world, DefinitionDream dream)
+        {
+            yield return new WaitForSeconds(giftSpawnAckTimeout * 0.5f + 3f);
+            var all = FindObjectsByType<ObjectGift>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            int ghosts = 0, live = 0;
+            var sb = new System.Text.StringBuilder();
+            foreach (var g in all)
+            {
+                var no = g.GetComponentInParent<NetworkObject>();
+                bool spawned = no != null && no.IsSpawned;
+                if (spawned) live++; else ghosts++;
+                var xr = g.GetComponentInParent<IObjectXR>();
+                var root = g.transform.root;
+                sb.Append($"\n  {(spawned ? "live " : "GHOST")} '{g.name}' " +
+                          $"net={(no != null ? (no.IsSpawned ? no.NetworkObjectId.ToString() : "unspawned") : "NONE")} " +
+                          $"active={g.gameObject.activeInHierarchy} " +
+                          $"owner={(xr != null ? xr.ownerPlayerId.ToString() : "-")} " +
+                          $"layer={LayerMask.LayerToName(g.gameObject.layer)} " +
+                          $"origin={(g.originDream ? g.originDream.dreamId : "null")} " +
+                          $"current={(g.currentDream ? g.currentDream.dreamId : "null")} " +
+                          $"root='{(root != g.transform ? root.name : "(self)")}' " +
+                          $"pos={g.transform.position:F2}");
+            }
+            Debug.Log($"[GiftGhost] client{NetworkManager.LocalClientId} IsServer={IsServer} " +
+                      $"after world{world} -> '{(dream ? dream.dreamId : "null")}': " +
+                      $"total={all.Length} live={live} GHOST={ghosts} " +
+                      $"dreams=[{(bags.Length > 0 && bags[0] ? bags[0].Current?.dreamId : "?")}, " +
+                      $"{(bags.Length > 1 && bags[1] ? bags[1].Current?.dreamId : "?")}]" + sb);
+
+            // 防御：快照记完之后，把【可见的】幽灵删掉——没上网的 ObjectGift 本机独有，
+            // 不会被清场、也抓不起来。只删 activeInHierarchy 的：server 的 pendingSpawn 待命实例
+            // 和预载中的房间都是 inactive，不会误伤。
+            int removed = 0;
+            foreach (var g in all)
+            {
+                if (g == null || !g.gameObject.activeInHierarchy) continue;
+                var no = g.GetComponentInParent<NetworkObject>();
+                if (no != null && no.IsSpawned) continue;
+                if (IsServer && (pendingSpawn[0].Contains(g.gameObject) || pendingSpawn[1].Contains(g.gameObject))) continue;
+                Debug.LogWarning($"[GiftGhost] removing ghost '{g.name}' at {g.transform.position:F2}", g);
+                // 只删礼物自己这个物体，不删 GetComponentInParent 找到的上级——万一房间根上也挂着
+                // 一个没上网的 NetworkObject，删上级就把整个房间删了。
+                Destroy(g.gameObject);
+                removed++;
+            }
+            if (removed > 0) Debug.LogWarning($"[GiftGhost] client{NetworkManager.LocalClientId} removed {removed} ghost gift(s).");
         }
 
         int IndexOf(DefinitionDream d)

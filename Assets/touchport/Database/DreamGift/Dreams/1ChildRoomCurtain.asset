@@ -10,20 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c44cedc2147c6451ebe89134e489a3c0, type: 3}
-  m_Name: 5CloudRoom
+  m_Name: 1ChildRoomCurtain
   m_EditorClassIdentifier: 
-  dreamId: CloudRoom
+  dreamId: ChildRoomCurtain
   signature:
-  - keyword: {fileID: 11400000, guid: 55722a65ae9ed43e186c10666d96f0fc, type: 2}
-    weight: 3
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
-    weight: 2
+    weight: 3
   - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
     weight: 2
-  - keyword: {fileID: 11400000, guid: 3a632ed60fb3e49ecadbed4f7ac42e5b, type: 2}
+  - keyword: {fileID: 11400000, guid: 8b441e9e85cf947f4b59b85327dfc776, type: 2}
+    weight: 3
+  - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
     weight: 2
   gifts:
-  - {fileID: 11400000, guid: 36cec1d3993534ff9b7a44452e0f31f2, type: 2}
+  - {fileID: 11400000, guid: 141a7c475deff43348c170d662fddefb, type: 2}
+  - {fileID: 11400000, guid: 250211fc7b6c24cb3adbadb3e82031f0, type: 2}
+  - {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
   - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
   dreamAsset:
     m_AssetGUID: 89f35ebcdd18a43cab20d895a6a73c7b
