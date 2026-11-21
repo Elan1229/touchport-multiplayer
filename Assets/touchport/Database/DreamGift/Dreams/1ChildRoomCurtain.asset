@@ -21,7 +21,7 @@ MonoBehaviour:
   - keyword: {fileID: 11400000, guid: 8b441e9e85cf947f4b59b85327dfc776, type: 2}
     weight: 7
   - keyword: {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
-    weight: 3
+    weight: 6
   - keyword: {fileID: 11400000, guid: eab229c2d0374011b3c001bd7cb073be, type: 2}
     weight: 6
   gifts:
@@ -29,6 +29,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 250211fc7b6c24cb3adbadb3e82031f0, type: 2}
   - {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
   - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  series: Playroom
+  hiddenTrigger: []
+  hiddenPriority: 0
   dreamAsset:
     m_AssetGUID: 89f35ebcdd18a43cab20d895a6a73c7b
     m_SubObjectName: 

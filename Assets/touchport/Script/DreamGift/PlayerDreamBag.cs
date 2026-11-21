@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace DreamTouch
 {
-    // LOCAL logic: the player's current dream + bag + the evolution rule.
+    // LOCAL logic: the player's current dream + bag + the evolution rule (方案 B，见 EvaluateJump).
     // This is your "bag with a rule". It knows nothing about networking or visuals.
     // The Manager feeds gifts in; when the dream changes, this fires OnDreamChanged.
     public class PlayerDreamBag : MonoBehaviour
@@ -29,8 +29,13 @@ namespace DreamTouch
         [System.Serializable] public struct DebugKeyword { public string keyword; public int weight; public int count; }
         [System.Serializable] public struct DebugScore   { public string dream;   public int score; }
 
+        // 上一件礼物命中了哪些隐藏房间。连续两件都命中同一个 → 去那个隐藏房间。
+        // 故意不随换梦清空（SeedBag 不碰它）：礼物本体已经随旧梦消失了，计数还在。
+        readonly List<DefinitionDream> lastHiddenHits = new List<DefinitionDream>();
+
         [Header("Debug (runtime, read-only)")]
         [SerializeField] string debugCurrentDream;
+        [SerializeField] string debugHiddenStreak;
         [SerializeField] List<DebugKeyword> debugBag    = new List<DebugKeyword>();
         [SerializeField] List<DebugScore>   debugScores = new List<DebugScore>();
 
@@ -76,7 +81,7 @@ namespace DreamTouch
             }
             foreach (var k in gift.keywords)
                 if (k != null) bag[k] = (bag.TryGetValue(k, out var c) ? c : 0) + giftPush;
-            bool jumped = EvaluateJump(partnerDream);
+            bool jumped = EvaluateJump(partnerDream, gift);
             Debug.Log($"[DreamBag] '{name}' received '{gift.giftName}' (+{giftPush} weight on " +
                       $"[{KeywordList(gift)}]) -> jumped={jumped}, current='{Current?.dreamId}'.", this);
             RefreshDebug();
@@ -92,7 +97,7 @@ namespace DreamTouch
             if (gift == null) return false;
             foreach (var k in gift.keywords)
                 if (k != null) bag[k] = Mathf.Max(0, (bag.TryGetValue(k, out var c) ? c : 0) - giftPush);
-            bool jumped = EvaluateJump(partnerDream);
+            bool jumped = EvaluateJump(partnerDream, null);   // 拿回去不算进「连续两件」
             Debug.Log($"[DreamBag] '{name}' took back '{gift.giftName}' (-{giftPush} weight on " +
                       $"[{KeywordList(gift)}]) -> jumped={jumped}, current='{Current?.dreamId}'.", this);
             RefreshDebug();
@@ -107,34 +112,65 @@ namespace DreamTouch
             return sb.ToString();
         }
 
-        // The rule: exclude self + partner.
-        //  · Normal: jump when 1st beats 2nd by >= leadMargin.
-        //  · Bumper: if 1st & 2nd are neck-and-neck (equal or differ by 1) but the top pair
-        //    is decisively ahead of 3rd (2nd - 3rd >= leadMargin), commit to 1st anyway.
-        //  · On a tie for 1st, pick one of the co-leaders at random.
-        bool EvaluateJump(DefinitionDream partnerDream)
+        // 规则（方案 B：固定系列 + 隐藏房间）。旧的「自由跳」规则留档在
+        // _DreamTouchForAI/Worlds/saved-schemes/v3-free-roam.json 和对应的模拟器 html 里。
+        //  · 玩家的「家」= 起始梦所在的系列（DefinitionDream.series）。平时只在家里的房间之间换：
+        //    排除自己和对方，第 1 名领先第 2 名 >= leadMargin 就跳；前两名咬得很紧（差 <= 1）
+        //    但明显甩开第 3 名时也跳（bumper）；并列第 1 随机挑。
+        //  · 隐藏房间：连续两件礼物都命中同一个隐藏房间的 hiddenTrigger → 去那个房间，计数清零。
+        //    对方已经在那个房间时不去。
+        //  · 人在隐藏房间时，下一件礼物【一定】把他送回家里契合分最高的房间；这件礼物算进
+        //    「连续两件」的计数，所以最快再下一件又能去隐藏房间。
+        //  · gift == null（拿回去）：只在家里重新结算，不碰计数。
+        bool EvaluateJump(DefinitionDream partnerDream, DefinitionGift gift)
         {
-            var cand = allDreams
-                .Where(w => w != null && w != Current && w != partnerDream)
-                .Select(w => new { dream = w, s = Score(w) })
-                .OrderByDescending(x => x.s)
-                .ToList();
-            if (cand.Count < 2) return false;
+            bool inHidden = Current != null && Current.IsHidden;
+            DefinitionDream pick = null;
+            string why = null;
 
-            int s0 = cand[0].s;                                       // 1st place score
-            int s1 = cand[1].s;                                       // 2nd place score
-            int s2 = cand.Count > 2 ? cand[2].s : int.MinValue / 2;   // 3rd place score
-            var leaders = cand.Where(x => x.s == s0).Select(x => x.dream).ToList();
+            if (gift != null)
+            {
+                var hits = allDreams
+                    .Where(w => w != null && w.IsHidden && gift.keywords.Any(k => k != null && w.hiddenTrigger.Contains(k)))
+                    .OrderBy(w => w.hiddenPriority)
+                    .ToList();
+                if (!inHidden)
+                    pick = hits.FirstOrDefault(w => lastHiddenHits.Contains(w) && w != partnerDream);
 
-            bool jump = (s0 - s1) >= leadMargin;                      // clear leader
-            if (!jump && (s0 - s1) <= 1 && (s1 - s2) >= leadMargin)   // bumper: top pair vs 3rd
-                jump = true;
-            if (!jump) return false;
+                lastHiddenHits.Clear();
+                if (pick != null) why = "two matching gifts in a row -> hidden room";
+                else lastHiddenHits.AddRange(hits);          // 这件算第 1 件
+            }
 
-            var pick = leaders[UnityEngine.Random.Range(0, leaders.Count)];
+            if (pick == null)
+            {
+                string home = startDream != null ? startDream.series : null;
+                var cand = allDreams
+                    .Where(w => w != null && w != Current && w != partnerDream && !w.IsHidden && w.series == home)
+                    .Select(w => new { dream = w, s = Score(w) })
+                    .OrderByDescending(x => x.s)
+                    .ToList();
+                if (cand.Count == 0) return false;
+
+                int s0 = cand[0].s;                                       // 1st place score
+                int s1 = cand.Count > 1 ? cand[1].s : int.MinValue / 2;   // 2nd place score
+                int s2 = cand.Count > 2 ? cand[2].s : int.MinValue / 2;   // 3rd place score
+
+                bool jump = inHidden && gift != null;                     // 从隐藏房间一定回家
+                if (!jump) jump = (s0 - s1) >= leadMargin;                // clear leader
+                if (!jump && (s0 - s1) <= 1 && (s1 - s2) >= leadMargin)   // bumper: top pair vs 3rd
+                    jump = true;
+                if (!jump) return false;
+
+                var leaders = cand.Where(x => x.s == s0).Select(x => x.dream).ToList();
+                pick = leaders[UnityEngine.Random.Range(0, leaders.Count)];
+                why = inHidden ? "back home from hidden room" : $"home series, s0={s0}";
+            }
+
             var from = Current;
             Current = pick;
             SeedBag();
+            Debug.Log($"[DreamBag] '{name}' jump '{from?.dreamId}' -> '{pick.dreamId}' ({why}).", this);
             OnDreamChanged?.Invoke(this, from, pick);
             return true;
         }
@@ -146,6 +182,8 @@ namespace DreamTouch
         void RefreshDebug()
         {
             debugCurrentDream = Current != null ? Current.dreamId : "(none)";
+            debugHiddenStreak = lastHiddenHits.Count == 0 ? "(none)"
+                : "1 of 2 toward: " + string.Join(", ", lastHiddenHits.Select(d => d.dreamId));
 
             debugBag.Clear();
             foreach (var kv in bag)

@@ -28,6 +28,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: aa964774bce9e4f2d83f3ff0c276c3e9, type: 2}
   - {fileID: 11400000, guid: 73fa2303bae484d16925944a15527041, type: 2}
   - {fileID: 11400000, guid: 9508d5690bd6d4343bc889b963d8cb5b, type: 2}
+  series: Asian
+  hiddenTrigger:
+  - {fileID: 11400000, guid: 453dbfbc6c96d43eda4148692a868741, type: 2}
+  - {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
+  hiddenPriority: 2
   dreamAsset:
     m_AssetGUID: a8e4566375e949cdb6147274deb1a84d
     m_SubObjectName: 

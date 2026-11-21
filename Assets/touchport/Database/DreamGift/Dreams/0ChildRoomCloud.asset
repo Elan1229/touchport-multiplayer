@@ -15,9 +15,9 @@ MonoBehaviour:
   dreamId: ChildRoomCloud
   signature:
   - keyword: {fileID: 11400000, guid: 86498c299e6e840689f34bc189151dab, type: 2}
-    weight: 4
+    weight: 5
   - keyword: {fileID: 11400000, guid: ebd6f30a898bb4e02b00527e6934c007, type: 2}
-    weight: 7
+    weight: 8
   - keyword: {fileID: 11400000, guid: 55722a65ae9ed43e186c10666d96f0fc, type: 2}
     weight: 8
   - keyword: {fileID: 11400000, guid: 3a632ed60fb3e49ecadbed4f7ac42e5b, type: 2}
@@ -29,6 +29,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 250211fc7b6c24cb3adbadb3e82031f0, type: 2}
   - {fileID: 11400000, guid: 0b5c303cb685a499492e5aa743cc9aac, type: 2}
   - {fileID: 11400000, guid: 0954303e1b7fd430980e459ccb2b3c51, type: 2}
+  series: Playroom
+  hiddenTrigger: []
+  hiddenPriority: 0
   dreamAsset:
     m_AssetGUID: 29042d950ed0047f2bc78dc0bc341f16
     m_SubObjectName: 

@@ -633,3 +633,20 @@ glow.Deactivate();                                  // 手动退出
 - v3 里另外两处礼物改动要用户在房间 prefab 里摆：BoothCloud 加 2 个 TelephoneHandset、3 个 Balloon；BoothGreenhouse 再加 2 个 Raccoon。
 
 - simulator 同步：UNITY_SIG 改成 v3、DirtToy 加 Playroom、亚洲房礼物改成 FlowerInterior 3 + GameCartridges 3、删除「修正 Game」勾选。备份 scratchpad dreams/simulator-unity.before-unityv3.html
+
+## 2026-11-15 方案 B 写入 Unity（固定系列 + 隐藏亚洲房）
+- 用户已 git 方案 A 并 build 了 apk；要求 Unity 里只留方案 B，不做开关（方案 A 的算法留档在 Worlds/saved-schemes/v3-free-roam.json + simulator-unity.v3-free-roam.html）。
+- DefinitionDream.cs：加 series（string）、hiddenTrigger（DefinitionKeyword[]）、hiddenPriority（int）、IsHidden。
+- PlayerDreamBag.cs：EvaluateJump(partnerDream, gift) 改写成方案 B；加 lastHiddenHits（不随换梦清空）和 debugHiddenStreak。ReceiveGift / TakeBackGift 对外签名不变，DreamNetworkManager、DreamSingleManager、DreamTestDriver 不用改。
+  - 家 = startDream.series；平时只在家里的非隐藏房间里换（原 lead / bumper 规则）。
+  - 连续两件礼物命中同一个隐藏房间的 hiddenTrigger → 去那里，计数清零；对方在那里时不去；多个命中按 hiddenPriority。
+  - 人在隐藏房间时下一件礼物强制回家（契合分最高），这件算进计数。
+  - TakeBack（gift == null）只在家里重新结算，不碰计数。
+- 9 个 dream asset：series = Playroom / Booth / Asian；hiddenTrigger：月兔 [Animal] prio 0、夜神社 [Dark] prio 1、游戏房 [Computer, Toy] prio 2；6 个自家房间的权重换成 ruleB-fixed-series.json 的值（回读一致）。亚洲三间权重不变。
+- 场景文件没动（数据都在 dream asset 上，5 个 bag 共用）。
+- 未验证编译：unityMCP 连不上（No Unity Editor instances found），Editor.log 在改动后没有新的编译记录；代码人工复查过。改动前备份 scratchpad dreams/backup5。
+- simulator 同步：从隐藏房间强制回家、takeBack 走规则 B、UNITY_SIG = 方案 B 权重，下拉选项改名。备份 scratchpad dreams/simulator-unity.before-unityB.html
+- 待用户：摆 14 个礼物（0 +1 TeddyBear；2 +2 TeddyBear；3 +1 Raccoon +2 Telephone；4 +2 Raccoon +2 Telephone；5 +1 TeddyBear +3 Telephone）；删 0、1 号房 TeddyBear 上多余的空 ObjectGift。
+
+## 2026-11-15 温室更容易触发
+- 3BoothGreenhouse.asset：Computer 3 → 4（TV 从黄昏、电话亭·云出发都稳定去温室；模拟 温室 24%→27%，云 25%→20%）。simulator 的 UNITY_SIG / RULEB_SIG 和 saved-schemes/ruleB-fixed-series.json 同步。
